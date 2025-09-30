@@ -68,7 +68,7 @@ dependencies {
     implementation("org.aspectj:aspectjrt:1.6.10")
 
     // Test
-    testImplementation("junit:junit:4.7")
+    testImplementation("org.springframework.boot:spring-boot-starter-test")
 }
 
 tasks.named<Copy>("processResources") {
@@ -79,6 +79,10 @@ tasks.named<Copy>("processResources") {
 
 tasks.bootRun {
     systemProperty("spring.profiles.active", (project.findProperty("profile") ?: "local").toString())
+}
+
+tasks.test {
+    useJUnitPlatform()
 }
 
 
