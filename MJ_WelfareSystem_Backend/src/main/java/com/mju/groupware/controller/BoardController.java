@@ -15,7 +15,6 @@ import java.util.Map;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.support.GenericXmlApplicationContext;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -36,6 +35,7 @@ import com.mju.groupware.service.UserService;
 
 @Controller
 public class BoardController {
+	@Autowired
 	private ConstantAdminBoardController Constant;
 
 	@Autowired
@@ -51,14 +51,7 @@ public class BoardController {
 	@Autowired
 	private ProfessorService professorService;
 
-	@SuppressWarnings("resource")
-	public BoardController() {
-		GenericXmlApplicationContext Ctx = new GenericXmlApplicationContext();
-		Ctx.load("classpath:/xmlForProperties/BoardController.xml");
-		Ctx.refresh();
-		// 빈 객체 받아오기
-		this.Constant = (ConstantAdminBoardController) Ctx.getBean("BoardControllerID");
-	}
+
 
 	// 문의 리스트
 	@RequestMapping(value = "/inquiryList", method = RequestMethod.GET)

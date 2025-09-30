@@ -10,7 +10,7 @@ import java.util.List;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.support.GenericXmlApplicationContext;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -47,18 +47,9 @@ public class AdministratorController {
 	private String UserLoginID;
 	private String MysqlID;
 
-	// constant연결
-	private ConstantAdmin constantAdmin;
-
-	@SuppressWarnings("resource")
-	public AdministratorController() {
-		GenericXmlApplicationContext Ctx = new GenericXmlApplicationContext();
-		Ctx.load("classpath:/xmlForProperties/Admin.xml");
-		Ctx.refresh();
-		// 빈 객체 받아오기
-		this.constantAdmin = (ConstantAdmin) Ctx.getBean("admin");
-	}
-
+    // constant 연결: DI로 주입
+    @Autowired
+    private ConstantAdmin constantAdmin;
 
 	// 관리자메뉴 - user list
 	@RequestMapping(value = "/manageList", method = RequestMethod.GET)

@@ -1,6 +1,7 @@
 package com.mju.groupware.controller;
 
 import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -28,6 +29,7 @@ import com.mju.groupware.service.UserService;
 import com.mju.groupware.service.StudentService;
 import com.mju.groupware.service.ProfessorService;
 import com.mju.groupware.function.UserInfoMethod;
+import com.mju.groupware.constant.ConstantAdmin;
 
 @WebMvcTest(controllers = AdministratorController.class)
 @AutoConfigureMockMvc(addFilters = false)
@@ -54,6 +56,9 @@ class AdministratorControllerWebMvcTest {
     @MockBean
     private UserInfoMethod userInfoMethod;
 
+    @MockBean
+    private ConstantAdmin constantAdmin;
+
     @TestConfiguration
     static class TestConfig {
         @Bean(name = "testInternalResourceViewResolver")
@@ -63,6 +68,27 @@ class AdministratorControllerWebMvcTest {
             resolver.setSuffix(".jsp");
             return resolver;
         }
+    }
+
+    @BeforeEach
+    void setupConstants() {
+        // 기본 뷰 이름/리다이렉트 경로 스텁
+        given(constantAdmin.getList()).willReturn("admin/list");
+        given(constantAdmin.getSleepList()).willReturn("admin/sleepList");
+        given(constantAdmin.getSecessionList()).willReturn("admin/secessionList");
+        given(constantAdmin.getSManage()).willReturn("admin/manageStudent");
+        given(constantAdmin.getPManage()).willReturn("admin/manageProfessor");
+        given(constantAdmin.getSManageModify()).willReturn("admin/manageModifyStudent");
+        given(constantAdmin.getPManageModify()).willReturn("admin/manageModifyProfessor");
+        given(constantAdmin.getReList()).willReturn("redirect:/admin/manageList");
+
+        // 역할 비교에 사용
+        given(constantAdmin.getSTUDENT()).willReturn("STUDENT");
+        given(constantAdmin.getPROFESSOR()).willReturn("PROFESSOR");
+        given(constantAdmin.getADMINISTRATOR()).willReturn("ADMINISTRATOR");
+
+        // 속성 키 등 자주 쓰는 상수
+        given(constantAdmin.getEmail()).willReturn("Email");
     }
 
     @Test
