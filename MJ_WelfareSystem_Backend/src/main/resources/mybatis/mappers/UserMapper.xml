@@ -27,7 +27,7 @@
 
    <!-- 로그인 -->
    <select id="SelectByLoginID" parameterType="String"
-      resultType="com.mju.groupware.security.UsersDetails">
+      resultType="global.security.UsersDetails">
       SELECT
       userID,
       userName,

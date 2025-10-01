@@ -15,7 +15,7 @@ import com.mju.groupware.dto.Professor;
 import com.mju.groupware.dto.Student;
 import com.mju.groupware.dto.User;
 import com.mju.groupware.dto.UserInfoOpen;
-import com.mju.groupware.security.UsersDetails;
+import global.security.UsersDetails;
 
 @Service
 @Repository

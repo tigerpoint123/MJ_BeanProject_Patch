@@ -1,4 +1,4 @@
-package com.mju.groupware.config;
+package global.config;
 
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.ImportResource;

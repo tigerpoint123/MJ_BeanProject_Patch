@@ -1,4 +1,4 @@
-package com.mju.groupware.security;
+package global.security;
 
 import java.util.ArrayList;
 import java.util.Collection;

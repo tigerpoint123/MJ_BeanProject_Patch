@@ -12,9 +12,9 @@
        http://www.springframework.org/schema/context/spring-context.xsd">
 
 <context:component-scan base-package="com.mju.groupware" />
-<bean id="UsersDetailsService" class="com.mju.groupware.security.UsersDetailsService" autowire="byType" />
-<bean id="LoginSuccessHandler" class="com.mju.groupware.security.LoginSuccessHandler" />
-<bean id="LoginFailureHandler" class="com.mju.groupware.security.LoginFailureHandler">
+<bean id="UsersDetailsService" class="global.security.UsersDetailsService" autowire="byType" />
+<bean id="LoginSuccessHandler" class="global.security.LoginSuccessHandler" />
+<bean id="LoginFailureHandler" class="global.security.LoginFailureHandler">
         <property name="loginIdName" value="UserLoginID"></property>
         <property name="loginPwdName" value="UserLoginPwd"></property>
         <property name="errorMsgName" value="ERRORMSG"></property>

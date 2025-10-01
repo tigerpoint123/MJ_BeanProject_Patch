@@ -1,11 +1,11 @@
-package com.mju.groupware.config;
+package global.config;
 
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.ImportResource;
 
 @Configuration
-@ImportResource({"classpath:/xmlForProperties/HomeController.xml"})
-public class HomeControllerXmlConfig {
+@ImportResource({"classpath:/xmlForProperties/Admin.xml"})
+public class AdminXmlConfig {
 }
 
 
