@@ -1,0 +1,19 @@
+# Build outputs
+/build/
+/out/
+/target/
+/.gradle/
+/bin/
+
+# Compiled artifacts
+*.class
+*.jar
+*.war
+*.log
+
+# IDE
+/.idea/
+/*.iml
+.classpath
+.project
+.settings/
