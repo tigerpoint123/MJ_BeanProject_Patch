@@ -4,6 +4,7 @@
 	pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form"%>
+<%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
 <%@ taglib prefix="sec"
 	uri="http://www.springframework.org/security/tags"%>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions"%>
@@ -17,9 +18,12 @@
 <link
 	href="https://fonts.googleapis.com/css2?family=Open+Sans&display=swap"
 	rel="stylesheet">
-<link rel="stylesheet" href="css/boardImageOption2" type="text/css">
-<link rel="stylesheet" href="css/boardList.css" type="text/css">
-<link rel="stylesheet" href="css/menubar.css" type="text/css">
+<spring:url value="/resources/css/boardImageOption2" var="boardImageCss" />
+<spring:url value="/resources/css/boardList.css" var="boardListCss" />
+<spring:url value="/resources/css/menubar.css" var="menubarCss" />
+<link rel="stylesheet" href="${boardImageCss}" type="text/css">
+<link rel="stylesheet" href="${boardListCss}" type="text/css">
+<link rel="stylesheet" href="${menubarCss}" type="text/css">
 <title>community list</title>
 
 </head>
@@ -70,7 +74,8 @@
 										varStatus="status">
 										<tr>
 											<td><c:out value="${status.count}" /></td>
-											<td id="title"><a href="${path}/communityContent?no=${communityList.getBoardID()}">
+                                            <spring:url value="/communityContent" var="communityContentBase" />
+                                            <td id="title"><a href="${communityContentBase}?no=${communityList.getBoardID()}">
 												<c:out value="${communityList.getBoardSubject()}" /></a></td>
 											<td><c:out value="${communityList.getBoardWriter()}" /></td>
 											<td><c:out value="${communityList.getBoardDate()}" /></td>
@@ -84,9 +89,10 @@
 								<input type="button" value="←" id="leftList"> 
 								<input type="button" value="1" id="pageList"> 
 								<input type="button" value="→" id="rightList"> 
-								<sec:authorize access="isAuthenticated()">
-								<a href="${path}/communityWrite"><input type="button" value="글쓰기" id="write"></a>
-								</sec:authorize>
+                                <sec:authorize access="isAuthenticated()">
+                                <spring:url value="/communityWrite" var="communityWriteUrl" />
+                                <a href="${communityWriteUrl}"><input type="button" value="글쓰기" id="write"></a>
+                                </sec:authorize>
 							</div>
 						</form>
 					</div>

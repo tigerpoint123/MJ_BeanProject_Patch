@@ -3,6 +3,7 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form"%>
 <%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags"%>
+<%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
 <c:set var="path" value="${pageContext.request.contextPath}" />
 
 <!DOCTYPE html>
@@ -11,7 +12,8 @@
 <meta charset="utf-8" />
 
 <!-- The main CSS file -->
-<link rel="stylesheet" href="resources/clock/css/style.css" type="text/css" />
+<spring:url value="/resources/clock/css/style.css" var="clockCss" />
+<link rel="stylesheet" href="${clockCss}" type="text/css" />
 </head>
 <body>
 
@@ -27,7 +29,8 @@
 	<!-- JavaScript Includes -->
 	<script src="http://cdnjs.cloudflare.com/ajax/libs/jquery/1.10.1/jquery.min.js"></script>
 	<script src="http://cdnjs.cloudflare.com/ajax/libs/moment.js/2.0.0/moment.min.js"></script>
-	<script src="resources/clock/js/script.js"></script>
+	<spring:url value="/resources/clock/js/script.js" var="clockJs" />
+	<script src="${clockJs}"></script>
 
 </body>
 </html>

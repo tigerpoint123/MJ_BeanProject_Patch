@@ -7,6 +7,7 @@
 	pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form"%>
+<%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
 <%@ taglib prefix="sec"
 	uri="http://www.springframework.org/security/tags"%>
 <c:set var="path" value="${pageContext.request.contextPath}" />
@@ -19,8 +20,10 @@
 <link
 	href="https://fonts.googleapis.com/css2?family=Open+Sans&display=swap"
 	rel="stylesheet">
-<link rel="stylesheet" href="../css/emailContent.css" type="text/css">
-<link rel="stylesheet" href="../css/menubar.css" type="text/css">
+<spring:url value="/resources/css/emailContent.css" var="emailContentCss" />
+<spring:url value="/resources/css/menubar.css" var="menubarCss" />
+<link rel="stylesheet" href="${emailContentCss}" type="text/css">
+<link rel="stylesheet" href="${menubarCss}" type="text/css">
 
 <title>email content</title>
 </head>
@@ -62,7 +65,8 @@
 									</tr>
 								</table>
 								<hr>
-								<a href="emailList"><input type="button" value="목록"
+                                <spring:url value="/email/emailList" var="emailListUrl" />
+                                <a href="${emailListUrl}"><input type="button" value="목록"
 									id="listButton"></a>
 							</div>
 							<!-- section2 -->

@@ -17,8 +17,11 @@
 <link
 	href="https://fonts.googleapis.com/css2?family=Open+Sans&display=swap"
 	rel="stylesheet">
-<link rel="stylesheet" href="../css/documentBoardList.css" type="text/css">
-<link rel="stylesheet" href="../css/menubar.css" type="text/css">
+<%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
+<spring:url value="/resources/css/documentBoardList.css" var="docListCss" />
+<spring:url value="/resources/css/menubar.css" var="menubarCss" />
+<link rel="stylesheet" href="${docListCss}" type="text/css">
+<link rel="stylesheet" href="${menubarCss}" type="text/css">
 <style>
 
 </style>
@@ -66,7 +69,8 @@
 										varStatus="status">
 										<tr>
 											<td><c:out value="${status.count}" /></td>
-											<td><a href="${path}/team/documentContent?no=${documentList.getTBoardID()}&num=${documentList.getTeamID()}">
+                                            <spring:url value="/team/documentContent" var="docContentBase" />
+                                            <td><a href="${docContentBase}?no=${documentList.getTBoardID()}&num=${documentList.getTeamID()}">
 												<c:out value="${documentList.getTBoardSubject()}" /></a></td>
 											<td><c:out value="${documentList.getTBoardWriter()}" /></td>
 											<td><c:out value="${documentList.getTBoardDate()}" /></td>
@@ -78,8 +82,9 @@
 							<div id="page" class="btn">
 								<input type="button" value="←" id="leftList"> <input
 									type="button" value="1" id="pageList"> <input
-									type="button" value="→" id="rightList"> <a
-									href="${path}/team/documentWrite?TeamID=${TeamID}"><input type="button"
+                                    type="button" value="→" id="rightList"> <a
+                                    <spring:url value="/team/documentWrite" var="docWriteBase" />
+                                    href="${docWriteBase}?TeamID=${TeamID}"><input type="button"
 									value="글쓰기" id="write"></a>
 							</div>
 						</form>

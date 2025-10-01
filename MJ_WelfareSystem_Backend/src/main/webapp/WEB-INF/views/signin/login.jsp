@@ -3,6 +3,7 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form"%>
+<%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
 <%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags"%>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions"%>
 <c:set var="path" value="${pageContext.request.contextPath}" />
@@ -20,12 +21,17 @@
    rel="stylesheet"
    integrity="sha384-/Y6pD6FV/Vv2HJnA6t+vslU6fwYXjCFtcEpHbNJ0lyAFsXTsjBbfaDjzALeQsN6M"
    crossorigin="anonymous">
-<link rel="stylesheet" href="css/login.css">
-<script src="js/jquery-3.5.1.min.js"></script>
-<script src="js/login.js"></script>
+<spring:url value="/css/login.css" var="loginCss" />
+<spring:url value="/js/jquery-3.5.1.min.js" var="jqueryJs" />
+<spring:url value="/js/login.js" var="loginJs" />
+<link rel="stylesheet" href="${loginCss}">
+<script src="${jqueryJs}"></script>
+<script src="${loginJs}"></script>
 <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css"> <%--비밀번호 감추기 아이콘 링크 --%>
-<link rel="stylesheet" href="css/pwShowHide.css"> <%--비밀번호 감추기 아이콘 css --%>
-<script src="js/pwShowHide.js"></script><%--비밀번호 감추기 js--%>
+<spring:url value="/css/pwShowHide.css" var="pwCss" />
+<spring:url value="/js/pwShowHide.js" var="pwJs" />
+<link rel="stylesheet" href="${pwCss}"> <%--비밀번호 감추기 아이콘 css --%>
+<script src="${pwJs}"></script><%--비밀번호 감추기 js--%>
 </head>
 <body>
 	<div class="mjsWs">
@@ -33,7 +39,8 @@
 			<section id="login">
 				<h2>로그인</h2>
 				<br>
-				<form action="${path}/login.do" name="Login" method="POST" id="form">
+                <spring:url value="/login.do" var="loginAction" />
+                <form action="${loginAction}" name="Login" method="POST" id="form">
 					<div>
 						<c:if test="${not empty ERRORMSG}">						        
 							<p style="color:red">${ERRORMSG}</p>
@@ -65,10 +72,12 @@
 							value="로그인">
 					</div>
 				</form>
-				<p>아직 회원이 아니신가요? <label for="sign_up_new"><a href="infoConsent"
+                <spring:url value="/infoConsent" var="infoConsentUrl" />
+                <spring:url value="/findPassword" var="findPasswordUrl" />
+                <p>아직 회원이 아니신가요? <label for="sign_up_new"><a href="${infoConsentUrl}"
 					   id="s_up">회원가입</a></label> <!--개인정보동의창으로 이동-->
 				 </p>
-				 <p>비밀번호를 잊으셨나요? <label for="findPassword"><a href="findPassword"
+                 <p>비밀번호를 잊으셨나요? <label for="findPassword"><a href="${findPasswordUrl}"
 						id="findPassword" >비밀번호 찾기</a></label>
 				</p>
 			</section>

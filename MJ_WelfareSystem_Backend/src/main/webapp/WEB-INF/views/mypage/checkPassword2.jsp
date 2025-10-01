@@ -9,9 +9,13 @@
 <html>
 <head>
 <meta charset="UTF-8">
-<link rel="stylesheet" href="css/infoModify.css">
-<script src="js/jquery-3.5.1.min.js"></script>
-<script src="js/infoModify.js"></script>
+<%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
+<spring:url value="/resources/css/infoModify.css" var="infoModifyCss" />
+<spring:url value="/resources/js/jquery-3.5.1.min.js" var="jqueryJs" />
+<spring:url value="/resources/js/infoModify.js" var="infoModifyJs" />
+<link rel="stylesheet" href="${infoModifyCss}">
+<script src="${jqueryJs}"></script>
+<script src="${infoModifyJs}"></script>
 <link rel="preconnect" href="https://fonts.gstatic.com">
 <link
    href="https://fonts.googleapis.com/css2?family=Open+Sans&display=swap"
@@ -19,9 +23,11 @@
 <link rel="stylesheet"
    href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css">
 <%--비밀번호 감추기 아이콘 링크 --%>
-<link rel="stylesheet" href="css/pwShowHide.css">
+<spring:url value="/resources/css/pwShowHide.css" var="pwCss" />
+<link rel="stylesheet" href="${pwCss}">
 <%--비밀번호 감추기 아이콘 css --%>
-<script src="js/pwShowHide.js"></script>
+<spring:url value="/resources/js/pwShowHide.js" var="pwJs" />
+<script src="${pwJs}"></script>
 <%--비밀번호 감추기 js--%>
 <title>check password</title>
 </head>
@@ -32,7 +38,8 @@
             <h2>비밀번호 확인</h2>
             <br>
             <div id="showPwd">
-               <form action="${path}/checkPassword2.do" name="CheckPwd"
+               <spring:url value="/checkPassword2.do" var="checkPasswordAction" />
+               <form action="${checkPasswordAction}" name="CheckPwd"
                   method="POST" id="form">
                   <input type="hidden" name="${_csrf.parameterName}"
                      value="${_csrf.token}" />

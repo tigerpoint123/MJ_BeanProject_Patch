@@ -4,6 +4,7 @@
    pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form"%>
+<%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
 <%@ taglib prefix="sec"
    uri="http://www.springframework.org/security/tags"%>
 <c:set var="path" value="${pageContext.request.contextPath}" />
@@ -19,12 +20,17 @@
 <link
    href="https://fonts.googleapis.com/css2?family=Open+Sans&display=swap"
    rel="stylesheet">
-<link rel="stylesheet" href="../css/searchReview.css" type="text/css">
-<link rel="stylesheet" href="../css/menubar.css" type="text/css">
-<script src="../js/jquery-3.5.1.min.js"></script>
-<script src="../js/manageList.js"></script>
-<script src="../js/jquery-3.5.1.min.js"></script>
-<script src="../js/searchUser.js"></script>
+<spring:url value="/resources/css/searchReview.css" var="searchReviewCss" />
+<spring:url value="/resources/css/menubar.css" var="menubarCss" />
+<spring:url value="/resources/js/jquery-3.5.1.min.js" var="jqueryJs" />
+<spring:url value="/resources/js/manageList.js" var="manageListJs" />
+<spring:url value="/resources/js/searchUser.js" var="searchUserJs" />
+<link rel="stylesheet" href="${searchReviewCss}" type="text/css">
+<link rel="stylesheet" href="${menubarCss}" type="text/css">
+<script src="${jqueryJs}"></script>
+<script src="${manageListJs}"></script>
+<script src="${jqueryJs}"></script>
+<script src="${searchUserJs}"></script>
 <title>review search page</title>
 </head>
 <body>
@@ -72,10 +78,10 @@
                                              "input[name='_csrf']")
                                              .val();
                                        var header = "X-CSRF-TOKEN";
-                                       $
+                                       $ 
                                              .ajax({
                                                 type : "POST",
-                                                url : "searchUser.do",
+                                                url : "${pageContext.request.contextPath}/searchUser.do",
                                                 data : JSON
                                                       .stringify(data),
                                                 cache : false,

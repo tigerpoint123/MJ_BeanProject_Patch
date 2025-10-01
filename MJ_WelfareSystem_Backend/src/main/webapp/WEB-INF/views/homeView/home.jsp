@@ -5,6 +5,10 @@
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form"%>
 <%@ taglib prefix="sec"
 	uri="http://www.springframework.org/security/tags"%>
+<%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
+<spring:url value="/resources/css/homeLayout.css" var="homeLayoutCss" />
+<spring:url value="/resources/css/imageOption2.css" var="imageOption2Css" />
+<spring:url value="/resources/css/menubar.css" var="menubarCss" />
 <c:set var="path" value="${pageContext.request.contextPath}" />
 
 <!DOCTYPE html>
@@ -15,9 +19,9 @@
 <link
 	href="https://fonts.googleapis.com/css2?family=Open+Sans&display=swap"
 	rel="stylesheet">
-<link rel="stylesheet" href="css/homeLayout.css" type="text/css">
-<link rel="stylesheet" href="css/imageOption2.css" type="text/css">
-<link rel="stylesheet" href="css/menubar.css" type="text/css">
+<link rel="stylesheet" href="${homeLayoutCss}" type="text/css">
+<link rel="stylesheet" href="${imageOption2Css}" type="text/css">
+<link rel="stylesheet" href="${menubarCss}" type="text/css">
 <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
 <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
 

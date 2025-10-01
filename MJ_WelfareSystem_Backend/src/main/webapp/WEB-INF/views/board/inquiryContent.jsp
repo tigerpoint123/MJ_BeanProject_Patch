@@ -4,6 +4,7 @@
 	pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form"%>
+<%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
 <%@ taglib prefix="sec"
 	uri="http://www.springframework.org/security/tags"%>
 <c:set var="path" value="${pageContext.request.contextPath}" />
@@ -16,8 +17,10 @@
 <link
 	href="https://fonts.googleapis.com/css2?family=Open+Sans&display=swap"
 	rel="stylesheet">
-<link rel="stylesheet" href="css/inquiryBoardContent.css" type="text/css">
-<link rel="stylesheet" href="css/menubar.css" type="text/css">
+<spring:url value="/resources/css/inquiryBoardContent.css" var="inquiryContentCss" />
+<spring:url value="/resources/css/menubar.css" var="menubarCss" />
+<link rel="stylesheet" href="${inquiryContentCss}" type="text/css">
+<link rel="stylesheet" href="${menubarCss}" type="text/css">
 
 
 <title>inquiry content</title>
@@ -38,7 +41,8 @@
 						</div>
 					</section>
 					<section>
-						<form action="InquiryDelete.do?boardID=${BoardID}" name="InquiryDelete" method="POST" id="form">
+                        <spring:url value="/InquiryDelete.do" var="inquiryDeleteAction" />
+                        <form action="${inquiryDeleteAction}?boardID=${BoardID}" name="InquiryDelete" method="POST" id="form">
 							<div class="section2">
 								<input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}" />
 								<table id="contentTable">
@@ -64,7 +68,8 @@
 							</div>
 
 							<div id="btn">
-								<a href="inquiryList"><input type="button" value="목록" id="listButton"></a>
+                                <spring:url value="/inquiryList" var="inquiryListUrl" />
+                                <a href="${inquiryListUrl}"><input type="button" value="목록" id="listButton"></a>
 								<!-- 접속한 UserID와 해당 글을 작성한 UserID가 같을 때 수정/삭제 버튼 보이게 하기 -->
 								<c:set var="UserID" value="${UserID}" />
 								<c:set var="UserIDFromWriter" value="${UserIDFromWriter}" />
@@ -77,7 +82,8 @@
 						<br>
 						<hr>
 						
-						<form action="AnswerDelete.do?boardID=${BoardID}" name="Delete" method="POST"
+                        <spring:url value="/AnswerDelete.do" var="answerDeleteAction" />
+                        <form action="${answerDeleteAction}?boardID=${BoardID}" name="Delete" method="POST"
 							id="form">
 							<!-- 답변이 null이 아닐 때만 출력 가능하게 해야함 answerList? -->
 							<c:if test="${InquiryAnswer != null}">
@@ -101,7 +107,8 @@
 						<br><br>
 						
 						<!-- 관리자만 답변 작성 가능 -->
-						<form action="Answer.do" name="DoInquiryAnswer" method="POST" id="AnswerForm">
+                        <spring:url value="/Answer.do" var="answerAction" />
+                        <form action="${answerAction}" name="DoInquiryAnswer" method="POST" id="AnswerForm">
 							<sec:authorize access="hasRole('ROLE_ADMIN')">
 								<input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}" />
 								<table>

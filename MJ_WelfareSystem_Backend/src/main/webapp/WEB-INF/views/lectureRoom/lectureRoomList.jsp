@@ -4,6 +4,7 @@
 	pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form"%>
+<%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
 <%@ taglib prefix="sec"
 	uri="http://www.springframework.org/security/tags"%>
 <c:set var="path" value="${pageContext.request.contextPath}" />
@@ -19,11 +20,16 @@
 <link
 	href="https://fonts.googleapis.com/css2?family=Open+Sans&display=swap"
 	rel="stylesheet">
-<link rel="stylesheet" href="../css/imageOption1.css" type="text/css">
-<link rel="stylesheet" href="../css/lectureRoomList.css" type="text/css">
-<link rel="stylesheet" href="../css/menubar.css" type="text/css">
-<script src="../js/jquery-3.5.1.min.js"></script>
-<script src="../js/lectureRoomList.js"></script>
+<spring:url value="/resources/css/imageOption1.css" var="imageOption1Css" />
+<spring:url value="/resources/css/lectureRoomList.css" var="lectureListCss" />
+<spring:url value="/resources/css/menubar.css" var="menubarCss" />
+<spring:url value="/resources/js/jquery-3.5.1.min.js" var="jqueryJs" />
+<spring:url value="/resources/js/lectureRoomList.js" var="lectureListJs" />
+<link rel="stylesheet" href="${imageOption1Css}" type="text/css">
+<link rel="stylesheet" href="${lectureListCss}" type="text/css">
+<link rel="stylesheet" href="${menubarCss}" type="text/css">
+<script src="${jqueryJs}"></script>
+<script src="${lectureListJs}"></script>
 
 <title>manage page</title>
 </head>
@@ -52,7 +58,8 @@
 									type="submit" value="검색">
 							</div>
 							<h3>&nbsp; 대여 가능한 강의실 리스트</h3>
-							<form action="${path}/lectureRoom/lectureRoomList.do"
+                            <spring:url value="/lectureRoom/lectureRoomList.do" var="lectureListAction" />
+                            <form action="${lectureListAction}"
 								name="lectureRoomList" method="POST" id="form">
 								<input type="hidden" name="${_csrf.parameterName}"
 									value="${_csrf.token}" />
@@ -73,12 +80,13 @@
 										<c:forEach items="${list}" var="list" varStatus="status">
 											<tr>
 												<td><c:out value="${status.count}" /></td>
-												<td><a
-													href="${path}/lectureRoom/reservation?no=${list.getLectureRoomNo()}">
+                                                <spring:url value="/lectureRoom/reservation" var="reservationBase" />
+                                                <td><a
+                                                    href="${reservationBase}?no=${list.getLectureRoomNo()}">
 														<c:out value="${list.getLectureRoomNo()}" />
 												</a></td>
-												<td><a
-													href="${path}/lectureRoom/reservation?no=${list.getLectureRoomNo()}">
+                                                <td><a
+                                                    href="${reservationBase}?no=${list.getLectureRoomNo()}">
 														<c:out value="${list.getRoomLocation()}" />
 												</a></td>
 												<td><c:out value="${list.getRoomFloor()}" /></td>

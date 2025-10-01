@@ -6,6 +6,13 @@
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form"%>
 <%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags"%>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions"%>
+<%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
+<spring:url value="/resources/css/inquiryBoardList.css" var="inquiryListCss" />
+<spring:url value="/resources/css/menubar.css" var="menubarCss" />
+<link rel="stylesheet" href="${inquiryListCss}" type="text/css">
+<link rel="stylesheet" href="${menubarCss}" type="text/css">
+<spring:url value="/inquiryContent" var="inquiryContentBase" />
+<spring:url value="/inquiryWrite" var="inquiryWriteUrl" />
 <c:set var="path" value="${pageContext.request.contextPath}" />
 
 <!DOCTYPE html>
@@ -71,7 +78,7 @@
 												varStatus="status">
 												<tr>
 												<td><c:out value="${status.count}" /></td>
-													<td><a href="${path}/inquiryContent?no=${inquiryList.getIBoardID()}">
+													<td><a href="${inquiryContentBase}?no=${inquiryList.getIBoardID()}">
 														<c:out value="${inquiryList.getIBoardSubject()}" /></a></td>
 													<td><c:out value="${inquiryList.getIBoardWriter()}" /></td>
 													<td><c:out value="${inquiryList.getIBoardDate()}" /></td>
@@ -86,7 +93,7 @@
 										<input type="button" value="←" id="leftList"> <input
 											type="button" value="1" id="pageList"> <input
 											type="button" value="→" id="rightList">
-										<a href="${path}/inquiryWrite"><input type="button" value="글쓰기" id="write"></a>
+										<a href="${inquiryWriteUrl}"><input type="button" value="글쓰기" id="write"></a>
 									</div>
 									
 								</form>

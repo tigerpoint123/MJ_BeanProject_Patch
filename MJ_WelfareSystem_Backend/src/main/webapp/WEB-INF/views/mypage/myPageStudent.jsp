@@ -10,9 +10,13 @@
 <html>
 <head>
 <meta charset="UTF-8">
-<link rel="stylesheet" href="css/myPage.css" type="text/css">
-<link rel="stylesheet" href="css/menubar.css" type="text/css">
-<script src="js/jquery-3.5.1.min.js"></script>
+<%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
+<spring:url value="/resources/css/myPage.css" var="myPageCss" />
+<spring:url value="/resources/css/menubar.css" var="menubarCss" />
+<spring:url value="/resources/js/jquery-3.5.1.min.js" var="jqueryJs" />
+<link rel="stylesheet" href="${myPageCss}" type="text/css">
+<link rel="stylesheet" href="${menubarCss}" type="text/css">
+<script src="${jqueryJs}"></script>
 <link rel="preconnect" href="https://fonts.gstatic.com">
 <link
 	href="https://fonts.googleapis.com/css2?family=Open+Sans&display=swap"
@@ -47,10 +51,14 @@
 					<div class="rightBox">
 						<div class="subMenuBox">
 						<ul>
-							<li><a href="${path}/myPage?R=${UserRole}">내 정보 확인</a></li>
-							<li><a href="${path}/myPostList">내 게시글 조회</a></li>
-							<li><a href="${path}/confirmMyReservation">강의실 예약 조회</a></li>
-							<li><a href="${path}/myInquiryList">내 문의 조회</a></li>
+                            <spring:url value="/myPage" var="myPageBase" />
+                            <spring:url value="/myPostList" var="myPostListUrl" />
+                            <spring:url value="/confirmMyReservation" var="confirmResUrl" />
+                            <spring:url value="/myInquiryList" var="myInquiryListUrl" />
+                            <li><a href="${myPageBase}?R=${UserRole}">내 정보 확인</a></li>
+                            <li><a href="${myPostListUrl}">내 게시글 조회</a></li>
+                            <li><a href="${confirmResUrl}">강의실 예약 조회</a></li>
+                            <li><a href="${myInquiryListUrl}">내 문의 조회</a></li>
 						</ul>
 					</div>
 						<section id="memberInfo">
@@ -59,7 +67,8 @@
 							<!--마이페이지 (학생)-->
 							<div id="myPageStudent" style="display: block;">
 
-								<form action="${path}/myPageStudent.do" name="StudentPage" method="POST" id="form">
+                                <spring:url value="/myPageStudent.do" var="myPageStudentAction" />
+                                <form action="${myPageStudentAction}" name="StudentPage" method="POST" id="form">
 									<input type="hidden" name="${_csrf.parameterName}"
 										value="${_csrf.token}" />
 									<table>
@@ -136,13 +145,14 @@
 							</div>
 							<br> <br>
 							<div id="btnDiv">
-								<a href="checkPassword"
+                                <spring:url value="/checkPassword" var="checkPasswordUrl" />
+                                <a href="${checkPasswordUrl}"
 									onClick="window.open(this.href, '', 'width=800, height=800'); return false;">
 									<input type="button" id="modifyBtn" value="수정하기">
-								</a> <a href="checkPassword3"
+                                </a> <spring:url value="/checkPassword3" var="checkPassword3Url" /> <a href="${checkPassword3Url}"
 									onClick="window.open(this.href, '', 'width=800, height=800'); return false;">
 									<input type="button" id="modifyPWBtn" value="비밀번호 변경하기">
-								</a> <a href="checkPassword2"
+                                </a> <spring:url value="/checkPassword2" var="checkPassword2Url" /> <a href="${checkPassword2Url}"
 									onClick="window.open(this.href, '', 'width=800, height=800'); return false;">
 									<input type="button" id="withdrawBtn" value="회원 탈퇴">
 								</a>

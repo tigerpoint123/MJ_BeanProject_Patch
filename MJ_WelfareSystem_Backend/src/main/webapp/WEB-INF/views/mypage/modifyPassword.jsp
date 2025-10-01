@@ -9,16 +9,22 @@
 <html>
 <head>
 <meta charset="UTF-8">
-<link rel="stylesheet" href="css/infoModify.css">
-<script src="js/jquery-3.5.1.min.js"></script>
-<script src="js/infoModify.js"></script>
+<%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
+<spring:url value="/resources/css/infoModify.css" var="infoModifyCss" />
+<spring:url value="/resources/js/jquery-3.5.1.min.js" var="jqueryJs" />
+<spring:url value="/resources/js/infoModify.js" var="infoModifyJs" />
+<link rel="stylesheet" href="${infoModifyCss}">
+<script src="${jqueryJs}"></script>
+<script src="${infoModifyJs}"></script>
 <link rel="preconnect" href="https://fonts.gstatic.com">
 <link
 	href="https://fonts.googleapis.com/css2?family=Open+Sans&display=swap"
 	rel="stylesheet">
 <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css"> <%--비밀번호 감추기 아이콘 링크 --%>
-<link rel="stylesheet" href="css/pwShowHide.css"> <%--비밀번호 감추기 아이콘 css --%>
-<script src="js/pwShowHide.js"></script><%--비밀번호 감추기 js--%>
+<spring:url value="/resources/css/pwShowHide.css" var="pwCss" /> <%--비밀번호 감추기 아이콘 css --%>
+<spring:url value="/resources/js/pwShowHide.js" var="pwJs" />
+<link rel="stylesheet" href="${pwCss}"> <%--비밀번호 감추기 아이콘 css --%>
+<script src="${pwJs}"></script><%--비밀번호 감추기 js--%>
 <title>modify password</title>
 </head>
 <body>
@@ -28,7 +34,8 @@
 				<h2>비밀번호 수정</h2>
 				<br>
 				<div id="modifyPassword" style="display: block;">
-					<form action="${path}/modifyPassword.do" name="ModifyPassword" method="POST" id="form">
+                    <spring:url value="/modifyPassword.do" var="modifyPasswordAction" />
+                    <form action="${modifyPasswordAction}" name="ModifyPassword" method="POST" id="form">
 						<input type="hidden" name="${_csrf.parameterName}"
 							value="${_csrf.token}" />
 						<table>

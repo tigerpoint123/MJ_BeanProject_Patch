@@ -4,6 +4,7 @@
 	pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form"%>
+<%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
 <%@ taglib prefix="sec"
 	uri="http://www.springframework.org/security/tags"%>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions"%>
@@ -17,9 +18,11 @@
 <link
 	href="https://fonts.googleapis.com/css2?family=Open+Sans&display=swap"
 	rel="stylesheet">
-<link rel="stylesheet" href="../css/createTeamContent.css"
-	type="text/css">
-<link rel="stylesheet" href="../css/menubar.css" type="text/css">
+<spring:url value="/resources/css/createTeamContent.css" var="createTeamCss" />
+<spring:url value="/resources/css/menubar.css" var="menubarCss" />
+<link rel="stylesheet" href="${createTeamCss}"
+	 type="text/css">
+<link rel="stylesheet" href="${menubarCss}" type="text/css">
 <title>check team</title>
 </head>
 <body>
@@ -38,7 +41,8 @@
 				</section>
 
 				<section>
-					<form action="DeleteTeam?no=${TeamID}" name="DeleteTeam"
+					<spring:url value="/DeleteTeam" var="deleteTeamAction" />
+					<form action="${deleteTeamAction}?no=${TeamID}" name="DeleteTeam"
 						method="POST" id="form">
 						<div class="section2">
 							<input type="hidden" name="${_csrf.parameterName}"
@@ -77,14 +81,16 @@
 							<hr>
 						</div>
 						<!-- section2 -->
-						<div id="btn">
-							<a href="${path}/team/teamList"> <input type="button"
+					<div id="btn">
+						<spring:url value="/team/teamList" var="teamListUrl" />
+						<a href="${teamListUrl}"> <input type="button"
 								value="목록" id="listButton"></a>
 
 							<c:set var="UserLoginID" value="${UserLoginID}" />
 							<c:set var="TeamLeaderID" value="${TeamLeaderID}" />
-							<c:if test="${UserLoginID == TeamLeaderID}">
-								<a href="${path}/team/modifyTeam?no=${TeamID}"> <input
+						<c:if test="${UserLoginID == TeamLeaderID}">
+							<spring:url value="/team/modifyTeam" var="modifyTeamBase" />
+							<a href="${modifyTeamBase}?no=${TeamID}"> <input
 									type="button" value="수정" id="listButton"></a>
 								<input type="submit" value="삭제" id="deleteButton">
 							</c:if>

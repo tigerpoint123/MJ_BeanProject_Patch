@@ -4,6 +4,7 @@
 	pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form"%>
+<%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
 <%@ taglib prefix="sec"
 	uri="http://www.springframework.org/security/tags"%>
 <c:set var="path" value="${pageContext.request.contextPath}" />
@@ -16,15 +17,19 @@
 <link
 	href="https://fonts.googleapis.com/css2?family=Open+Sans&display=swap"
 	rel="stylesheet">
-<link rel="stylesheet" href="../css/createTeamContent.css"
-	type="text/css">
-<link rel="stylesheet" href="../css/menubar.css" type="text/css">
+<spring:url value="/resources/css/createTeamContent.css" var="createTeamCss" />
+<spring:url value="/resources/css/menubar.css" var="menubarCss" />
+<link rel="stylesheet" href="${createTeamCss}"
+    type="text/css">
+<link rel="stylesheet" href="${menubarCss}" type="text/css">
 <link rel="stylesheet"
 	href="https://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
 <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
 <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
-<script src="../js/jquery-3.5.1.min.js"></script>
-<script src="../js/reviewWrite.js"></script>
+<spring:url value="/resources/js/jquery-3.5.1.min.js" var="jqueryJs" />
+<spring:url value="/resources/js/reviewWrite.js" var="reviewJs" />
+<script src="${jqueryJs}"></script>
+<script src="${reviewJs}"></script>
 
 <title>search Lecture</title>
 </head>
@@ -43,7 +48,8 @@
 						</div>
 					</section>
 					<section>
-						<form action="reviewWrite" name="SearchTeam" method="GET"
+                        <spring:url value="/reviewWrite" var="reviewWriteAction" />
+                        <form action="${reviewWriteAction}" name="SearchTeam" method="GET"
 							id="form">
 							<div class="section2">
 								<input type="hidden" name="${_csrf.parameterName}"

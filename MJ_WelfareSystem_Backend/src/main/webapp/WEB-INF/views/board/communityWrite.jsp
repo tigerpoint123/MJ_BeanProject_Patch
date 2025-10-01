@@ -4,6 +4,7 @@
 	pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form"%>
+<%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
 <%@ taglib prefix="sec"
 	uri="http://www.springframework.org/security/tags"%>
 <c:set var="path" value="${pageContext.request.contextPath}" />
@@ -16,11 +17,16 @@
 <link
 	href="https://fonts.googleapis.com/css2?family=Open+Sans&display=swap"
 	rel="stylesheet">
-<link rel="stylesheet" href="css/boardContent.css" type="text/css">
-<link rel="stylesheet" href="css/boardImageOption2" type="text/css">
-<link rel="stylesheet" href="css/menubar.css" type="text/css">
-<script src="js/jquery-3.5.1.min.js"></script>
-<script src="js/boardContent.js"></script>
+<spring:url value="/resources/css/boardContent.css" var="boardContentCss" />
+<spring:url value="/resources/css/boardImageOption2" var="boardImageCss" />
+<spring:url value="/resources/css/menubar.css" var="menubarCss" />
+<spring:url value="/resources/js/jquery-3.5.1.min.js" var="jqueryJs" />
+<spring:url value="/resources/js/boardContent.js" var="boardContentJs" />
+<link rel="stylesheet" href="${boardContentCss}" type="text/css">
+<link rel="stylesheet" href="${boardImageCss}" type="text/css">
+<link rel="stylesheet" href="${menubarCss}" type="text/css">
+<script src="${jqueryJs}"></script>
+<script src="${boardContentJs}"></script>
 
 
 <title>community write</title>
@@ -41,8 +47,9 @@
 							</div>
 						</section>
 						<section>
-							   <form
-			                     action="communityWrite?${_csrf.parameterName}=${_csrf.token}"
+                               <spring:url value="/communityWrite" var="communityWriteAction" />
+                               <form
+                                 action="${communityWriteAction}?${_csrf.parameterName}=${_csrf.token}"
 			                     name="CommunityWrite" enctype="multipart/form-data" method="POST"
 			                     id="form">
 								<div class="section2">
@@ -86,10 +93,11 @@
 									</table>
 								</div>
 								      <!-- section2 -->
-			                     <div id="btn">			                       
-			                        <br> <input type="submit" value="저장" id="saveButton">
-			                        <a href="${path}/communityList"><input type="button"
-			                           value="이전" id="listButton"></a>
+                             <div id="btn">                          
+                                <br> <input type="submit" value="저장" id="saveButton">
+                                <spring:url value="/communityList" var="communityListUrl" />
+                                <a href="${communityListUrl}"><input type="button"
+                                   value="이전" id="listButton"></a>
 			                     </div>
 							</form>
 						</section>

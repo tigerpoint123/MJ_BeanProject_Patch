@@ -17,8 +17,11 @@
 <link
 	href="https://fonts.googleapis.com/css2?family=Open+Sans&display=swap"
 	rel="stylesheet">
-<link rel="stylesheet" href="../css/teamList.css" type="text/css">
-<link rel="stylesheet" href="../css/menubar.css" type="text/css">
+<%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
+<spring:url value="/resources/css/teamList.css" var="teamListCss" />
+<spring:url value="/resources/css/menubar.css" var="menubarCss" />
+<link rel="stylesheet" href="${teamListCss}" type="text/css">
+<link rel="stylesheet" href="${menubarCss}" type="text/css">
 <title>my team list</title>
 </head>
 <body>
@@ -63,7 +66,8 @@
 										varStatus="status">
 										<tr>
 											<td><c:out value="${status.count}" /></td>
-											<td id="col"><a href="${path}/team/documentList?no=${teamList.getTeamID()}">
+                                            <spring:url value="/team/documentList" var="docListBase" />
+                                            <td id="col"><a href="${docListBase}?no=${teamList.getTeamID()}">
 												<c:out value="${teamList.getClassName()}" /></a></td>
 											<td><c:out value="${teamList.getClassProfessorName()}" /></td>
 											<td><c:out value="${teamList.getTeamName()}" /></td>

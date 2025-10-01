@@ -5,15 +5,13 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %> 
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
 <%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags"%>
-<c:set var="path" value="${pageContext.request.contextPath}" />
-
-<!DOCTYPE html>
-<html>
-<head>
-<meta charset="UTF-8">
-<link rel="stylesheet" href="../css/infoModify.css">
-<script src="../js/jquery-3.5.1.min.js"></script>
-<script src="../js/manageModify.js"></script>
+<%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
+<spring:url value="/resources/css/infoModify.css" var="infoModifyCss" />
+<spring:url value="/resources/js/jquery-3.5.1.min.js" var="jqueryJs" />
+<spring:url value="/resources/js/manageModify.js" var="manageModifyJs" />
+<link rel="stylesheet" href="${infoModifyCss}">
+<script src="${jqueryJs}"></script>
+<script src="${manageModifyJs}"></script>
 <link rel="preconnect" href="https://fonts.gstatic.com">
 <link
 	href="https://fonts.googleapis.com/css2?family=Open+Sans&display=swap"

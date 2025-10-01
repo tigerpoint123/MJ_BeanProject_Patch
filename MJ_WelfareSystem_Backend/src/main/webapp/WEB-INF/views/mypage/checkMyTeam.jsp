@@ -17,8 +17,11 @@
 <link
 	href="https://fonts.googleapis.com/css2?family=Open+Sans&display=swap"
 	rel="stylesheet">
-<link rel="stylesheet" href="css/checkMyTeam.css" type="text/css">
-<link rel="stylesheet" href="css/menubar.css" type="text/css">
+<%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
+<spring:url value="/resources/css/checkMyTeam.css" var="checkMyTeamCss" />
+<spring:url value="/resources/css/menubar.css" var="menubarCss" />
+<link rel="stylesheet" href="${checkMyTeamCss}" type="text/css">
+<link rel="stylesheet" href="${menubarCss}" type="text/css">
 <title>team list</title>
 </head>
 <body>
@@ -30,10 +33,14 @@
 			<div class="rightBox">
 			<div class="subMenuBox">
 				<ul>
-					<li><a href="${path}/myPage?R=${UserRole}">내 정보 확인</a></li>
-					<li><a href="${path}/myPostList">내 게시글 조회</a></li>
-					<li><a href="${path}/confirmMyReservation">강의실 예약 조회</a></li>
-					<li><a href="${path}/checkMyTeam">팀 조회</a></li>
+                    <spring:url value="/myPage" var="myPageBase" />
+                    <spring:url value="/myPostList" var="myPostListUrl" />
+                    <spring:url value="/confirmMyReservation" var="confirmResUrl" />
+                    <spring:url value="/checkMyTeam" var="checkMyTeamUrl" />
+                    <li><a href="${myPageBase}?R=${UserRole}">내 정보 확인</a></li>
+                    <li><a href="${myPostListUrl}">내 게시글 조회</a></li>
+                    <li><a href="${confirmResUrl}">강의실 예약 조회</a></li>
+                    <li><a href="${checkMyTeamUrl}">팀 조회</a></li>
 					<li><a href="#">내 후기 조회</a></li>
 				</ul>
 			</div>
@@ -70,7 +77,8 @@
 										<tr>
 											<td><c:out value="${status.count}" /></td>
 											<!-- 해당 팀에 속하는 사람만 들어갈 수 있게 해야함(팀 DB에 있는 멤버 아이디와 사용자 아이디가 같아야 접속 가능하게?) -->
-											<td><a href="${path}/team/checkTeam?no=${teamList.getTeamID()}">
+                                            <spring:url value="/team/checkTeam" var="checkTeamBase" />
+                                            <td><a href="${checkTeamBase}?no=${teamList.getTeamID()}">
 												<c:out value="${teamList.getSubjectName()}" /></a></td>
 											<td><c:out value="${teamList.getProfessorName()}" /></td>
 											<td><c:out value="${teamList.getTeamName()}" /></td>

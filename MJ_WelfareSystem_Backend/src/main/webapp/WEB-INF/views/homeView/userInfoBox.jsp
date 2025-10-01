@@ -8,7 +8,9 @@
     <meta charset="utf-8">
     <link rel="preconnect" href="https://fonts.gstatic.com">
     <link href="https://fonts.googleapis.com/css2?family=Open+Sans&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="../css/homeLayout.css" type="text/css">
+    <%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
+    <spring:url value="/resources/css/homeLayout.css" var="homeLayoutCss" />
+    <link rel="stylesheet" href="${homeLayoutCss}" type="text/css">
     <title>MJS Welfare System</title>
   </head>
   <body>

@@ -4,6 +4,7 @@
 	pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form"%>
+<%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
 <%@ taglib prefix="sec"
 	uri="http://www.springframework.org/security/tags"%>
 <c:set var="path" value="${pageContext.request.contextPath}" />
@@ -16,14 +17,17 @@
 <link
 	href="https://fonts.googleapis.com/css2?family=Open+Sans&display=swap"
 	rel="stylesheet">
-<link rel="stylesheet" href="../css/lectureRoomContent.css"
-	type="text/css">
-<link rel="stylesheet" href="../css/menubar.css" type="text/css">
+<spring:url value="/resources/css/lectureRoomContent.css" var="lectureContentCss" />
+<spring:url value="/resources/css/menubar.css" var="menubarCss" />
+<link rel="stylesheet" href="${lectureContentCss}"
+    type="text/css">
+<link rel="stylesheet" href="${menubarCss}" type="text/css">
 <link rel="stylesheet"
 	href="https://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
 <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
 <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
-<script src="js/reservation.js"></script>
+<spring:url value="/resources/js/reservation.js" var="reservationJs" />
+<script src="${reservationJs}"></script>
 
 <title>lecture room reservation confirm</title>
 </head>
@@ -42,7 +46,8 @@
 						</div>
 					</section>
 					<section>
-						<form action="ReservationConfirm" id="reservationConfirm"
+                        <spring:url value="/ReservationConfirm" var="reservationConfirmAction" />
+                        <form action="${reservationConfirmAction}" id="reservationConfirm"
 							name="ReservationConfirm" method="POST" id="form">
 							<div class="section2">
 								<input type="hidden" name="${_csrf.parameterName}"
@@ -94,8 +99,9 @@
 							</div>
 							<!-- section2 -->
 							<div id="btn">
-								<input type="submit" value="삭제" id="deleteButton"> <a
-									href="${path}/lectureRoom/lectureRoomList"><input
+                                <input type="submit" value="삭제" id="deleteButton"> <a
+                                    <spring:url value="/lectureRoom/lectureRoomList" var="lectureListUrl" />
+                                    href="${lectureListUrl}"><input
 									type="button" value="이전" id="listButton"></a>
 							</div>
 						</form>

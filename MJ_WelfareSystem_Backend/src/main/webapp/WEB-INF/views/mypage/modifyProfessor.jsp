@@ -9,9 +9,13 @@
 <html>
 <head>
 <meta charset="UTF-8">
-<link rel="stylesheet" href="css/infoModify.css">
-<script src="js/jquery-3.5.1.min.js"></script>
-<script src="js/infoModify.js"></script>
+<%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
+<spring:url value="/resources/css/infoModify.css" var="infoModifyCss" />
+<spring:url value="/resources/js/jquery-3.5.1.min.js" var="jqueryJs" />
+<spring:url value="/resources/js/infoModify.js" var="infoModifyJs" />
+<link rel="stylesheet" href="${infoModifyCss}">
+<script src="${jqueryJs}"></script>
+<script src="${infoModifyJs}"></script>
 <link rel="preconnect" href="https://fonts.gstatic.com">
 <link
    href="https://fonts.googleapis.com/css2?family=Open+Sans&display=swap"
@@ -26,7 +30,8 @@
             <br>
             <!--교수 정보 수정-->
             <div id="modifyProfessor" style="display: block;">
-               <form action="${path}/modifyProfessor.do" name="ModifyProfessor.do"
+               <spring:url value="/modifyProfessor.do" var="modifyProfessorAction" />
+               <form action="${modifyProfessorAction}" name="ModifyProfessor.do"
                   method="POST" id="form">
                   <input type="hidden" name="${_csrf.parameterName}"
                      value="${_csrf.token}" />

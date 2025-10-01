@@ -5,13 +5,17 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <c:set var="path" value="${pageContext.request.contextPath}" />
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form"%>
+<%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
 <!DOCTYPE html>
 <html>
 <head>
 <meta charset="UTF-8">
-<link rel="stylesheet" href="css/findPassword.css">
-<script src="js/jquery-3.5.1.min.js"></script>
-<script src="js/findPassword.js"></script>
+<spring:url value="/resources/css/findPassword.css" var="findPwdCss" />
+<spring:url value="/resources/js/jquery-3.5.1.min.js" var="jqueryJs" />
+<spring:url value="/resources/js/findPassword.js" var="findPwdJs" />
+<link rel="stylesheet" href="${findPwdCss}">
+<script src="${jqueryJs}"></script>
+<script src="${findPwdJs}"></script>
 <link rel="preconnect" href="https://fonts.gstatic.com">
 <link
 	href="https://fonts.googleapis.com/css2?family=Open+Sans&display=swap"
@@ -27,7 +31,8 @@
 				<p>비밀번호를 찾고자 하는 아이디와 이름, 이메일을 입력해주세요</p>
 				<p>본인확인 이메일 주소와 입력한 이메일 주소가 같아야, 인증번호를 받을 수 있습니다.</p>
 
-				<form action="${path}/findPassword.do" name="FindPwd" method="POST"
+                <spring:url value="/findPassword.do" var="findPwdAction" />
+                <form action="${findPwdAction}" name="FindPwd" method="POST"
 					id="form">
 					<div id="memberCheck">
 						<table>

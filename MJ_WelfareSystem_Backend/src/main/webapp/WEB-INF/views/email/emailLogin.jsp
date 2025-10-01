@@ -5,6 +5,7 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <c:set var="path" value="${pageContext.request.contextPath}" />
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form"%>
+<%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
 
 <!DOCTYPE html>
 <html>
@@ -20,15 +21,20 @@
 	rel="stylesheet"
 	integrity="sha384-/Y6pD6FV/Vv2HJnA6t+vslU6fwYXjCFtcEpHbNJ0lyAFsXTsjBbfaDjzALeQsN6M"
 	crossorigin="anonymous">
-<link rel="stylesheet" href="../css/login.css">
-<script src="../js/jquery-3.5.1.min.js"></script>
-<script src="../js/login.js"></script>
+<spring:url value="/resources/css/login.css" var="loginCss" />
+<spring:url value="/resources/js/jquery-3.5.1.min.js" var="jqueryJs" />
+<spring:url value="/resources/js/login.js" var="loginJs" />
+<link rel="stylesheet" href="${loginCss}">
+<script src="${jqueryJs}"></script>
+<script src="${loginJs}"></script>
 <link rel="stylesheet"
 	href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css">
 <%--비밀번호 감추기 아이콘 링크 --%>
-<link rel="stylesheet" href="../css/pwShowHide.css">
+<spring:url value="/resources/css/pwShowHide.css" var="pwCss" />
+<link rel="stylesheet" href="${pwCss}">
 <%--비밀번호 감추기 아이콘 css --%>
-<script src="../js/pwShowHide.js"></script>
+<spring:url value="/resources/js/pwShowHide.js" var="pwJs" />
+<script src="${pwJs}"></script>
 <%--비밀번호 감추기 js--%>
 </head>
 <body>
@@ -55,7 +61,8 @@
 			<section id="login">
 				<h2>이메일 로그인</h2>
 				<br>
-				<form action="${path}/email/emailList" name="emailLogin" method="POST" id="form">
+                <spring:url value="/email/emailList" var="emailListAction" />
+                <form action="${emailListAction}" name="emailLogin" method="POST" id="form">
 					<input type="hidden" name="${_csrf.parameterName}"
 						value="${_csrf.token}" /></input>
 					<div id="content">

@@ -5,13 +5,17 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <c:set var="path" value="${pageContext.request.contextPath}" />
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form"%>
+<%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
 <!DOCTYPE html>
 <html>
 <head>
 <meta charset="UTF-8">
-<link rel="stylesheet" href="css/findPassword.css">
-<script src="js/jquery-3.5.1.min.js"></script>
-<script src="js/findPassword.js"></script>
+<spring:url value="/resources/css/findPassword.css" var="findPwdCss" />
+<spring:url value="/resources/js/jquery-3.5.1.min.js" var="jqueryJs" />
+<spring:url value="/resources/js/findPassword.js" var="findPwdJs" />
+<link rel="stylesheet" href="${findPwdCss}">
+<script src="${jqueryJs}"></script>
+<script src="${findPwdJs}"></script>
 <link rel="preconnect" href="https://fonts.gstatic.com">
 <link
 	href="https://fonts.googleapis.com/css2?family=Open+Sans&display=swap"

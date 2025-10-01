@@ -8,9 +8,13 @@
 <html>
 <head>
 <meta charset="UTF-8">
-<link rel="stylesheet" href="css/signup.css">
-<script src="js/jquery-3.5.1.min.js"></script>
-<script src="js/signupStudent.js"></script>
+<%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
+<spring:url value="/resources/css/signup.css" var="signupCss" />
+<spring:url value="/resources/js/jquery-3.5.1.min.js" var="jqueryJs" />
+<spring:url value="/resources/js/signupStudent.js" var="signupStudentJs" />
+<link rel="stylesheet" href="${signupCss}">
+<script src="${jqueryJs}"></script>
+<script src="${signupStudentJs}"></script>
 <link rel="preconnect" href="https://fonts.gstatic.com">
 <link
 	href="https://fonts.googleapis.com/css2?family=Open+Sans&display=swap"
@@ -25,7 +29,8 @@
 				<br>
 				<!--학생 회원가입-->
 				<div id="signupStudent" style="display: block;">
-					<form action="${path}/signupStudent.do" name="SignupStudent"
+                    <spring:url value="/signupStudent.do" var="signupStudentAction" />
+                    <form action="${signupStudentAction}" name="SignupStudent"
 						method="POST" id="form">
 						<input type="hidden" name="${_csrf.parameterName}"
 							value="${_csrf.token}" />

@@ -5,6 +5,15 @@
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form"%>
 <%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags"%>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions"%>
+<%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
+<spring:url value="/resources/css/boardList.css" var="boardListCss" />
+<spring:url value="/resources/css/boardImageOption2" var="boardImageCss" />
+<spring:url value="/resources/css/menubar.css" var="menubarCss" />
+<link rel="stylesheet" href="${boardListCss}" type="text/css">
+<link rel="stylesheet" href="${boardImageCss}" type="text/css">
+<link rel="stylesheet" href="${menubarCss}" type="text/css">
+<spring:url value="/noticeContent" var="noticeContentBase" />
+<spring:url value="/noticeWrite" var="noticeWriteUrl" />
 <c:set var="path" value="${pageContext.request.contextPath}" />
 
 <!DOCTYPE html>
@@ -69,7 +78,7 @@
 												varStatus="status">
 												<tr>
 													<td><c:out value="${status.count}" /></td>
-													<td><a href="${path}/noticeContent?no=${noticeList.getBoardID()}">
+													<td><a href="${noticeContentBase}?no=${noticeList.getBoardID()}">
 														<c:out value="${noticeList.getBoardSubject()}" /></a></td>
 													<td><c:out value="${noticeList.getBoardWriter()}" /></td>
 													<td><c:out value="${noticeList.getBoardDate()}" /></td>
@@ -84,7 +93,7 @@
 										<input type="button" value="1" id="pageList"> 
 										<input type="button" value="→" id="rightList">
 										<sec:authorize access="hasRole('ROLE_ADMIN')">
-										<a href="${path}/noticeWrite"><input type="button" value="글쓰기" id="write"></a>
+										<a href="${noticeWriteUrl}"><input type="button" value="글쓰기" id="write"></a>
 										</sec:authorize>
 									</div>
 

@@ -4,6 +4,7 @@
 	pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form"%>
+<%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
 <%@ taglib prefix="sec"
 	uri="http://www.springframework.org/security/tags"%>
 <c:set var="path" value="${pageContext.request.contextPath}" />
@@ -16,10 +17,14 @@
 <link
 	href="https://fonts.googleapis.com/css2?family=Open+Sans&display=swap"
 	rel="stylesheet">
-<link rel="stylesheet" href="../css/reviewContent.css" type="text/css">
-<link rel="stylesheet" href="../css/menubar.css" type="text/css">
-<script src="../js/jquery-3.5.1.min.js"></script>
-<script src="../js/reviewWrite.js"></script>
+<spring:url value="/resources/css/reviewContent.css" var="reviewCss" />
+<spring:url value="/resources/css/menubar.css" var="menubarCss" />
+<spring:url value="/resources/js/jquery-3.5.1.min.js" var="jqueryJs" />
+<spring:url value="/resources/js/reviewWrite.js" var="reviewJs" />
+<link rel="stylesheet" href="${reviewCss}" type="text/css">
+<link rel="stylesheet" href="${menubarCss}" type="text/css">
+<script src="${jqueryJs}"></script>
+<script src="${reviewJs}"></script>
 <title>review write</title>
 </head>
 <body>
@@ -43,7 +48,8 @@
 							불가하오니 신중하게 고민 후 답변 부탁드립니다. 감사합니다.<br>
 						<br></span>
 
-						<form action="reviewWrite?${_csrf.parameterName}=${_csrf.token}"
+                        <spring:url value="/reviewWrite" var="reviewWriteAction" />
+                        <form action="${reviewWriteAction}?${_csrf.parameterName}=${_csrf.token}"
 							name="ReviewWrite" enctype="multipart/form-data" method="POST"
 							id="form">
 							<div class="section2">

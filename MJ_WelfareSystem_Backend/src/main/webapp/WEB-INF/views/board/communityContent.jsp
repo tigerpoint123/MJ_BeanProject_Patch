@@ -4,6 +4,7 @@
 	pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form"%>
+<%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
 <%@ taglib prefix="sec"
 	uri="http://www.springframework.org/security/tags"%>
 <c:set var="path" value="${pageContext.request.contextPath}" />
@@ -16,17 +17,21 @@
 <link
 	href="https://fonts.googleapis.com/css2?family=Open+Sans&display=swap"
 	rel="stylesheet">
-<link rel="stylesheet" href="css/boardImageOption2" type="text/css">
-<link rel="stylesheet" href="css/boardContent.css" type="text/css">
-<link rel="stylesheet" href="css/menubar.css" type="text/css">
-<script src="js/jquery-3.5.1.min.js"></script>
-<script src="js/boardContent.js"></script>
+<spring:url value="/css/boardImageOption2" var="boardImgCss" />
+<spring:url value="/css/boardContent.css" var="boardContentCss" />
+<spring:url value="/css/menubar.css" var="menubarCss" />
+<spring:url value="/js/jquery-3.5.1.min.js" var="jqueryJs" />
+<spring:url value="/js/boardContent.js" var="boardContentJs" />
+<link rel="stylesheet" href="${boardImgCss}" type="text/css">
+<link rel="stylesheet" href="${boardContentCss}" type="text/css">
+<link rel="stylesheet" href="${menubarCss}" type="text/css">
+<script src="${jqueryJs}"></script>
+<script src="${boardContentJs}"></script>
 
 <title>community content</title>
 </head>
 <body>
-	<jsp:include page="/WEB-INF/views/homeView/menubar.jsp"></jsp:include>
-<script src="//code.jquery.com/jquery-1.11.0.min.js"></script>
+    <jsp:include page="/WEB-INF/views/homeView/menubar.jsp"></jsp:include>
 
 
 	<nav>
@@ -42,7 +47,8 @@
 						</div>
 					</section>
 					<section>
-						<form action="CommunityDelete.do?boardID=${BoardID}"
+                        <spring:url value="/CommunityDelete.do" var="communityDeleteBase" />
+                        <form action="${communityDeleteBase}?boardID=${BoardID}"
 							name="CommunityDelete" method="POST" id="form">
 							<div class="section2">
 								<input type="hidden" name="${_csrf.parameterName}"
@@ -82,13 +88,15 @@
 								</table>
 							</div>
 							<div id="btn">
-								<a href="communityList"><input type="button" value="목록"
+                                <spring:url value="/communityList" var="communityListUrl" />
+                                <a href="${communityListUrl}"><input type="button" value="목록"
 									id="listButton"></a>
 								<!-- 접속한 UserID와 해당 글을 작성한 UserID가 같을 때 수정/삭제 버튼 보이게 하기 -->
 								<c:set var="UserID" value="${UserID}" />
 								<c:set var="UserIDFromWriter" value="${UserIDFromWriter}" />
 								<c:if test="${UserID == UserIDFromWriter}">
-									<a href="${path}/communityModify?no=${BoardID}"><button
+                                    <spring:url value="/communityModify" var="communityModifyBase" />
+                                    <a href="${communityModifyBase}?no=${BoardID}"><button
 											type="button" id="modifyButton" >수정</button></a>
 									<button type="submit" id="deleteButton" onclick="if(!confirm('삭제 하시겠습니까?')){return false;}">삭제</button>
 								</c:if>

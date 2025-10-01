@@ -4,6 +4,7 @@
 	pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form"%>
+<%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
 <%@ taglib prefix="sec"
 	uri="http://www.springframework.org/security/tags"%>
 <c:set var="path" value="${pageContext.request.contextPath}" />
@@ -16,10 +17,14 @@
 <link
 	href="https://fonts.googleapis.com/css2?family=Open+Sans&display=swap"
 	rel="stylesheet">
-<link rel="stylesheet" href="../css/documentBoardContent.css" type="text/css">
-<link rel="stylesheet" href="../css/menubar.css" type="text/css">
-<script src="../js/jquery-3.5.1.min.js"></script>
-<script src="../js/boardContent.js"></script>
+<spring:url value="/resources/css/documentBoardContent.css" var="docBoardCss" />
+<spring:url value="/resources/css/menubar.css" var="menubarCss" />
+<spring:url value="/resources/js/jquery-3.5.1.min.js" var="jqueryJs" />
+<spring:url value="/resources/js/boardContent.js" var="boardContentJs" />
+<link rel="stylesheet" href="${docBoardCss}" type="text/css">
+<link rel="stylesheet" href="${menubarCss}" type="text/css">
+<script src="${jqueryJs}"></script>
+<script src="${boardContentJs}"></script>
 
 <title>document modify</title>
 </head>
@@ -39,8 +44,9 @@
 						</div>
 					</section>
 					<section>
-						<form 
-							action="documentModify.do?${_csrf.parameterName}=${_csrf.token}"
+                        <spring:url value="/documentModify.do" var="documentModifyAction" />
+                        <form 
+                            action="${documentModifyAction}?${_csrf.parameterName}=${_csrf.token}"
 							name="DocumentModify" method="POST" enctype="multipart/form-data"
 							id="form">
 							<div class="section2">
@@ -92,10 +98,11 @@
 								</table>
 							</div>
 							<!-- section2 -->
-							<div id="btn">
-								<input type="submit" value="수정 완료" id="listButton">
-								 <a href="${path}/team/myTeamList"> 
-								 <input type="button" value="목록" id="listButton"></a> 
+                            <div id="btn">
+                                <input type="submit" value="수정 완료" id="listButton">
+                                 <spring:url value="/team/myTeamList" var="myTeamListUrl" /> 
+                                 <a href="${myTeamListUrl}"> 
+                                 <input type="button" value="목록" id="listButton"></a> 
 								 <input type="hidden" id="fileDeleteList" name="FileDeleteList[]" value=""> 
 								 <input type="hidden" id="fileDeleteNameList" name="FileDeleteNameList[]" value=""> 
 								 <input type="hidden" id="tBoardID" name="TBoardID" value="${TBoardID}">

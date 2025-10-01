@@ -16,9 +16,12 @@
 <link
 	href="https://fonts.googleapis.com/css2?family=Open+Sans&display=swap"
 	rel="stylesheet">
-<link rel="stylesheet" href="css/confirmMyReservation.css"
-	type="text/css">
-<link rel="stylesheet" href="css/menubar.css" type="text/css">
+<%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
+<spring:url value="/resources/css/confirmMyReservation.css" var="confirmCss" />
+<spring:url value="/resources/css/menubar.css" var="menubarCss" />
+<link rel="stylesheet" href="${confirmCss}"
+    type="text/css">
+<link rel="stylesheet" href="${menubarCss}" type="text/css">
 <link rel="stylesheet"
 	href="https://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
 <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
@@ -49,7 +52,8 @@
 							<hr>
 						</div>
 					
-						<form action="${path}/lectureRoom/ReservationConfirm" id="reservationConfirm"
+                        <spring:url value="/lectureRoom/ReservationConfirm" var="reservationConfirmAction" />
+                        <form action="${reservationConfirmAction}" id="reservationConfirm"
 							name="ConfirmMyReservation" method="POST" id="form">
 							<div class="section2">
 								<input type="hidden" name="${_csrf.parameterName}"
@@ -101,8 +105,9 @@
 							</div>
 							<!-- section2 -->
 							<div id="btn">
-								<input type="submit" value="삭제" id="deleteButton"> <a
-									href="${path}/lectureRoom/lectureRoomList"><input
+                                <input type="submit" value="삭제" id="deleteButton"> <a
+                                    <spring:url value="/lectureRoom/lectureRoomList" var="lectureListUrl" />
+                                    href="${lectureListUrl}"><input
 									type="button" value="이전" id="listButton"></a>
 							</div>
 						</form>

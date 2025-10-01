@@ -3,16 +3,23 @@
 <%@ page language="java" contentType="text/html; charset=EUC-KR"
 	pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+<%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
 <c:set var="path" value="${pageContext.request.contextPath}" />
+<spring:url value="/resources/css/signup.css" var="signupCss" />
+<spring:url value="/resources/css/email.css" var="emailCss" />
+<spring:url value="/resources/css/signupselect.css" var="signupSelectCss" />
+<spring:url value="/resources/js/jquery-3.5.1.min.js" var="jqueryJs" />
+<spring:url value="/resources/js/email.js" var="emailJs" />
+<spring:url value="/email.do" var="emailAction" />
 <!DOCTYPE html>
 <html>
 <head>
 <meta charset="UTF-8">
-<link rel="stylesheet" href="css/signup.css">
-<link rel="stylesheet" href="css/email.css">
-<link rel="stylesheet" href="css/signupselect.css">
-<script src="js/jquery-3.5.1.min.js"></script>
-<script src="js/email.js"></script>
+<link rel="stylesheet" href="${signupCss}">
+<link rel="stylesheet" href="${emailCss}">
+<link rel="stylesheet" href="${signupSelectCss}">
+<script src="${jqueryJs}"></script>
+<script src="${emailJs}"></script>
 
 <link rel="preconnect" href="https://fonts.gstatic.com">
 <link
@@ -26,7 +33,7 @@
 	<div class="container">
 		<br>
 		<section id="signUp">
-			<form action="${path}/email.do" id="signupSelect" name="select"
+			<form action="${emailAction}" id="signupSelect" name="select"
 				method="POST">
 				<table>
 					<tr>

@@ -7,6 +7,11 @@
 <%@ taglib prefix="sec"
 	uri="http://www.springframework.org/security/tags"%>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions"%>
+<%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
+<spring:url value="/resources/css/homeBoardList.css" var="homeBoardListCss" />
+<link rel="stylesheet" href="${homeBoardListCss}" type="text/css">
+<spring:url value="/noticeList" var="noticeListUrl" />
+<spring:url value="/noticeContent" var="noticeContentBase" />
 <c:set var="path" value="${pageContext.request.contextPath}" />
 
 <!DOCTYPE html>
@@ -23,7 +28,7 @@
 <body>
 	<section>
 		<div class="section">
-			<span class="title">공지사항</span><span class="move"><a href="${path}/noticeList">더보기</a></span>
+			<span class="title">공지사항</span><span class="move"><a href="${noticeListUrl}">더보기</a></span>
 			<hr>
 		</div>
 	</section>
@@ -39,8 +44,7 @@
 						<c:forEach items="${noticeList}" var="noticeList"
 							varStatus="status" end="2">
 							<tr>
-								<td class="col1"><a
-									href="${path}/noticeContent?no=${noticeList.getBoardID()}">
+								<td class="col1"><a href="${noticeContentBase}?no=${noticeList.getBoardID()}">
 										<c:out value="${noticeList.getBoardSubject()}" />
 								</a></td>
 								<td class="col2"><c:out value="${noticeList.getBoardDate()}" /></td>

@@ -15,6 +15,12 @@
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form"%>
 <%@ taglib prefix="sec"
 	uri="http://www.springframework.org/security/tags"%>
+<%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
+<spring:url value="/resources/css/boardContent.css" var="boardContentCss" />
+<spring:url value="/resources/css/boardImageOption2" var="boardImageCss" />
+<spring:url value="/resources/css/menubar.css" var="menubarCss" />
+<spring:url value="/resources/js/jquery-3.5.1.min.js" var="jqueryJs" />
+<spring:url value="/resources/js/boardContent.js" var="boardContentJs" />
 <c:set var="path" value="${pageContext.request.contextPath}" />
 
 <!DOCTYPE html>
@@ -25,11 +31,11 @@
 <link
 	href="https://fonts.googleapis.com/css2?family=Open+Sans&display=swap"
 	rel="stylesheet">
-<link rel="stylesheet" href="css/boardContent.css" type="text/css">
-<link rel="stylesheet" href="css/boardImageOption2" type="text/css">
-<link rel="stylesheet" href="css/menubar.css" type="text/css">
-<script src="js/jquery-3.5.1.min.js"></script>
-<script src="js/boardContent.js"></script>
+<link rel="stylesheet" href="${boardContentCss}" type="text/css">
+<link rel="stylesheet" href="${boardImageCss}" type="text/css">
+<link rel="stylesheet" href="${menubarCss}" type="text/css">
+<script src="${jqueryJs}"></script>
+<script src="${boardContentJs}"></script>
 <style>
 
 </style>

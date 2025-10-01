@@ -5,15 +5,19 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <c:set var="path" value="${pageContext.request.contextPath}" />
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form"%>
+<%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
 
 
 <!DOCTYPE html>
 <html>
 <head>
 <meta charset="UTF-8">
-<link rel="stylesheet" href="css/signupSelect.css">
-<script src="js/jquery-3.5.1.min.js"></script>
-<script src="js/signupSelect.js"></script>
+<spring:url value="/resources/css/signupSelect.css" var="signupSelectCss" />
+<spring:url value="/resources/js/jquery-3.5.1.min.js" var="jqueryJs" />
+<spring:url value="/resources/js/signupSelect.js" var="signupSelectJs" />
+<link rel="stylesheet" href="${signupSelectCss}">
+<script src="${jqueryJs}"></script>
+<script src="${signupSelectJs}"></script>
 <link rel="preconnect" href="https://fonts.gstatic.com">
 <link
 	href="https://fonts.googleapis.com/css2?family=Open+Sans&display=swap"
@@ -25,15 +29,17 @@
 	<div class="container">
 	<br>
 	<section id="signUp">
-	<form id="signupSelect" name="select" method="GET" action="">
+    <form id="signupSelect" name="select" method="GET" action="">
 		<div id="selectButton">
-		<span> <a href="signupStudent" id="btnSelect" class="button"
+        <spring:url value="/signupStudent" var="signupStudentUrl" />
+        <span> <a href="${signupStudentUrl}" id="btnSelect" class="button"
 			role="button">학생 회원가입</a>
 		</span>
 		</div>
 		
 		<div id="selectButton">
-		<span> <a href="signupProfessor" id="btnSelect" class="button"
+        <spring:url value="/signupProfessor" var="signupProfessorUrl" />
+        <span> <a href="${signupProfessorUrl}" id="btnSelect" class="button"
 			role="button">교수 회원가입</a>
 		</span>
 		</div>

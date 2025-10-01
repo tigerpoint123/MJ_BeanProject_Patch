@@ -4,6 +4,7 @@
 	pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form"%>
+<%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
 <%@ taglib prefix="sec"
 	uri="http://www.springframework.org/security/tags"%>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions"%>
@@ -17,9 +18,10 @@
 <link
 	href="https://fonts.googleapis.com/css2?family=Open+Sans&display=swap"
 	rel="stylesheet">
-<link rel="stylesheet" href="../css/teamList.css" type="text/css">
-<link rel="stylesheet" href="../css/menubar.css" type="text/css">
-<script src="//code.jquery.com/jquery-1.11.0.min.js"></script>
+<spring:url value="/css/teamList.css" var="teamListCss" />
+<spring:url value="/css/menubar.css" var="menubarCss" />
+<link rel="stylesheet" href="${teamListCss}" type="text/css">
+<link rel="stylesheet" href="${menubarCss}" type="text/css">
 <title>team list</title>
 </head>
 <body>
@@ -43,7 +45,7 @@
 								type="submit" value="검색">
 						</div>
 
-						<form action="" name="TeamList" method="POST" id="form">
+                        <form action="" name="TeamList" method="POST" id="form">
 							<input type="hidden" name="${_csrf.parameterName}"
 								value="${_csrf.token}" />
 							<table class="teamList">
@@ -62,8 +64,9 @@
 										<tr>
 											<td><c:out value="${status.count}" /></td>
 											<!-- 해당 팀에 속하는 사람만 들어갈 수 있게 해야함(팀 DB에 있는 멤버 아이디와 사용자 아이디가 같아야 접속 가능하게?) -->
-											<td id="title"><a
-												href="${path}/team/checkTeam?no=${teamList.getTeamID()}">
+                                            <spring:url value="/team/checkTeam" var="checkTeamBase" />
+                                            <td id="title"><a
+                                                href="${checkTeamBase}?no=${teamList.getTeamID()}">
 													<c:out value="${teamList.getClassName()}" />
 											</a></td>
 											<td><c:out value="${teamList.getClassProfessorName()}" /></td>

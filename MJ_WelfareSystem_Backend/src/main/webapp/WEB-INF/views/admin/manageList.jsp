@@ -6,6 +6,26 @@
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form"%>
 <%@ taglib prefix="sec"
 	uri="http://www.springframework.org/security/tags"%>
+<%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
+<spring:url value="/resources/css/manageList.css" var="manageListCss" />
+<spring:url value="/resources/css/menubar.css" var="menubarCss" />
+<spring:url value="/resources/js/jquery-3.5.1.min.js" var="jqueryJs" />
+<spring:url value="/resources/js/manageList.js" var="manageListJs" />
+<link rel="stylesheet" href="${manageListCss}" type="text/css">
+<link rel="stylesheet" href="${menubarCss}" type="text/css">
+<script src="${jqueryJs}"></script>
+<script src="${manageListJs}"></script>
+<spring:url value="/admin/manageSleep" var="manageSleepUrl" />
+<spring:url value="/admin/manageSecession" var="manageSecessionUrl" />
+<a href="${manageSleepUrl}"><input type="button" value="휴면계정관리"
+									id="sleepID"></a> <a href="${manageSecessionUrl}"><input
+									type="button" value="탈퇴계정관리" id="deleteID"></a>
+<spring:url value="/admin/manageList.do" var="manageListAction" />
+<form action="${manageListAction}" name="ManageList"
+							method="POST" id="form">
+<spring:url value="/admin/detail" var="adminDetailBase" />
+<spring:url value="/admin/manageList.do" var="manageListAjax" />
+<spring:url value="/admin/withdrawal.do" var="withdrawalAjax" />
 <c:set var="path" value="${pageContext.request.contextPath}" />
 
 <!DOCTYPE html>
@@ -44,9 +64,6 @@
 						<div class="section2">
 
 							<h3>&nbsp; 사용자 리스트</h3>
-							<a href="manageSleep"><input type="button" value="휴면계정관리"
-								id="sleepID"></a> <a href="manageSecession"><input
-								type="button" value="탈퇴계정관리" id="deleteID"></a>
 							<div id="search">
 								<select name="SelectOption" id="selectOption">
 									<option value="all">전체</option>
@@ -83,10 +100,10 @@
 												<td><c:out value="${status.count}" /></td>
 
 												<td><a
-													href="${path}/admin/detail?no=${list.getUserID()}&R=${list.getUserRole()}&A=${list.getAuthority()}"><c:out
+													href="${adminDetailBase}?no=${list.getUserID()}&R=${list.getUserRole()}&A=${list.getAuthority()}"><c:out
 															value="${list.getUserLoginID()}" /></a></td>
 												<td><a
-													href="${path}/admin/detail?no=${list.getUserID()}&R=${list.getUserRole()}&A=${list.getAuthority()}"><c:out
+													href="${adminDetailBase}?no=${list.getUserID()}&R=${list.getUserRole()}&A=${list.getAuthority()}"><c:out
 															value="${list.getUserName()}" /></a></td>
 												<td><c:out value="${list.getUserPhoneNum()}" /></td>
 												<td><c:out value="${list.getUserEmail()}" /></td>
@@ -176,7 +193,7 @@
 																	if (confirm_val) {
 																		$
 																				.ajax({
-																					url : "manageList.do",
+																					url : "${manageListAjax}",
 																					type : "POST",
 																					traditional : true,
 																					data : {
@@ -270,7 +287,7 @@
 																if (confirm_val) {
 																	$
 																			.ajax({
-																				url : "withdrawal.do",
+																				url : "${withdrawalAjax}",
 																				type : "POST",
 																				traditional : true,
 																				data : {

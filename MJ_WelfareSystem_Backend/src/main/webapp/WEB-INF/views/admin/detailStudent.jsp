@@ -6,16 +6,23 @@
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form"%>
 <%@ taglib prefix="sec"
    uri="http://www.springframework.org/security/tags"%>
+<%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
+<spring:url value="/resources/css/userManage.css" var="userManageCss" />
+<spring:url value="/resources/css/menubar.css" var="menubarCss" />
+<spring:url value="/resources/js/jquery-3.5.1.min.js" var="jqueryJs" />
+<spring:url value="/resources/js/userManage.js" var="userManageJs" />
+<link rel="stylesheet" href="${userManageCss}">
+<link rel="stylesheet" href="${menubarCss}" type="text/css">
+<script src="${jqueryJs}"></script>
+<script src="${userManageJs}"></script>
+<spring:url value="/admin/manageModifyStudent" var="modifyStudentUrl" />
+<spring:url value="/admin/manageList" var="manageListUrl" />
 <c:set var="path" value="${pageContext.request.contextPath}" />
 
 <!DOCTYPE html>
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-<link rel="stylesheet" href="../css/userManage.css">
-<link rel="stylesheet" href="../css/menubar.css" type="text/css">
-<script src="../js/jquery-3.5.1.min.js"></script>
-<script src="../js/userManage.js"></script>
 <link rel="preconnect" href="https://fonts.gstatic.com">
 <link
    href="https://fonts.googleapis.com/css2?family=Open+Sans&display=swap"
@@ -106,10 +113,10 @@
                      <!-- studentInfo -->
                      <div id="btnDiv">
                         <input type="button" id="deleteBtn" value="삭제"> <a
-                           href="manageModifyStudent?no=${UserLoginID}"
+                           href="${modifyStudentUrl}?no=${UserLoginID}"
                            onClick="window.open(this.href, '', 'width=800, height=800'); return false;">
                            <input type="button" id="listBtn" value="수정">
-                        </a> <a href="manageList"><input type="button" id="listBtn"
+                        </a> <a href="${manageListUrl}"><input type="button" id="listBtn"
                            value="목록"></a>
                      </div>
                   </section>

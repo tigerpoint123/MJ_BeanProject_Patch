@@ -19,21 +19,23 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <title>schedule management</title>
 
-<link rel="stylesheet"
-	href="../resources/schedule/vendor/css/fullcalendar.min.css" />
-<link rel="stylesheet"
-	href="../resources/schedule/vendor/css/bootstrap.min.css">
-<link rel="stylesheet"
-	href='../resources/schedule/vendor/css/select2.min.css' />
-<link rel="stylesheet"
-	href='../resources/schedule/vendor/css/bootstrap-datetimepicker.min.css' />
+<%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
+<spring:url value="/resources/schedule/vendor/css/fullcalendar.min.css" var="fullcalendarCss" />
+<spring:url value="/resources/schedule/vendor/css/bootstrap.min.css" var="bootstrapCss" />
+<spring:url value="/resources/schedule/vendor/css/select2.min.css" var="select2Css" />
+<spring:url value="/resources/schedule/vendor/css/bootstrap-datetimepicker.min.css" var="datetimepickerCss" />
+<link rel="stylesheet" href="${fullcalendarCss}" />
+<link rel="stylesheet" href="${bootstrapCss}">
+<link rel="stylesheet" href="${select2Css}" />
+<link rel="stylesheet" href="${datetimepickerCss}" />
 
 <link rel="stylesheet"
 	href="https://fonts.googleapis.com/css?family=Open+Sans:400,500,600">
 <link rel="stylesheet"
 	href="https://fonts.googleapis.com/icon?family=Material+Icons">
 
-<link rel="stylesheet" href="../resources/schedule/css/main.css">
+<spring:url value="/resources/schedule/css/main.css" var="scheduleMainCss" />
+<link rel="stylesheet" href="${scheduleMainCss}">
 
 </head>
 
@@ -154,18 +156,28 @@
 	</div>
 	<!-- /.container -->
 
-	<script src="../resources/schedule/vendor/js/jquery.min.js"></script>
-	<script src="../resources/schedule/vendor/js/bootstrap.min.js"></script>
-	<script src="../resources/schedule/vendor/js/moment.min.js"></script>
-	<script src="../resources/schedule/vendor/js/fullcalendar.min.js"></script>
-	<script src="../resources/schedule/vendor/js/ko.js"></script>
-	<script src="../resources/schedule/vendor/js/select2.min.js"></script>
-	<script
-		src="../resources/schedule/vendor/js/bootstrap-datetimepicker.min.js"></script>
-	<script src="../resources/schedule/js/main.js"></script>
-	<script src="../resources/schedule/js/addEvent.js"></script>
-	<script src="../resources/schedule/js/editEvent.js"></script>
-	<script src="../resources/schedule/js/etcSetting.js"></script>
+    <spring:url value="/resources/schedule/vendor/js/jquery.min.js" var="jqueryJs" />
+    <spring:url value="/resources/schedule/vendor/js/bootstrap.min.js" var="bootstrapJs" />
+    <spring:url value="/resources/schedule/vendor/js/moment.min.js" var="momentJs" />
+    <spring:url value="/resources/schedule/vendor/js/fullcalendar.min.js" var="fullcalendarJs" />
+    <spring:url value="/resources/schedule/vendor/js/ko.js" var="koJs" />
+    <spring:url value="/resources/schedule/vendor/js/select2.min.js" var="select2Js" />
+    <spring:url value="/resources/schedule/vendor/js/bootstrap-datetimepicker.min.js" var="datetimepickerJs" />
+    <spring:url value="/resources/schedule/js/main.js" var="scheduleMainJs" />
+    <spring:url value="/resources/schedule/js/addEvent.js" var="addEventJs" />
+    <spring:url value="/resources/schedule/js/editEvent.js" var="editEventJs" />
+    <spring:url value="/resources/schedule/js/etcSetting.js" var="etcSettingJs" />
+    <script src="${jqueryJs}"></script>
+    <script src="${bootstrapJs}"></script>
+    <script src="${momentJs}"></script>
+    <script src="${fullcalendarJs}"></script>
+    <script src="${koJs}"></script>
+    <script src="${select2Js}"></script>
+    <script src="${datetimepickerJs}"></script>
+    <script src="${scheduleMainJs}"></script>
+    <script src="${addEventJs}"></script>
+    <script src="${editEventJs}"></script>
+    <script src="${etcSettingJs}"></script>
 </body>
 
 </html>

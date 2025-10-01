@@ -11,6 +11,7 @@ if (request.getProtocol().equals("HTTP/1.1"))
 	pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form"%>
+<%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
 <%@ taglib prefix="sec"
 	uri="http://www.springframework.org/security/tags"%>
 <c:set var="path" value="${pageContext.request.contextPath}" />
@@ -23,8 +24,10 @@ if (request.getProtocol().equals("HTTP/1.1"))
 <link
 	href="https://fonts.googleapis.com/css2?family=Open+Sans&display=swap"
 	rel="stylesheet">
-<link rel="stylesheet" href="../css/emailList.css" type="text/css">
-<link rel="stylesheet" href="../css/menubar.css" type="text/css">
+<spring:url value="/resources/css/emailList.css" var="emailListCss" />
+<spring:url value="/resources/css/menubar.css" var="menubarCss" />
+<link rel="stylesheet" href="${emailListCss}" type="text/css">
+<link rel="stylesheet" href="${menubarCss}" type="text/css">
 
 <title>email list</title>
 </head>
@@ -68,7 +71,8 @@ if (request.getProtocol().equals("HTTP/1.1"))
 												<tr>
 													<td><c:out value="${emailList.getCounter()}" /></td>
 													<td><c:out value="${emailList.getFrom()}" /></td>
-													<td><a href="${path}/email/emailContent?no=${emailList.getCounter()}"><input value="${emailList.getTitle()}" disabled readonly /></a></td>
+                                                    <spring:url value="/email/emailContent" var="emailContentBase" />
+                                                    <td><a href="${emailContentBase}?no=${emailList.getCounter()}"><input value="${emailList.getTitle()}" disabled readonly /></a></td>
 												</tr>
 											</c:forEach>
 										</tbody>

@@ -8,11 +8,17 @@
 <html>
 <head>
 <meta charset="UTF-8">
-<link rel="stylesheet" href="css/signup.css">
-<link rel="stylesheet" href="css/emailAuthentication.css">
-<link rel="stylesheet" href="css/signupselect.css">
-<script src="js/jquery-3.5.1.min.js"></script>
-<script src="js/email.js"></script>
+<%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
+<spring:url value="/resources/css/signup.css" var="signupCss" />
+<spring:url value="/resources/css/emailAuthentication.css" var="emailAuthCss" />
+<spring:url value="/resources/css/signupselect.css" var="signupSelectCss" />
+<spring:url value="/resources/js/jquery-3.5.1.min.js" var="jqueryJs" />
+<spring:url value="/resources/js/email.js" var="emailJs" />
+<link rel="stylesheet" href="${signupCss}">
+<link rel="stylesheet" href="${emailAuthCss}">
+<link rel="stylesheet" href="${signupSelectCss}">
+<script src="${jqueryJs}"></script>
+<script src="${emailJs}"></script>
 
 <link rel="preconnect" href="https://fonts.gstatic.com">
 <link
@@ -26,7 +32,8 @@
 	<div class="container">
 		<br>
 		<section id="signUp">
-			<form action="${path}/email.do" id="signupSelect" name="select"
+            <spring:url value="/email.do" var="emailAction" />
+            <form action="${emailAction}" id="signupSelect" name="select"
 				method="POST">
 				<table>
 					<tr>

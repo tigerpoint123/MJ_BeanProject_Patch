@@ -10,9 +10,13 @@
 <html>
 <head>
 <meta charset="UTF-8">
-<link rel="stylesheet" href="css/infoModify.css">
-<script src="js/jquery-3.5.1.min.js"></script>
-<script src="js/withdrawal.js"></script>
+<%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
+<spring:url value="/resources/css/infoModify.css" var="infoModifyCss" />
+<spring:url value="/resources/js/jquery-3.5.1.min.js" var="jqueryJs" />
+<spring:url value="/resources/js/withdrawal.js" var="withdrawalJs" />
+<link rel="stylesheet" href="${infoModifyCss}">
+<script src="${jqueryJs}"></script>
+<script src="${withdrawalJs}"></script>
 <link rel="preconnect" href="https://fonts.gstatic.com">
 <link
 	href="https://fonts.googleapis.com/css2?family=Open+Sans&display=swap"
@@ -26,7 +30,8 @@
 				<h2>회원 탈퇴</h2>
 				<br>
 				<div id="beforeWithdrawal">
-					<form  action ="${path}/withdrawal" name="CheckPW" method="POST" id="form">
+            <spring:url value="/withdrawal" var="withdrawalAction" />
+            <form  action ="${withdrawalAction}" name="CheckPW" method="POST" id="form">
 						<input type="hidden" name="${_csrf.parameterName}"
 							value="${_csrf.token}"/>
 							<tr>
@@ -51,7 +56,8 @@
 			</section>
 		</div>
 		<div>
-			<form id="logout" name="Logout" action="${path}/logout.do" method="POST">
+            <spring:url value="/logout.do" var="logoutUrl" />
+            <form id="logout" name="Logout" action="${logoutUrl}" method="POST">
 			<input name="${_csrf.parameterName}" type="hidden" value="${_csrf.token}" /></form>
 		</div>
 	</div>

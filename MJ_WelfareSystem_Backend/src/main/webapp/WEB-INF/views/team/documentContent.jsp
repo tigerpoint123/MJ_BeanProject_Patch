@@ -16,10 +16,15 @@
 <link
    href="https://fonts.googleapis.com/css2?family=Open+Sans&display=swap"
    rel="stylesheet">
-<link rel="stylesheet" href="../css/documentBoardContent.css" type="text/css">
-<link rel="stylesheet" href="../css/menubar.css" type="text/css">
-<script src="../js/jquery-3.5.1.min.js"></script>
-<script src="../js/teamBoardContent.js"></script>
+<%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
+<spring:url value="/resources/css/documentBoardContent.css" var="docBoardCss" />
+<spring:url value="/resources/css/menubar.css" var="menubarCss" />
+<spring:url value="/resources/js/jquery-3.5.1.min.js" var="jqueryJs" />
+<spring:url value="/resources/js/teamBoardContent.js" var="teamBoardJs" />
+<link rel="stylesheet" href="${docBoardCss}" type="text/css">
+<link rel="stylesheet" href="${menubarCss}" type="text/css">
+<script src="${jqueryJs}"></script>
+<script src="${teamBoardJs}"></script>
 
 </style>
 <title>document content</title>
@@ -40,8 +45,9 @@
                   </div>
                </section>
                <section>
+                  <spring:url value="/DocumentDelete.do" var="docDeleteAction" />
                   <form
-                     action="DocumentDelete.do?tBoardID=${TBoardID}&&teamID=${TeamID}"
+                     action="${docDeleteAction}?tBoardID=${TBoardID}&&teamID=${TeamID}"
                      name="DocumentDelete" method="POST" id="form">
                      <div class="section2">
                         <input type="hidden" name="${_csrf.parameterName}"
@@ -81,15 +87,17 @@
                      </div>
 
                      <div id="btn">
-                        <a href="${path}/team/documentList?no=${TeamID}"><input
+                        <spring:url value="/team/documentList" var="docListBase" />
+                        <a href="${docListBase}?no=${TeamID}"><input
                            type="button" value="목록" id="listButton"></a>
 
                         <!-- 접속한 UserID와 해당 글을 작성한 UserID가 같을 때 수정/삭제 버튼 보이게 하기 -->
                         <c:set var="TUserID" value="${TUserID}" />
                         <c:set var="TUserIDFromWriter" value="${TUserIDFromWriter}" />
                         <c:if test="${TUserID == TUserIDFromWriter}">
+                           <spring:url value="/team/documentModify" var="docModifyBase" />
                            <a
-                              href="${path}/team/documentModify?tBoardID=${TBoardID}&&TeamID=${TeamID}">
+                              href="${docModifyBase}?tBoardID=${TBoardID}&&TeamID=${TeamID}">
                               <button type="button" id="modifyButton">수정</button>
                            </a>
                            <button type="submit" id="deleteButton">삭제</button>

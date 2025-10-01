@@ -5,6 +5,11 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form"%>
 <%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags"%>
+<%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
+<spring:url value="/resources/css/manageList.css" var="manageListCss" />
+<spring:url value="/resources/css/menubar.css" var="menubarCss" />
+<spring:url value="/resources/js/jquery-3.5.1.min.js" var="jqueryJs" />
+<spring:url value="/resources/js/manageList.js" var="manageListJs" />
 <c:set var="path" value="${pageContext.request.contextPath}" />
 
 <!DOCTYPE html>
@@ -18,10 +23,15 @@
 <link
 	href="https://fonts.googleapis.com/css2?family=Open+Sans&display=swap"
 	rel="stylesheet">
-<link rel="stylesheet" href="../css/manageList.css" type="text/css">
-<link rel="stylesheet" href="../css/menubar.css" type="text/css">
-<script src="../js/jquery-3.5.1.min.js"></script>
-<script src="../js/manageList.js"></script>
+<link rel="stylesheet" href="${manageListCss}" type="text/css">
+<link rel="stylesheet" href="${menubarCss}" type="text/css">
+<script src="${jqueryJs}"></script>
+<script src="${manageListJs}"></script>
+<spring:url value="/admin/manageList" var="manageListUrl" />
+<a href="${manageListUrl}"> <input
+						type="button" value="목록" id="list"></a>
+<spring:url value="/admin/dormantRecovery.do" var="dormantRecoveryAjax" />
+<spring:url value="/admin/dormantWithdrawal.do" var="dormantWithdrawalAjax" />
 <title>manage sleep list</title>
 </head>
 <body>
@@ -86,8 +96,6 @@
 										<input type="button" value="1" id="pageList">
 										<input type="button" value="→" id="rightList">
 										
-										<a href="${path}/admin/manageList"> <input
-											type="button" value="목록" id="list"></a>
 										<input type="button" value="복구" id="recovery" class="recoveryButton" >
 										<input type="button" value="탈퇴" id="delete" class="deleteButton">
 									<script>
@@ -115,7 +123,7 @@
 													 var confirm_val = confirm("정말 복구 처리하시겠습니까?");
 													 if(confirm_val) {
 													   $.ajax({
-													    url : "dormantRecovery.do",
+													    url : "${dormantRecoveryAjax}",
 													    type : "POST",
 													    traditional : true,
 													    data : {
@@ -151,7 +159,7 @@
 													 var confirm_val = confirm("정말 탈퇴 처리하시겠습니까?");
 													 if(confirm_val) {
 													   $.ajax({
-													    url : "dormantWithdrawal.do",
+													    url : "${dormantWithdrawalAjax}",
 													    type : "POST",
 													    traditional : true,
 													    data : {

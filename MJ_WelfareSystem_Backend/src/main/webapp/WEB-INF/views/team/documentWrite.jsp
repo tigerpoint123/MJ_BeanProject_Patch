@@ -4,6 +4,7 @@
 	pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form"%>
+<%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
 <%@ taglib prefix="sec"
 	uri="http://www.springframework.org/security/tags"%>
 <c:set var="path" value="${pageContext.request.contextPath}" />
@@ -16,9 +17,12 @@
 <link
 	href="https://fonts.googleapis.com/css2?family=Open+Sans&display=swap"
 	rel="stylesheet">
-<link rel="stylesheet" href="../css/documentBoardContent.css" type="text/css">
-<link rel="stylesheet" href="../css/menubar.css" type="text/css">
-<script src="../js/jquery-3.5.1.min.js"></script>
+<spring:url value="/resources/css/documentBoardContent.css" var="docBoardCss" />
+<spring:url value="/resources/css/menubar.css" var="menubarCss" />
+<spring:url value="/resources/js/jquery-3.5.1.min.js" var="jqueryJs" />
+<link rel="stylesheet" href="${docBoardCss}" type="text/css">
+<link rel="stylesheet" href="${menubarCss}" type="text/css">
+<script src="${jqueryJs}"></script>
 
 <title>document write</title>
 </head>
@@ -38,7 +42,8 @@
 						</div>
 					</section>
 					<section>
-						<form action="documentWrite?${_csrf.parameterName}=${_csrf.token}"
+                        <spring:url value="documentWrite" var="documentWriteAction" />
+                        <form action="${documentWriteAction}?${_csrf.parameterName}=${_csrf.token}"
 							name="DocumentWrite" method="POST" enctype="multipart/form-data"
 							id="form">
 							<div class="section2">
@@ -86,8 +91,9 @@
 							</div>
 							<!-- section2 -->
 							<div id="btn">
-								<input type="submit" value="저장" id="saveButton"> <a
-									href="${path}/team/documentList"> <input type="button"
+                                <input type="submit" value="저장" id="saveButton"> <a
+                                    <spring:url value="/team/documentList" var="documentListUrl" />
+                                    href="${documentListUrl}"> <input type="button"
 									value="이전" id="listButton"></a>
 								<input type="hidden" id="teamID" name="TeamID" value="${TeamID}">
 							</div>

@@ -17,8 +17,11 @@
 <link
 	href="https://fonts.googleapis.com/css2?family=Open+Sans&display=swap"
 	rel="stylesheet">
-<link rel="stylesheet" href="css/myBoardList.css" type="text/css">
-<link rel="stylesheet" href="css/menubar.css" type="text/css">
+<%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
+<spring:url value="/resources/css/myBoardList.css" var="myBoardListCss" />
+<spring:url value="/resources/css/menubar.css" var="menubarCss" />
+<link rel="stylesheet" href="${myBoardListCss}" type="text/css">
+<link rel="stylesheet" href="${menubarCss}" type="text/css">
 <title>my post list</title>
 </head>
 <body>
@@ -31,10 +34,14 @@
 				<div class="rightBox">
 					<div class="subMenuBox">
 						<ul>
-							<li><a href="${path}/myPage?R=${UserRole}">내 정보 확인</a></li>
-							<li><a href="${path}/myPostList">내 게시글 조회</a></li>
-							<li><a href="${path}/confirmMyReservation">강의실 예약 조회</a></li>
-							<li><a href="${path}/myInquiryList">내 문의 조회</a></li>
+                            <spring:url value="/myPage" var="myPageBase" />
+                            <spring:url value="/myPostList" var="myPostListUrl" />
+                            <spring:url value="/confirmMyReservation" var="confirmResUrl" />
+                            <spring:url value="/myInquiryList" var="myInquiryListUrl" />
+                            <li><a href="${myPageBase}?R=${UserRole}">내 정보 확인</a></li>
+                            <li><a href="${myPostListUrl}">내 게시글 조회</a></li>
+                            <li><a href="${confirmResUrl}">강의실 예약 조회</a></li>
+                            <li><a href="${myInquiryListUrl}">내 문의 조회</a></li>
 						</ul>
 					</div>
 					<section id="boardlist">
@@ -72,10 +79,12 @@
 											<tr>
 												<td><c:out value="${status.count}" /></td>
 												<td><c:if test="${MyBoardList.getBoardType() eq '커뮤니티' }">
-												<a href="${path}/communityContent?no=${MyBoardList.getBoardID()}">
+                                                <spring:url value="/communityContent" var="communityContentBase" />
+                                                <a href="${communityContentBase}?no=${MyBoardList.getBoardID()}">
 													<c:out value="${MyBoardList.getBoardSubject()}" /> </a>
 													</c:if> <c:if test="${MyBoardList.getBoardType() eq '공지사항' }">
-														<a href="${path}/noticeContent?no=${MyBoardList.getBoardID()}">
+                                                        <spring:url value="/noticeContent" var="noticeContentBase" />
+                                                        <a href="${noticeContentBase}?no=${MyBoardList.getBoardID()}">
 															<c:out value="${MyBoardList.getBoardSubject()}" />
 														</a>
 													</c:if></td>

@@ -5,6 +5,15 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <c:set var="path" value="${pageContext.request.contextPath}" />
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form"%>
+<%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
+<link rel="stylesheet" href="${infoConsentCss}">
+<spring:url value="/resources/css/infoConsent.css" var="infoConsentCss" />
+<spring:url value="/resources/js/jquery-3.5.1.min.js" var="jqueryJs" />
+<spring:url value="/resources/js/infoConsent.js" var="infoConsentJs" />
+<script src="${jqueryJs}"></script>
+<script src="${infoConsentJs}"></script>
+<spring:url value="/home" var="homeUrl" />
+<spring:url value="/emailAuthentication" var="emailAuthUrl" />
 
 <!DOCTYPE html>
 <html>
@@ -69,9 +78,9 @@
 					<!-- 약관동의 -->
 					<a name="agreeBottom"></a>
 					<div class="btnArea">
-						<span><a href="home"
+						<span><a href="${homeUrl}"
 							id="btnCancel" class="button" role="button">취소</a></span>
-						<span> <a href="emailAuthentication"
+						<span> <a href="${emailAuthUrl}"
 							id="btnAgree" class="button" role="button">확인</a></span>
 					</div>
 				</form>
