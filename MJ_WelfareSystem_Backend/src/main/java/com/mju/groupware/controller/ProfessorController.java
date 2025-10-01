@@ -26,20 +26,12 @@ public class ProfessorController {
 	@Autowired
 	private ProfessorService professorService;
 
+	@Autowired
 	private ConstantAdminProfessorController Constant;
 	private String ProfessorColleges;
 	private String ProfessorRoom;
 	private String UserMajorForShow;
 	private String UserName;
-	
-	@SuppressWarnings("resource")
-	public ProfessorController() {
-		// 컨테이너 생성 및 xml 파일 로드
-		GenericXmlApplicationContext CTX = new GenericXmlApplicationContext();
-		CTX.load("classpath:/xmlForProperties/ProfessorController.xml");
-		CTX.refresh();
-		this.Constant = (ConstantAdminProfessorController) CTX.getBean("ProfessorControllerID");
-	}
 
 	@RequestMapping(value = "/signupProfessor", method = RequestMethod.GET)
 	public String signupProfessor() {

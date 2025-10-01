@@ -51,8 +51,6 @@ public class BoardController {
 	@Autowired
 	private ProfessorService professorService;
 
-
-
 	// 문의 리스트
 	@RequestMapping(value = "/inquiryList", method = RequestMethod.GET)
 	public String inquiryList(User user, Principal principal, Model model, HttpServletRequest request) {

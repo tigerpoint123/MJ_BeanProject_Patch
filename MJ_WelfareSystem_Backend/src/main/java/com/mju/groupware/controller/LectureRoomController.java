@@ -43,17 +43,8 @@ public class LectureRoomController {
 	@Autowired
 	private UserService userService;
 
-	// constant연결
+	@Autowired
 	private ConstantLectureRoomController constantLecture;
-
-	@SuppressWarnings("resource")
-	public LectureRoomController() {
-		GenericXmlApplicationContext Ctx = new GenericXmlApplicationContext();
-		Ctx.load("classpath:/xmlForProperties/LectureRoomController.xml");
-		Ctx.refresh();
-		// 빈 객체 받아오기
-		this.constantLecture = (ConstantLectureRoomController) Ctx.getBean("lectureRoom");
-	}
 
 	// 강의실 리스트 /lectureRoomList
 	@RequestMapping(value = "/lectureRoom/lectureRoomList", method = RequestMethod.GET)

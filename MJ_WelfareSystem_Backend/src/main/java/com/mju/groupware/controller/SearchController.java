@@ -7,7 +7,6 @@ import java.util.List;
 
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.support.GenericXmlApplicationContext;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -30,7 +29,8 @@ import com.mju.groupware.service.UserService;
 
 @Controller
 public class SearchController {
-	private ConstantSearchController Constant;
+    @Autowired
+    private ConstantSearchController Constant;
 	@Autowired
 	private UserService userService;
 	@Autowired
@@ -43,14 +43,7 @@ public class SearchController {
 	@Autowired
 	private SearchService searchService;
 
-	@SuppressWarnings("resource")
-	public SearchController() {
-		// 컨테이너 생성 및 xml 파일 로드
-		GenericXmlApplicationContext CTX = new GenericXmlApplicationContext();
-		CTX.load("classpath:/xmlForProperties/SearchController.xml");
-		CTX.refresh();
-		this.Constant = (ConstantSearchController) CTX.getBean("SearchControllerID");
-	}
+    
 
 	// review 사용자 검색
 	@RequestMapping(value = "/search/searchUser", method = RequestMethod.GET)

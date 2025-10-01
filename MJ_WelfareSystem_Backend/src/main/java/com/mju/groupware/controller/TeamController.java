@@ -13,7 +13,6 @@ import java.util.Map;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.support.GenericXmlApplicationContext;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -52,16 +51,10 @@ public class TeamController {
 	@Autowired
 	private BoardService boardService;
 
-	private ConstantTeamController Constant;
+    @Autowired
+    private ConstantTeamController Constant;
 
-	@SuppressWarnings("resource")
-	public TeamController() {
-		// 컨테이너 생성 및 xml 파일 로드
-		GenericXmlApplicationContext CTX = new GenericXmlApplicationContext();
-		CTX.load("classpath:/xmlForProperties/TeamController.xml");
-		CTX.refresh();
-		this.Constant = (ConstantTeamController) CTX.getBean("TeamControllerID");
-	}
+    
 
 	// 문서 메뉴 선택시 팀 리스트 출력
 	@RequestMapping(value = "/team/myTeamList", method = RequestMethod.GET)

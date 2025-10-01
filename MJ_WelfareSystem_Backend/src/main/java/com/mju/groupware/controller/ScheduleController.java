@@ -9,7 +9,6 @@ import java.util.Locale;
 
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.support.GenericXmlApplicationContext;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -30,7 +29,8 @@ import com.mju.groupware.service.UserService;
 @Controller
 public class ScheduleController {
 
-	private ConstantScheduleController Constant;
+    @Autowired
+    private ConstantScheduleController Constant;
 	@Autowired
 	private UserService userService;
 	@Autowired
@@ -47,14 +47,7 @@ public class ScheduleController {
 	private String ARole;
 	private String Schedule;
 	
-	@SuppressWarnings("resource")
-	public ScheduleController() {
-	      GenericXmlApplicationContext Ctx = new GenericXmlApplicationContext();
-	      Ctx.load("classpath:/xmlForProperties/ScheduleController.xml");
-	      Ctx.refresh();
-	      // 빈 객체 받아오기
-	      this.Constant = (ConstantScheduleController) Ctx.getBean("ScheduleControllerID");
-	   }
+    
 	
 	// 일정 화면
 	@RequestMapping(value = "/schedule/mySchedule", method = { RequestMethod.GET, RequestMethod.POST })
