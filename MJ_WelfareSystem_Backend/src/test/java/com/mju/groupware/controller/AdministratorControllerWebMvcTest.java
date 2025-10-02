@@ -37,25 +37,18 @@ import com.mju.groupware.constant.ConstantAdmin;
         "spring.main.allow-bean-definition-overriding=true"
 })
 class AdministratorControllerWebMvcTest {
-
     @Autowired
     private MockMvc mockMvc;
-
     @MockBean
     private AdminService adminService;
-
     @MockBean
     private UserService userService;
-
     @MockBean
     private StudentService studentService;
-
     @MockBean
     private ProfessorService professorService;
-
     @MockBean
     private UserInfoMethod userInfoMethod;
-
     @MockBean
     private ConstantAdmin constantAdmin;
 

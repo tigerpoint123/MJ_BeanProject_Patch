@@ -32,12 +32,8 @@ import com.mju.groupware.service.UserService;
 public class SearchController {
     private final ConstantSearchController Constant;
 	private final UserService userService;
-	private final StudentService studentService;
-	private final ProfessorService professorService;
 	private final UserInfoMethod userInfoMethod;
 	private final SearchService searchService;
-
-    
 
 	// review 사용자 검색
 	@RequestMapping(value = "/search/searchUser", method = RequestMethod.GET)
@@ -51,7 +47,6 @@ public class SearchController {
 	@RequestMapping(value = "/search/searchUser.do", method = { RequestMethod.GET, RequestMethod.POST })
 	public List<HashMap<String, Object>> DoSearchUser(Principal principal, Model model, HttpServletRequest request,
 			@RequestBody SearchKeyWord searchKeyWord) {
-
 		List<User> InfoList = searchService.SelectKeyWord(searchKeyWord);
 		List<HashMap<String, Object>> MapInfo = new ArrayList<HashMap<String, Object>>();
 		if (!InfoList.isEmpty()) {
@@ -125,7 +120,5 @@ public class SearchController {
 		}
 		return this.Constant.getRReviewList();
 	}
-
-// private GetUserInformation 메서드는 공통 유틸 호출로 대체되었으므로 제거되었습니다.
 
 }

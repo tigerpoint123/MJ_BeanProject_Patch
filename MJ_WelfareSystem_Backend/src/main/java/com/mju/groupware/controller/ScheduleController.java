@@ -1,6 +1,5 @@
 package com.mju.groupware.controller;
 
-
 import java.security.Principal;
 import java.util.HashMap;
 import java.util.List;
@@ -36,7 +35,7 @@ public class ScheduleController {
 			// 유저 정보
 			String LoginID = principal.getName();// 로그인 한 아이디
 			int UserID = calenderService.SelectUserIdForCalender(LoginID);
-			model.addAttribute(this.Constant.getUserId(), UserID);
+			model.addAttribute(this.Constant.getUserID(), UserID);
 			userInfoMethod.GetUserInformation(principal, user, model, this.Constant.getSRole(), this.Constant.getPRole(), this.Constant.getARole());
 
 		}
@@ -88,7 +87,7 @@ public class ScheduleController {
 	public int modifyTimeInMonth(Principal principal, @RequestBody Calender calender) {
 		int UserID = SelectUserIDForCalender(principal);
 		HashMap<String, String> Map = new HashMap<>();
-		Map.put(this.Constant.getUserId(), Integer.toString(UserID));
+		Map.put(this.Constant.getUserID(), Integer.toString(UserID));
 		Map.put(this.Constant.getScheduleID(), calender.getId());
 		Map.put(this.Constant.getStart(), calender.getStart());
 		Map.put(this.Constant.getEnd(), calender.getEnd());

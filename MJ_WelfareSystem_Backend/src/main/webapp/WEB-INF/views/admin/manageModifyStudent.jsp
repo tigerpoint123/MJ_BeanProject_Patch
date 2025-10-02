@@ -26,9 +26,10 @@
 				<br>
 				<!--학생 정보 수정-->
 				<div id="manageModifyStudent" style="display: block;">
-					<form action="" name="ManageModifyStudent.do" method="POST" id="form">
+                    <form action="" name="ManageModifyStudent.do" method="POST" id="form">
 						<input type="hidden" name="${_csrf.parameterName}"
 							value="${_csrf.token}" />
+                        <input type="hidden" name="no" value="${UserLoginID}" />
 							<!-- 아이디, 이메일 수정 불가 -->
 						<table>
 							<tr>

@@ -46,6 +46,7 @@
                   <div id="professorInfo">
                      <h3>&nbsp;사용자 정보</h3>
                      <form action="" name="ModifyProfessor" method="POST" id="form">
+                        <input type="hidden" name="no" value="${UserLoginID}" />
                         <table>
                            <tr>
                               <td class="col1"><label for="id">&nbsp;아이디(학번)&nbsp;</label></td>

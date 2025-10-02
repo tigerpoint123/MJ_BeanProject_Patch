@@ -87,9 +87,7 @@ public class UserServiceImpl implements UserService {
 
 	@Override
 	public ArrayList<String> SelectUserProfileInfo(String id) {
-		ArrayList<String> Info = new ArrayList<String>();
-		Info = userDao.SelectUserProfileInfo(id);
-		return Info;
+		return userDao.SelectUserProfileInfo(id);
 	}
 
 	@Override

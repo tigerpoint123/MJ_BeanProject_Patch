@@ -1,14 +1,11 @@
 package com.mju.groupware.dto;
 
+import lombok.Getter;
+import lombok.Setter;
+
+@Setter
+@Getter
 public class SearchKeyWord {
 	private String key;
-
-	public String getKey() {
-		return key;
-	}
-
-	public void setKey(String key) {
-		this.key = key;
-	}
 
 }

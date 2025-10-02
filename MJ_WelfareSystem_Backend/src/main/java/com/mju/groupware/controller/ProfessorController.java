@@ -20,15 +20,9 @@ import com.mju.groupware.service.UserService;
 @Controller
 @RequiredArgsConstructor
 public class ProfessorController {
-
 	private final UserService userService;
 	private final ProfessorService professorService;
-
 	private final ConstantAdminProfessorController Constant;
-	private String ProfessorColleges;
-	private String ProfessorRoom;
-	private String UserMajorForShow;
-	private String UserName;
 
 	@RequestMapping(value = "/signupProfessor", method = RequestMethod.GET)
 	public String signupProfessor() {
@@ -40,37 +34,29 @@ public class ProfessorController {
 	public String myPageProfessor(User user, Model model, HttpServletRequest requestm, Principal Principal) {
 
 		String LoginID = Principal.getName();// 로그인 한 아이디
-		ArrayList<String> SelectUserProfileInfo = new ArrayList<String>();
-		SelectUserProfileInfo = userService.SelectUserProfileInfo(LoginID);
+		ArrayList<String> SelectUserProfileInfo = userService.SelectUserProfileInfo(LoginID);
 
 		user.setUserLoginID(LoginID);
-		ArrayList<String> ProfessorInfo = new ArrayList<String>();
-		ProfessorInfo = professorService.SelectProfessorProfileInfo(SelectUserProfileInfo.get(1));
+		ArrayList<String> ProfessorInfo = professorService.SelectProfessorProfileInfo(SelectUserProfileInfo.get(1));
 
 		// 교수 이름
-		UserName = SelectUserProfileInfo.get(0);
-		model.addAttribute("UserName", UserName);
+		model.addAttribute("UserName", SelectUserProfileInfo.get(0));
 		// 교수 소속
-		ProfessorColleges = ProfessorInfo.get(0);
-		model.addAttribute("Colleges", ProfessorColleges);
+		model.addAttribute("Colleges", ProfessorInfo.get(0));
 		// 교수 전공
-		UserMajorForShow = ProfessorInfo.get(1);
-		model.addAttribute("UserMajor", UserMajorForShow);
+		model.addAttribute("UserMajor", ProfessorInfo.get(1));
 		// 교수실
-		ProfessorRoom = ProfessorInfo.get(2);
-		model.addAttribute("ProfessorRoom", ProfessorRoom);
+		model.addAttribute("ProfessorRoom", ProfessorInfo.get(2));
 
 		// user role 가져오기
 		String UserLoginID = Principal.getName();
-		ArrayList<String> Info = new ArrayList<String>();
-		Info = userService.SelectUserProfileInfo(UserLoginID);
+		ArrayList<String> Info = userService.SelectUserProfileInfo(UserLoginID);
 		model.addAttribute("UserRole", Info.get(2));
 
 		// -------------------------------------------------------
 
 		String UserID = Principal.getName();
-		ArrayList<String> SelectUserInfo = new ArrayList<String>();
-		SelectUserInfo = userService.SelectMyPageUserInfo(UserID);
+		ArrayList<String> SelectUserInfo = userService.SelectMyPageUserInfo(UserID);
 		String SelectOpenInfo = userService.SelectOpenInfo(UserID);
 		// jsp화면 설정
 		// 아이디 0
@@ -129,11 +115,9 @@ public class ProfessorController {
 									Professor professor, User user, Principal Principal) {
 		// 업데이트문 where절을 위한 데이터 get
 		String UserID = Principal.getName();
-		ArrayList<String> UserInfo = new ArrayList<String>();
-		UserInfo = userService.SelectUserInformation(UserID);
+		ArrayList<String> UserInfo = userService.SelectUserInformation(UserID);
 		UserInfo.get(0); // 유저아이디 get
 		UserInfo.get(1); // 로그인아이디 get
-
 		user.setUserLoginID(UserInfo.get(1));
 
 		professor.setUserID(Integer.parseInt(UserInfo.get(0)));

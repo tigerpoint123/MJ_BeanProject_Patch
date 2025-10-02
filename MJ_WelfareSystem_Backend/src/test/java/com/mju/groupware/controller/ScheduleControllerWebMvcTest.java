@@ -68,7 +68,7 @@ class ScheduleControllerWebMvcTest {
         given(userService.SelectUserProfileInfo("testUser"))
                 .willReturn(new ArrayList<>(Arrays.asList("Name", "UID123", "STUDENT")));
         given(calenderService.SelectUserIdForCalender("testUser")).willReturn(1);
-        given(constant.getUserId()).willReturn("UserID");
+        given(constant.getUserID()).willReturn("UserID");
         given(constant.getSRole()).willReturn("STUDENT");
         given(constant.getPRole()).willReturn("PROFESSOR");
         given(constant.getARole()).willReturn("ADMINISTRATOR");

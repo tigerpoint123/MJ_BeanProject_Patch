@@ -11,9 +11,9 @@
 	
 	<!-- 빈 생성 및 setter 매개변수 전달 -->
 	<bean id="ScheduleControllerID" class="com.mju.groupware.constant.ConstantScheduleController">
-		<property name="UserId">
-			<value>${UserId}</value>
-		</property>
+<!--		<property name="UserId">-->
+<!--			<value>${UserId}</value>-->
+<!--		</property>-->
 		<property name="SRole">
 			<value>${SRole}</value>
 		</property>
