@@ -6,10 +6,10 @@ import com.mju.groupware.dto.UserList;
 
 public interface AdminService {
 
-	public List<UserList> SelectUserlist() throws Exception;
+    List<UserList> SelectUserlist() throws Exception;
 
-	public List<UserList> SelectDormantUserList();
+    List<UserList> SelectDormantUserList();
 
-	public List<UserList> SelectWithdrawalUserList();
+    List<UserList> SelectWithdrawalUserList();
 
 }

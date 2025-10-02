@@ -12,7 +12,7 @@ import java.util.Map;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -28,7 +28,7 @@ import com.mju.groupware.dto.TeamBoard;
 import com.mju.groupware.dto.TeamUser;
 import com.mju.groupware.dto.User;
 import com.mju.groupware.dto.UserReview;
-import com.mju.groupware.function.UserInfoMethod;
+import com.mju.groupware.util.UserInfoMethod;
 import com.mju.groupware.service.BoardService;
 import com.mju.groupware.service.ProfessorService;
 import com.mju.groupware.service.StudentService;
@@ -36,30 +36,24 @@ import com.mju.groupware.service.TeamService;
 import com.mju.groupware.service.UserService;
 
 @Controller
+@RequiredArgsConstructor
 public class TeamController {
 
-	@Autowired
-	private UserService userService;
-	@Autowired
-	private StudentService studentService;
-	@Autowired
-	private ProfessorService professorService;
-	@Autowired
-	private UserInfoMethod userInfoMethod;
-	@Autowired
-	private TeamService teamService;
-	@Autowired
-	private BoardService boardService;
+	private final UserService userService;
+	private final StudentService studentService;
+	private final ProfessorService professorService;
+	private final UserInfoMethod userInfoMethod;
+	private final TeamService teamService;
+	private final BoardService boardService;
 
-    @Autowired
-    private ConstantTeamController Constant;
+	private final ConstantTeamController Constant;
 
     
 
 	// 문서 메뉴 선택시 팀 리스트 출력
 	@RequestMapping(value = "/team/myTeamList", method = RequestMethod.GET)
 	public String myTeamList(Principal principal, User user, Model model, RedirectAttributes rttr) {
-		GetUserInformation(principal, user, model);
+		userInfoMethod.GetUserInformation(principal, user, model, this.Constant.getSTUDENT(), this.Constant.getPROFESSOR(), this.Constant.getADMINISTRATOR());
 		String LoginID = principal.getName();
 
 		List<TeamUser> TeamUserListInfo = teamService.SelectMyTeamList(LoginID);
@@ -107,7 +101,7 @@ public class TeamController {
 	// 팀 선택 시 문서 리스트 출력
 	@RequestMapping(value = "/team/documentList", method = RequestMethod.GET)
 	public String documentList(User user, Principal principal, HttpServletRequest request, Model model, Team team) {
-		GetUserInformation(principal, user, model);
+		userInfoMethod.GetUserInformation(principal, user, model, this.Constant.getSTUDENT(), this.Constant.getPROFESSOR(), this.Constant.getADMINISTRATOR());
 		// teamFile에서 이름주고 teamFileList가져오기
 		// TFileName
 		// 제목,작성자,작성일
@@ -123,7 +117,7 @@ public class TeamController {
 	@RequestMapping(value = "/team/documentContent", method = RequestMethod.GET)
 	public String documentContent(User user, HttpServletRequest request, Model model, TeamBoard teamBoard,
 			Principal principal) {
-		GetUserInformation(principal, user, model);
+		userInfoMethod.GetUserInformation(principal, user, model, this.Constant.getSTUDENT(), this.Constant.getPROFESSOR(), this.Constant.getADMINISTRATOR());
 		// TBoardID select
 		String LoginID = principal.getName();
 		String TBoardID = request.getParameter("no");
@@ -159,7 +153,7 @@ public class TeamController {
 	@RequestMapping(value = "/team/documentWrite", method = RequestMethod.GET)
 	public String documentWrite(Locale locale, Model model, TeamBoard teamBoard, Team team, HttpServletRequest request,
 			Principal principal, User user) {
-		GetUserInformation(principal, user, model);
+		userInfoMethod.GetUserInformation(principal, user, model, this.Constant.getSTUDENT(), this.Constant.getPROFESSOR(), this.Constant.getADMINISTRATOR());
 
 		model.addAttribute("TeamID", request.getParameter("TeamID"));
 		String UserLoginID = principal.getName();
@@ -177,7 +171,7 @@ public class TeamController {
 	@RequestMapping(value = "/team/documentWrite", method = RequestMethod.POST)
 	public String DoDocumentContent(User user, Model model, HttpServletRequest request, Principal principal,
 			TeamBoard teamBoard) {
-		GetUserInformation(principal, user, model);
+		userInfoMethod.GetUserInformation(principal, user, model, this.Constant.getSTUDENT(), this.Constant.getPROFESSOR(), this.Constant.getADMINISTRATOR());
 		// DB에 정보저장하기
 		String UserLoginID = principal.getName();
 		String TeamID = request.getParameter("TeamID");
@@ -205,7 +199,7 @@ public class TeamController {
 	@RequestMapping(value = "/team/documentModify", method = RequestMethod.GET)
 	public String documentModify(Principal principal, User user, Model model, HttpServletRequest request,
 			TeamBoard teamBoard) {
-		GetUserInformation(principal, user, model);
+		userInfoMethod.GetUserInformation(principal, user, model, this.Constant.getSTUDENT(), this.Constant.getPROFESSOR(), this.Constant.getADMINISTRATOR());
 
 		String TBoardID = request.getParameter("tBoardID");
 		teamBoard = boardService.SelectTeamBoardContent(TBoardID);
@@ -230,7 +224,7 @@ public class TeamController {
 			@RequestParam(value = "FileDeleteList[]") String[] FileList,
 			@RequestParam(value = "FileDeleteNameList[]") String[] FileNameList,
 			@RequestParam(value = "TBoardID") String TboardID) {
-		GetUserInformation(principal, user, model);
+		userInfoMethod.GetUserInformation(principal, user, model, this.Constant.getSTUDENT(), this.Constant.getPROFESSOR(), this.Constant.getADMINISTRATOR());
 
 		Date Now = new Date();
 		String Title = request.getParameter("BoardSubject");
@@ -289,7 +283,7 @@ public class TeamController {
 	@RequestMapping(value = "/team/searchLecture", method = RequestMethod.GET)
 	public String searchLecture(User user, Model model, Principal principal, HttpServletRequest request) {
 		// 유저 정보
-		GetUserInformation(principal, user, model);
+		userInfoMethod.GetUserInformation(principal, user, model, this.Constant.getSTUDENT(), this.Constant.getPROFESSOR(), this.Constant.getADMINISTRATOR());
 		String LectureName = request.getParameter("LectureName");
 		model.addAttribute("LectureName", LectureName);
 		return this.Constant.getRSearchLecture();
@@ -351,7 +345,7 @@ public class TeamController {
 	public String createTeamDO(Class classInfo, Team team, Model model, Principal principal, User user,
 			HttpServletRequest request, TeamUser teamUser, RedirectAttributes rttr) {
 		// 유저 정보
-		GetUserInformation(principal, user, model);
+		userInfoMethod.GetUserInformation(principal, user, model, this.Constant.getSTUDENT(), this.Constant.getPROFESSOR(), this.Constant.getADMINISTRATOR());
 		//
 		// class 정보
 		String LectureWithProfessor = request.getParameter("Lecture");
@@ -423,7 +417,7 @@ public class TeamController {
 	@RequestMapping(value = "/team/teamList", method = RequestMethod.GET)
 	public String teamList(User user, Model model, Principal principal, MergeTeam MergeTeam) {
 		// 유저 정보
-		GetUserInformation(principal, user, model);
+		userInfoMethod.GetUserInformation(principal, user, model, this.Constant.getSTUDENT(), this.Constant.getPROFESSOR(), this.Constant.getADMINISTRATOR());
 		//
 		List<Team> TeamList = teamService.SelectTeamList();
 		List<MergeTeam> AllInfo = new ArrayList<MergeTeam>();
@@ -455,7 +449,7 @@ public class TeamController {
 	public String checkTeam(User user, Model model, Principal principal, HttpServletRequest request,
 			RedirectAttributes rttr) {
 		// 유저 정보
-		GetUserInformation(principal, user, model);
+		userInfoMethod.GetUserInformation(principal, user, model, this.Constant.getSTUDENT(), this.Constant.getPROFESSOR(), this.Constant.getADMINISTRATOR());
 
 		// 팀 아이디를 넘겨 받음
 		int TeamID = Integer.parseInt(request.getParameter("no"));
@@ -503,7 +497,7 @@ public class TeamController {
 	public String modifyTeam(Principal principal, HttpServletRequest request, Model model, TeamUser teamUser, User user,
 			Team team) {
 		// 유저 정보
-		GetUserInformation(principal, user, model);
+		userInfoMethod.GetUserInformation(principal, user, model, this.Constant.getSTUDENT(), this.Constant.getPROFESSOR(), this.Constant.getADMINISTRATOR());
 		//
 		int TeamID = Integer.parseInt(request.getParameter("no"));
 		List<TeamUser> List = teamService.SelectTeamMemberInfo(TeamID);
@@ -549,7 +543,7 @@ public class TeamController {
 	@RequestMapping(value = "/team/searchMyTeam", method = RequestMethod.GET)
 	public String searchMyTeam(Principal principal, Model model, User user, HttpServletRequest request) {
 		// 유저 정보
-		GetUserInformation(principal, user, model);
+		userInfoMethod.GetUserInformation(principal, user, model, this.Constant.getSTUDENT(), this.Constant.getPROFESSOR(), this.Constant.getADMINISTRATOR());
 		//
 		List<String> TeamList = new ArrayList<String>();
 		List<Integer> TeamID = teamService.SelectTeamNameWithLoginUser(principal.getName()); // teamUser
@@ -584,7 +578,7 @@ public class TeamController {
 	public String reviewWrite(Principal principal, Model model, User user, HttpServletRequest request,
 			UserReview userReview) {
 		// 유저 정보
-		GetUserInformation(principal, user, model);
+		userInfoMethod.GetUserInformation(principal, user, model, this.Constant.getSTUDENT(), this.Constant.getPROFESSOR(), this.Constant.getADMINISTRATOR());
 		//
 		String SelectedTeam = request.getParameter("Team");
 		String[] TeamName = SelectedTeam.split("\\s");
@@ -613,7 +607,7 @@ public class TeamController {
 	public String reviewWriteDO(Principal principal, Model model, User user, HttpServletRequest request,
 			UserReview userReview, RedirectAttributes rttr) {
 		// 유저 정보
-		GetUserInformation(principal, user, model);
+		userInfoMethod.GetUserInformation(principal, user, model, this.Constant.getSTUDENT(), this.Constant.getPROFESSOR(), this.Constant.getADMINISTRATOR());
 		//
 		String WriterUserID = teamService.SelectWriterUserID(principal.getName());
 		String SelectedTeam = request.getParameter("SelectedTeam");
@@ -658,23 +652,6 @@ public class TeamController {
 	}
 
 	// Information가져오는부분
-	private void GetUserInformation(Principal principal, User user, Model model) {
-		String LoginID = principal.getName();// 로그인 한 아이디
-		ArrayList<String> SelectUserProfileInfo = new ArrayList<String>();
-		SelectUserProfileInfo = userService.SelectUserProfileInfo(LoginID);
-		user.setUserLoginID(LoginID);
-		user.setUserName(SelectUserProfileInfo.get(0));
-		if (SelectUserProfileInfo.get(2).equals(this.Constant.getSTUDENT())) {
-			ArrayList<String> StudentInfo = new ArrayList<String>();
-			StudentInfo = studentService.SelectStudentProfileInfo(SelectUserProfileInfo.get(1));
-			userInfoMethod.StudentInfo(model, SelectUserProfileInfo, StudentInfo);
-		} else if (SelectUserProfileInfo.get(2).equals(this.Constant.getPROFESSOR())) {
-			ArrayList<String> ProfessorInfo = new ArrayList<String>();
-			ProfessorInfo = professorService.SelectProfessorProfileInfo(SelectUserProfileInfo.get(1));
-			userInfoMethod.ProfessorInfo(model, SelectUserProfileInfo, ProfessorInfo);
-		} else if (SelectUserProfileInfo.get(2).equals(this.Constant.getADMINISTRATOR())) {
-			userInfoMethod.AdministratorInfo(model, SelectUserProfileInfo);
-		}
-	}
+// private GetUserInformation 메서드는 공통 유틸 호출로 대체되었으므로 제거되었습니다.
 
 }

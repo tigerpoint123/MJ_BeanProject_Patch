@@ -1,17 +1,10 @@
 package com.mju.groupware.constant;
 
+import lombok.Getter;
+import lombok.Setter;
+
+@Setter
+@Getter
 public class ConstantEmail {
-
    private String EMURL;
-
-   public String getEMURL() {
-      return EMURL;
-   }
-
-   public void setEMURL(String eMURL) {
-      EMURL = eMURL;
-   }
-
-   
-
 }

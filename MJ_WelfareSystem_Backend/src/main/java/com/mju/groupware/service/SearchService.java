@@ -10,12 +10,12 @@ import com.mju.groupware.dto.UserReview;
 
 public interface SearchService {
 
-	public List<User> SelectKeyWord(SearchKeyWord searchKeyWord);
+    List<User> SelectKeyWord(SearchKeyWord searchKeyWord);
 
-	public Student SelectStudentInfo(int i);
+    Student SelectStudentInfo(int i);
 
-	public Professor SelectProfessorInfo(int userID);
+    Professor SelectProfessorInfo(int userID);
 
-	public List<UserReview> SelectUserReview(String userID);
+    List<UserReview> SelectUserReview(String userID);
 
 }

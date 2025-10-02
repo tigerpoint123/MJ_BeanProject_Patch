@@ -33,7 +33,7 @@ import com.mju.groupware.service.ProfessorService;
 import com.mju.groupware.service.StudentService;
 import com.mju.groupware.service.TeamService;
 import com.mju.groupware.service.UserService;
-import com.mju.groupware.function.UserInfoMethod;
+import com.mju.groupware.util.UserInfoMethod;
 
 @WebMvcTest(controllers = TeamController.class)
 @AutoConfigureMockMvc(addFilters = false)

@@ -8,97 +8,96 @@ import com.mju.groupware.dto.User;
 
 public interface UserService {
 
-	// 회원가입
-	public void InsertForSignUp(User user);
+    // 회원가입
+    void InsertForSignUp(User user);
 
-	// 중복확인
-	public boolean SelctForIDConfirm(User user);
+    // 중복확인
+    boolean SelctForIDConfirm(User user);
 
-	// 비번 찾기
-	public boolean SelectPwdForConfirmToFindPwd(User user);
+    // 비번 찾기
+    boolean SelectPwdForConfirmToFindPwd(User user);
 
-	// userID(다른 테이블들의 foreign key) 찾기
-	public int SelectUserID(Student student);
-	
-	public int SelectUserID(Professor professor);
+    // userID(다른 테이블들의 foreign key) 찾기
+    int SelectUserID(Student student);
 
-	public String SelectForShowPassword(User user);
+    int SelectUserID(Professor professor);
 
-	public void UpdateLoginDate(User user);
+    String SelectForShowPassword(User user);
 
-	public String SelectCurrentPwd(String id);
+    void UpdateLoginDate(User user);
 
-	public void UpdatePwd(User user);
+    String SelectCurrentPwd(String id);
 
-	public boolean SelectForPwdCheckBeforeModify(String pw, String pw2);
+    void UpdatePwd(User user);
 
-	public ArrayList<String> SelectMyPageUserInfo(String userId);
+    boolean SelectForPwdCheckBeforeModify(String pw, String pw2);
 
-	public ArrayList<String> SelectUserProfileInfo(String loginID);
+    ArrayList<String> SelectMyPageUserInfo(String userId);
 
-	public void updateUserPhoneNumber(User user);
+    ArrayList<String> SelectUserProfileInfo(String loginID);
 
-	public void UpdateUserMajor(User user);
+    void updateUserPhoneNumber(User user);
 
-	public void UpdateUserColleges(User user);
+    void UpdateUserMajor(User user);
 
-	public ArrayList<String> SelectUserInformation(String userId);
+    void UpdateUserColleges(User user);
 
-	public void UpdateTemporaryPwd(User user);
+    ArrayList<String> SelectUserInformation(String userId);
 
-	public void UpdateDoWithdrawalRecoveryByAdmin(String ajaxMsg);
+    void UpdateTemporaryPwd(User user);
 
-	public void UpdateDormantOneToZero(String id);
+    void UpdateDoWithdrawalRecoveryByAdmin(String ajaxMsg);
 
-	public void UpdateAdminRole(String string, String optionValue);
+    void UpdateDormantOneToZero(String id);
 
-	public void UpdateUserRole(String string, String optionValue);
+    void UpdateAdminRole(String string, String optionValue);
 
-	public ArrayList<String> SelectUserProfileInfoByID(String mysqlID);
+    void UpdateUserRole(String string, String optionValue);
 
-	public void UpdateUserName(User user);
+    ArrayList<String> SelectUserProfileInfoByID(String mysqlID);
 
-	public void UpdateOpenPhoneNum(User user);
+    void UpdateUserName(User user);
 
-	public void UpdateOpenGrade(User user);
+    void UpdateOpenPhoneNum(User user);
 
-	public User SelectUserInfo(String userLoginID);
+    void UpdateOpenGrade(User user);
 
-	public String SelectOpenInfo(String userID);
+    User SelectUserInfo(String userLoginID);
 
-	public int SelectUserIDFromBoardController(String userLoginID);
+    String SelectOpenInfo(String userID);
 
-	public String SelectUserRole(String userLoginID);
+    int SelectUserIDFromBoardController(String userLoginID);
 
-	public String SelectUserName(String userLoginID);
+    String SelectUserRole(String userLoginID);
 
-	public void UpdateWithdrawal(User user);
+    String SelectUserName(String userLoginID);
 
-	public void UpdateRecoveryWithdrawal(User user);
+    void UpdateWithdrawal(User user);
 
-	public void UpdateWithdrawalByDormant(String string);
+    void UpdateRecoveryWithdrawal(User user);
 
-	public boolean SelectDormant(String loginID);
+    void UpdateWithdrawalByDormant(String string);
 
-	public void UpdateRecoveryDormant(String loginID);
+    boolean SelectDormant(String loginID);
 
-	public String SelectWriter(String userLoginID);
+    void UpdateRecoveryDormant(String loginID);
 
-	public String SelectUserIDForDocument(String userLoginID);
+    String SelectWriter(String userLoginID);
 
-	public String SelectTWriterID(String tWriter);
+    String SelectUserIDForDocument(String userLoginID);
 
-	public String SelectUserIDForMyBoard(String loginID);
+    String SelectTWriterID(String tWriter);
 
-	public String SelectEmailForInquiry(String userLoginID);
+    String SelectUserIDForMyBoard(String loginID);
 
-	public String SelectPhoneNumForInquiry(String userLoginID);
+    String SelectEmailForInquiry(String userLoginID);
 
-	public String SelectUserIDForDate(String loginID);
+    String SelectPhoneNumForInquiry(String userLoginID);
 
-	public String SelectIDForReview(String userLoginID);
+    String SelectUserIDForDate(String loginID);
 
-	public User SelectModifyUserInfo(String loginID);
+    String SelectIDForReview(String userLoginID);
 
+    User SelectModifyUserInfo(String loginID);
 
 }

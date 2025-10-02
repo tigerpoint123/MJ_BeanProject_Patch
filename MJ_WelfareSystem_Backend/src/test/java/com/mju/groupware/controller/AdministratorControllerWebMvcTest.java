@@ -28,7 +28,7 @@ import com.mju.groupware.service.AdminService;
 import com.mju.groupware.service.UserService;
 import com.mju.groupware.service.StudentService;
 import com.mju.groupware.service.ProfessorService;
-import com.mju.groupware.function.UserInfoMethod;
+import com.mju.groupware.util.UserInfoMethod;
 import com.mju.groupware.constant.ConstantAdmin;
 
 @WebMvcTest(controllers = AdministratorController.class)

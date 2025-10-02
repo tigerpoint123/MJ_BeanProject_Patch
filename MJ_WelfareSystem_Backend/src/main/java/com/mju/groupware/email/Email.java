@@ -6,13 +6,13 @@ import com.mju.groupware.dto.UserEmail;
 
 public interface Email {
 
-	public void sendEmail(String email, int Num);
+    void sendEmail(String email, int Num);
 
-	public boolean AuthNum(int authnum, int num);
+    boolean AuthNum(int authnum, int num);
 
-	public List<UserEmail> printEmailList();
+    List<UserEmail> printEmailList();
 
-	public boolean CheckEmailLogin(String id, String pw);
+    boolean CheckEmailLogin(String id, String pw);
 
-	public List<UserEmail> GetEmailList();
+    List<UserEmail> GetEmailList();
 }

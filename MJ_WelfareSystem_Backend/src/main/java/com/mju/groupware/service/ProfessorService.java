@@ -6,37 +6,37 @@ import com.mju.groupware.dto.Professor;
 
 public interface ProfessorService {
 
-	// 정보 저장
-	public void InsertInformation(Professor professor);
+    // 정보 저장
+    void InsertInformation(Professor professor);
 
-	// 회원가입 후 userID(foreign key) 업데이트
-	public void UpdateUserID(Professor professor);
+    // 회원가입 후 userID(foreign key) 업데이트
+    void UpdateUserID(Professor professor);
 
-	//교수 학과 update
-	public void UpdateProfessorColleges(Professor professor);
-	
-	//교수 전공 update
-	public void UpdateProfessorMajor(Professor professor);
-	
-	//교수실 update
-	public void UpdateProfessorRoom(Professor professor);
+    //교수 학과 update
+    void UpdateProfessorColleges(Professor professor);
 
-	//교수실 전화번호 update
-	public void UpdateProfessorRoomNum(Professor professor);
+    //교수 전공 update
+    void UpdateProfessorMajor(Professor professor);
 
-	// 로그인 완료 화면에 띄울 데이터 select
-	public ArrayList<String> SelectProfessorProfileInfo(String userID);
+    //교수실 update
+    void UpdateProfessorRoom(Professor professor);
 
-	public Professor SelectProfessorInfo(String userID);
+    //교수실 전화번호 update
+    void UpdateProfessorRoomNum(Professor professor);
 
-	public void InsertWithdrawalProfessor(Professor professor);
+    // 로그인 완료 화면에 띄울 데이터 select
+    ArrayList<String> SelectProfessorProfileInfo(String userID);
 
-	public void DeleteWithdrawalProfessor(Professor professor);
+    Professor SelectProfessorInfo(String userID);
 
-	public void DeleteWithdrawalProfessorList(String string);
+    void InsertWithdrawalProfessor(Professor professor);
 
-	public void UpdateProfessorLoginDate(Professor professor);
+    void DeleteWithdrawalProfessor(Professor professor);
 
-	public Professor SelectModifyProfessorInfo(int userID);
-	
+    void DeleteWithdrawalProfessorList(String string);
+
+    void UpdateProfessorLoginDate(Professor professor);
+
+    Professor SelectModifyProfessorInfo(int userID);
+
 }

@@ -27,7 +27,7 @@ import com.mju.groupware.service.LectureRoomService;
 import com.mju.groupware.service.UserService;
 import com.mju.groupware.service.StudentService;
 import com.mju.groupware.service.ProfessorService;
-import com.mju.groupware.function.UserInfoMethod;
+import com.mju.groupware.util.UserInfoMethod;
 import com.mju.groupware.constant.ConstantLectureRoomController;
 import com.mju.groupware.dto.LectureRoom;
 import com.mju.groupware.dto.UserReservation;

@@ -1,7 +1,6 @@
 package com.mju.groupware.constant;
 
 public class ConstantScheduleController {
-
 	private String UserId;
 	private String SRole;
 	private String PRole;
@@ -12,61 +11,77 @@ public class ConstantScheduleController {
 	private String scheduleID;
 	private String start;
 	private String end;
-	
+
 	public String getUserId() {
-		return UserId;
+		return this.UserId;
 	}
+
 	public void setUserId(String userId) {
-		UserId = userId;
+		this.UserId = userId;
 	}
+
 	public String getSRole() {
-		return SRole;
+		return this.SRole;
 	}
+
 	public void setSRole(String sRole) {
-		SRole = sRole;
+		this.SRole = sRole;
 	}
+
 	public String getPRole() {
-		return PRole;
+		return this.PRole;
 	}
+
 	public void setPRole(String pRole) {
-		PRole = pRole;
+		this.PRole = pRole;
 	}
+
 	public String getARole() {
-		return ARole;
+		return this.ARole;
 	}
+
 	public void setARole(String aRole) {
-		ARole = aRole;
+		this.ARole = aRole;
 	}
+
 	public String getSchedule() {
-		return Schedule;
+		return this.Schedule;
 	}
+
 	public void setSchedule(String schedule) {
-		Schedule = schedule;
+		this.Schedule = schedule;
 	}
+
 	public String getUserID() {
-		return userID;
+		return this.userID;
 	}
+
 	public void setUserID(String userID) {
 		this.userID = userID;
 	}
+
 	public String getScheduleID() {
-		return scheduleID;
+		return this.scheduleID;
 	}
+
 	public void setScheduleID(String scheduleID) {
 		this.scheduleID = scheduleID;
 	}
+
 	public String getStart() {
-		return start;
+		return this.start;
 	}
+
 	public void setStart(String start) {
 		this.start = start;
 	}
+
 	public String getEnd() {
-		return end;
+		return this.end;
 	}
+
 	public void setEnd(String end) {
 		this.end = end;
 	}
-	
 
 }

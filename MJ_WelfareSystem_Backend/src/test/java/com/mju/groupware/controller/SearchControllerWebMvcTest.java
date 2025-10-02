@@ -19,7 +19,6 @@ import java.security.Principal;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
 
 import static org.mockito.BDDMockito.given;
@@ -31,10 +30,9 @@ import com.mju.groupware.service.SearchService;
 import com.mju.groupware.service.UserService;
 import com.mju.groupware.service.StudentService;
 import com.mju.groupware.service.ProfessorService;
-import com.mju.groupware.function.UserInfoMethod;
+import com.mju.groupware.util.UserInfoMethod;
 import com.mju.groupware.constant.ConstantSearchController;
 import com.mju.groupware.dto.SearchKeyWord;
-import com.mju.groupware.dto.User;
 import com.mju.groupware.dto.UserReview;
 
 @WebMvcTest(controllers = SearchController.class)

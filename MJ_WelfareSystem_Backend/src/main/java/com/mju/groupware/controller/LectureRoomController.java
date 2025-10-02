@@ -4,15 +4,13 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.security.Principal;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.support.GenericXmlApplicationContext;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -23,35 +21,28 @@ import com.mju.groupware.constant.ConstantLectureRoomController;
 import com.mju.groupware.dto.LectureRoom;
 import com.mju.groupware.dto.User;
 import com.mju.groupware.dto.UserReservation;
-import com.mju.groupware.function.UserInfoMethod;
+import com.mju.groupware.util.UserInfoMethod;
 import com.mju.groupware.service.LectureRoomService;
 import com.mju.groupware.service.ProfessorService;
 import com.mju.groupware.service.StudentService;
 import com.mju.groupware.service.UserService;
 
 @Controller
+@RequiredArgsConstructor
 public class LectureRoomController {
 
-	@Autowired
-	private LectureRoomService lectureRoomService;
-	@Autowired
-	private UserInfoMethod userInfoMethod;
-	@Autowired
-	private StudentService studentService;
-	@Autowired
-	private ProfessorService professorService;
-	@Autowired
-	private UserService userService;
-
-	@Autowired
-	private ConstantLectureRoomController constantLecture;
+	private final LectureRoomService lectureRoomService;
+	private final UserInfoMethod userInfoMethod;
+	private final StudentService studentService;
+	private final ProfessorService professorService;
+	private final UserService userService;
+	private final ConstantLectureRoomController constantLecture;
 
 	// 강의실 리스트 /lectureRoomList
 	@RequestMapping(value = "/lectureRoom/lectureRoomList", method = RequestMethod.GET)
 	public String lectureRoomList(Model model, Principal principal, User user) {
 		// 유저 정보
-		GetUserInformation(principal, user, model);
-		//
+		userInfoMethod.GetUserInformation(principal, user, model, "STUDENT", "PROFESSOR", "ADMINISTRATOR");
 		List<LectureRoom> List = lectureRoomService.SelectLectureRoomList();
 		model.addAttribute("list", List);
 
@@ -63,7 +54,7 @@ public class LectureRoomController {
 	public String lectureRoomReservation(Locale locale, Model model, HttpServletRequest request,
 			UserReservation userReservation, Principal principal, User user) {
 		// 유저 정보
-		GetUserInformation(principal, user, model);
+		userInfoMethod.GetUserInformation(principal, user, model, "STUDENT", "PROFESSOR", "ADMINISTRATOR");
 		//
 		String LectureRoomNo = request.getParameter("no");
 		int MaxNumOfPeople = lectureRoomService.SelectMaxNumOfPeople(LectureRoomNo);
@@ -90,7 +81,7 @@ public class LectureRoomController {
 										   UserReservation userReservation, HttpServletResponse response, User user, RedirectAttributes rttr)
 			throws IOException {
 		// 유저 정보
-		GetUserInformation(principal, user, model);
+		userInfoMethod.GetUserInformation(principal, user, model, "STUDENT", "PROFESSOR", "ADMINISTRATOR");
 
 		String SelectedTime = request.getParameter("ReservationStartTime"); // 스크롤바에서 선택된 값
 		int IDX = SelectedTime.indexOf("~");// 시작, 종료 시간 나누기 위함.
@@ -162,7 +153,7 @@ public class LectureRoomController {
 			HttpServletResponse response, RedirectAttributes rttr) {
 		// 유저 정보
 		String LoginID = principal.getName();// 로그인 한 아이디
-		GetUserInformation(principal, user, model);
+		userInfoMethod.GetUserInformation(principal, user, model, "STUDENT", "PROFESSOR", "ADMINISTRATOR");
 		//
 		String UserID = lectureRoomService.SelectUserIDForReservationConfirm(LoginID);
 
@@ -208,7 +199,7 @@ public class LectureRoomController {
 			User user, HttpServletRequest request, HttpServletResponse response, RedirectAttributes rttr)
 			throws IOException {
 		// 유저 정보
-		GetUserInformation(principal, user, model);
+		userInfoMethod.GetUserInformation(principal, user, model, "STUDENT", "PROFESSOR", "ADMINISTRATOR");
 		//
 		String UserLoginID = getUserLoginID(principal);
 		String UserID = lectureRoomService.SelectLoginUserID(UserLoginID);
@@ -250,7 +241,7 @@ public class LectureRoomController {
 	@RequestMapping(value = "/lectureRoom/reservationModify", method = RequestMethod.GET)
 	public String lectureRoomReservationModify(Locale locale, Model model, Principal principal, User user) {
 		// 유저 정보
-		GetUserInformation(principal, user, model);
+		userInfoMethod.GetUserInformation(principal, user, model, "STUDENT", "PROFESSOR", "ADMINISTRATOR");
 		//
 		return this.constantLecture.getRReservationModify();
 	}
@@ -261,7 +252,7 @@ public class LectureRoomController {
 			HttpServletResponse response, RedirectAttributes rttr) {
 		// 유저 정보
 		String LoginID = principal.getName();// 로그인 한 아이디
-		GetUserInformation(principal, user, model);
+		userInfoMethod.GetUserInformation(principal, user, model, "STUDENT", "PROFESSOR", "ADMINISTRATOR");
 		//
 		String UserID = lectureRoomService.SelectUserIDForReservationConfirm(LoginID);
 
@@ -300,22 +291,6 @@ public class LectureRoomController {
 		}
 	}
 
-	private void GetUserInformation(Principal principal, User user, Model model) {
-		String LoginID = principal.getName();// 로그인 한 아이디
-		ArrayList<String> SelectUserProfileInfo = new ArrayList<String>();
-		SelectUserProfileInfo = userService.SelectUserProfileInfo(LoginID);
-		user.setUserLoginID(LoginID);
-		if (SelectUserProfileInfo.get(2).equals("STUDENT")) {
-			ArrayList<String> StudentInfo = new ArrayList<String>();
-			StudentInfo = studentService.SelectStudentProfileInfo(SelectUserProfileInfo.get(1));
-			userInfoMethod.StudentInfo(model, SelectUserProfileInfo, StudentInfo);
-		} else if (SelectUserProfileInfo.get(2).equals("PROFESSOR")) {
-			ArrayList<String> ProfessorInfo = new ArrayList<String>();
-			ProfessorInfo = professorService.SelectProfessorProfileInfo(SelectUserProfileInfo.get(1));
-			userInfoMethod.ProfessorInfo(model, SelectUserProfileInfo, ProfessorInfo);
-		} else if (SelectUserProfileInfo.get(2).equals("ADMINISTRATOR")) {
-			userInfoMethod.AdministratorInfo(model, SelectUserProfileInfo);
-		}
-	}
+// private GetUserInformation 메서드는 공통 유틸 호출로 대체되었으므로 제거되었습니다.
 
 }

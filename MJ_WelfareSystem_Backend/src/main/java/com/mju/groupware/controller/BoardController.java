@@ -6,7 +6,6 @@ import java.io.PrintWriter;
 import java.net.URLEncoder;
 import java.security.Principal;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
@@ -14,7 +13,7 @@ import java.util.Map;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -26,7 +25,7 @@ import com.mju.groupware.constant.ConstantAdminBoardController;
 import com.mju.groupware.dto.Board;
 import com.mju.groupware.dto.Inquiry;
 import com.mju.groupware.dto.User;
-import com.mju.groupware.function.UserInfoMethod;
+import com.mju.groupware.util.UserInfoMethod;
 import com.mju.groupware.service.BoardService;
 import com.mju.groupware.service.InquiryService;
 import com.mju.groupware.service.ProfessorService;
@@ -34,29 +33,22 @@ import com.mju.groupware.service.StudentService;
 import com.mju.groupware.service.UserService;
 
 @Controller
+@RequiredArgsConstructor
 public class BoardController {
-	@Autowired
-	private ConstantAdminBoardController Constant;
-
-	@Autowired
-	private BoardService boardService;
-	@Autowired
-	private InquiryService inquiryService;
-	@Autowired
-	private UserService userService;
-	@Autowired
-	private StudentService studentService;
-	@Autowired
-	private UserInfoMethod userInfoMethod;
-	@Autowired
-	private ProfessorService professorService;
+	private final ConstantAdminBoardController Constant;
+	private final BoardService boardService;
+	private final InquiryService inquiryService;
+	private final UserService userService;
+	private final StudentService studentService;
+	private final UserInfoMethod userInfoMethod;
+	private final ProfessorService professorService;
 
 	// 문의 리스트
 	@RequestMapping(value = "/inquiryList", method = RequestMethod.GET)
 	public String inquiryList(User user, Principal principal, Model model, HttpServletRequest request) {
 
 		if (principal != null) {
-			GetUserInformation(principal, user, model);
+			userInfoMethod.GetUserInformation(principal, user, model, this.Constant.getSTUDENT(), this.Constant.getPROFESSOR(), this.Constant.getADMINISTRATOR());
 		}
 		List<Inquiry> InquiryList = inquiryService.SelectInquiryList();
 		model.addAttribute("inquiryList", InquiryList);
@@ -70,7 +62,7 @@ public class BoardController {
 			Inquiry inquiry) {
 
 		if (principal != null) {
-			GetUserInformation(principal, user, model);
+			userInfoMethod.GetUserInformation(principal, user, model, this.Constant.getSTUDENT(), this.Constant.getPROFESSOR(), this.Constant.getADMINISTRATOR());
 		}
 		String LoginID = principal.getName();
 		String IBoardID = request.getParameter("no");
@@ -95,7 +87,7 @@ public class BoardController {
 	public String inquiryWrite(Locale locale, User user, Principal principal, Model model) {
 
 		if (principal != null) {
-			GetUserInformation(principal, user, model);
+			userInfoMethod.GetUserInformation(principal, user, model, this.Constant.getSTUDENT(), this.Constant.getPROFESSOR(), this.Constant.getADMINISTRATOR());
 		}
 
 		// 작성자 이름 자동 세팅 (disabled)
@@ -118,7 +110,7 @@ public class BoardController {
 			Model model, HttpServletResponse response) throws Exception {
 
 		if (principal != null) {
-			GetUserInformation(principal, user, model);
+			userInfoMethod.GetUserInformation(principal, user, model, this.Constant.getSTUDENT(), this.Constant.getPROFESSOR(), this.Constant.getADMINISTRATOR());
 		}
 
 		Date Now = new Date();
@@ -177,7 +169,7 @@ public class BoardController {
 	public String DoInquiryAnswer(Principal principal, HttpServletRequest request, User user, Inquiry inquiry,
 			Model model) throws Exception {
 
-		GetUserInformation(principal, user, model);
+		userInfoMethod.GetUserInformation(principal, user, model, this.Constant.getSTUDENT(), this.Constant.getPROFESSOR(), this.Constant.getADMINISTRATOR());
 
 		String IBoardAnswer = request.getParameter("InquiryAnswer");
 
@@ -205,7 +197,7 @@ public class BoardController {
 	public String noticeList(User user, HttpServletRequest request, Model model, Principal principal) {
 		if (principal != null) {
 			// 유저 정보
-			GetUserInformation(principal, user, model);
+			userInfoMethod.GetUserInformation(principal, user, model, this.Constant.getSTUDENT(), this.Constant.getPROFESSOR(), this.Constant.getADMINISTRATOR());
 		}
 		List<Board> NoticeList = boardService.SelectNoticeBoardList();
 		model.addAttribute("noticeList", NoticeList);
@@ -218,7 +210,7 @@ public class BoardController {
 	public String noticeWrite(User user, HttpServletRequest request, Model model, Principal principal) {
 		// 유저 정보
 
-		GetUserInformation(principal, user, model);
+		userInfoMethod.GetUserInformation(principal, user, model, this.Constant.getSTUDENT(), this.Constant.getPROFESSOR(), this.Constant.getADMINISTRATOR());
 
 		// 작성자 이름 자동 세팅 (disabled)
 		String UserLoginID = principal.getName();
@@ -239,7 +231,7 @@ public class BoardController {
 	public String DoNoticeWrite(Principal principal, HttpServletRequest request, User user, Board board, Model model, HttpServletResponse response)
 			throws Exception {
 		// 유저 정보
-		GetUserInformation(principal, user, model);
+		userInfoMethod.GetUserInformation(principal, user, model, this.Constant.getSTUDENT(), this.Constant.getPROFESSOR(), this.Constant.getADMINISTRATOR());
 		//
 
 		Date Now = new Date();
@@ -284,7 +276,7 @@ public class BoardController {
 	public String noticeModify(User user, Model model, Board board, Principal principal, HttpServletRequest request) {
 
 		// 유저 정보
-		GetUserInformation(principal, user, model);
+		userInfoMethod.GetUserInformation(principal, user, model, this.Constant.getSTUDENT(), this.Constant.getPROFESSOR(), this.Constant.getADMINISTRATOR());
 		//
 		String BoardID = request.getParameter("boardID");
 		board = boardService.SelectOneNoticeContent(BoardID);
@@ -551,21 +543,7 @@ public class BoardController {
 	}
 
 	private void GetUserInformation(Principal principal, User user, Model model) {
-		String LoginID = principal.getName();// 로그인 한 아이디
-		ArrayList<String> SelectUserProfileInfo = new ArrayList<String>();
-		SelectUserProfileInfo = userService.SelectUserProfileInfo(LoginID);
-		user.setUserLoginID(LoginID);
-		if (SelectUserProfileInfo.get(2).equals(this.Constant.getSTUDENT())) {
-			ArrayList<String> StudentInfo = new ArrayList<String>();
-			StudentInfo = studentService.SelectStudentProfileInfo(SelectUserProfileInfo.get(1));
-			userInfoMethod.StudentInfo(model, SelectUserProfileInfo, StudentInfo);
-		} else if (SelectUserProfileInfo.get(2).equals(this.Constant.getPROFESSOR())) {
-			ArrayList<String> ProfessorInfo = new ArrayList<String>();
-			ProfessorInfo = professorService.SelectProfessorProfileInfo(SelectUserProfileInfo.get(1));
-			userInfoMethod.ProfessorInfo(model, SelectUserProfileInfo, ProfessorInfo);
-		} else if (SelectUserProfileInfo.get(2).equals(this.Constant.getADMINISTRATOR())) {
-			userInfoMethod.AdministratorInfo(model, SelectUserProfileInfo);
-		}
+		userInfoMethod.GetUserInformation(principal, user, model, this.Constant.getSTUDENT(), this.Constant.getPROFESSOR(), this.Constant.getADMINISTRATOR());
 	}
 
 }

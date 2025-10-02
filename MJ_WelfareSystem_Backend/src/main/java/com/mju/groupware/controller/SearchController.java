@@ -6,7 +6,7 @@ import java.util.HashMap;
 import java.util.List;
 
 import jakarta.servlet.http.HttpServletRequest;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -21,27 +21,21 @@ import com.mju.groupware.dto.SearchKeyWord;
 import com.mju.groupware.dto.Student;
 import com.mju.groupware.dto.User;
 import com.mju.groupware.dto.UserReview;
-import com.mju.groupware.function.UserInfoMethod;
+import com.mju.groupware.util.UserInfoMethod;
 import com.mju.groupware.service.ProfessorService;
 import com.mju.groupware.service.SearchService;
 import com.mju.groupware.service.StudentService;
 import com.mju.groupware.service.UserService;
 
 @Controller
+@RequiredArgsConstructor
 public class SearchController {
-    @Autowired
-    private ConstantSearchController Constant;
-	@Autowired
-	private UserService userService;
-	@Autowired
-	private StudentService studentService;
-	@Autowired
-	private ProfessorService professorService;
-	@Autowired
-	private UserInfoMethod userInfoMethod;
-
-	@Autowired
-	private SearchService searchService;
+    private final ConstantSearchController Constant;
+	private final UserService userService;
+	private final StudentService studentService;
+	private final ProfessorService professorService;
+	private final UserInfoMethod userInfoMethod;
+	private final SearchService searchService;
 
     
 
@@ -49,7 +43,7 @@ public class SearchController {
 	@RequestMapping(value = "/search/searchUser", method = RequestMethod.GET)
 	public String searchUser(Principal principal, Model model, User user) {
 		// 유저 정보
-		GetUserInformation(principal, user, model);
+		userInfoMethod.GetUserInformation(principal, user, model, this.Constant.getSRole(), this.Constant.getPRole(), this.Constant.getARole());
 		return this.Constant.getRSearchUser();
 	}
 
@@ -119,7 +113,7 @@ public class SearchController {
 	@RequestMapping(value = "/search/reviewList", method = RequestMethod.GET)
 	public String reviewList(Principal principal, Model model, User user, HttpServletRequest request, RedirectAttributes rttr) {
 		// 유저 정보
-		GetUserInformation(principal, user, model);
+		userInfoMethod.GetUserInformation(principal, user, model, this.Constant.getSRole(), this.Constant.getPRole(), this.Constant.getARole());
 		String UserEmail = request.getParameter("no");
 		String UserID = userService.SelectIDForReview(UserEmail);
 		List<UserReview> Review = searchService.SelectUserReview(UserID);
@@ -132,23 +126,6 @@ public class SearchController {
 		return this.Constant.getRReviewList();
 	}
 
-	private void GetUserInformation(Principal principal, User user, Model model) {
-
-		String LoginID = principal.getName();// 로그인 한 아이디
-		ArrayList<String> SelectUserProfileInfo = new ArrayList<String>();
-		SelectUserProfileInfo = userService.SelectUserProfileInfo(LoginID);
-		user.setUserLoginID(LoginID);
-		if (SelectUserProfileInfo.get(2).equals(this.Constant.getSRole())) {
-			ArrayList<String> StudentInfo = new ArrayList<String>();
-			StudentInfo = studentService.SelectStudentProfileInfo(SelectUserProfileInfo.get(1));
-			userInfoMethod.StudentInfo(model, SelectUserProfileInfo, StudentInfo);
-		} else if (SelectUserProfileInfo.get(2).equals(this.Constant.getPRole())) {
-			ArrayList<String> ProfessorInfo = new ArrayList<String>();
-			ProfessorInfo = professorService.SelectProfessorProfileInfo(SelectUserProfileInfo.get(1));
-			userInfoMethod.ProfessorInfo(model, SelectUserProfileInfo, ProfessorInfo);
-		} else if (SelectUserProfileInfo.get(2).equals(this.Constant.getARole())) {
-			userInfoMethod.AdministratorInfo(model, SelectUserProfileInfo);
-		}
-	}
+// private GetUserInformation 메서드는 공통 유틸 호출로 대체되었으므로 제거되었습니다.
 
 }

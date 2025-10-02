@@ -5,7 +5,7 @@ import java.util.ArrayList;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -18,15 +18,13 @@ import com.mju.groupware.service.StudentService;
 import com.mju.groupware.service.UserService;
 
 @Controller
+@RequiredArgsConstructor
 public class StudentController {
 
-	@Autowired
-	private UserService userService;
-	@Autowired
-	private StudentService studentService;
+	private final UserService userService;
+	private final StudentService studentService;
 
-    @Autowired
-    private ConstantAdminStudentController Constant;
+	private final ConstantAdminStudentController Constant;
 	private String StudentColleges;
 	private String StudentGrade;
 	private String UserMajorForShow;

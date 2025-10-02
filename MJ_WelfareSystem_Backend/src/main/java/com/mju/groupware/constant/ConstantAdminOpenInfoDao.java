@@ -1,15 +1,12 @@
 package com.mju.groupware.constant;
 
+import lombok.Getter;
+import lombok.Setter;
+
+@Setter
+@Getter
 public class ConstantAdminOpenInfoDao {
 	
 	private String SelectForOpenInfoAll;
 
-	public String getSelectForOpenInfoAll() {
-		return SelectForOpenInfoAll;
-	}
-
-	public void setSelectForOpenInfoAll(String selectForOpenInfoAll) {
-		SelectForOpenInfoAll = selectForOpenInfoAll;
-	}
-	
 }

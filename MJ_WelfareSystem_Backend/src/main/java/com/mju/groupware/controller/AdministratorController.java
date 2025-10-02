@@ -9,10 +9,10 @@ import java.util.List;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -23,7 +23,7 @@ import com.mju.groupware.dto.Professor;
 import com.mju.groupware.dto.Student;
 import com.mju.groupware.dto.User;
 import com.mju.groupware.dto.UserList;
-import com.mju.groupware.function.UserInfoMethod;
+import com.mju.groupware.util.UserInfoMethod;
 import com.mju.groupware.service.AdminService;
 import com.mju.groupware.service.ProfessorService;
 import com.mju.groupware.service.StudentService;
@@ -31,31 +31,24 @@ import com.mju.groupware.service.UserService;
 
 @Controller
 @RequestMapping("/admin")
+@RequiredArgsConstructor
 public class AdministratorController {
-	@Autowired
-	private UserInfoMethod userInfoMethod;
-	@Autowired
-	private AdminService adminService;
-	@Autowired
-	private UserService userService;
-	@Autowired
-	private StudentService studentService;
-	@Autowired
-	private ProfessorService professorService;
+	private final UserInfoMethod userInfoMethod;
+	private final AdminService adminService;
+	private final UserService userService;
+	private final StudentService studentService;
+	private final ProfessorService professorService;
+	private final ConstantAdmin constantAdmin;
 
-	private String UserName;
+	// TODO : request param 같은 메서드 로컬 변수를 사용할 것
 	private String UserLoginID;
 	private String MysqlID;
 
-    // constant 연결: DI로 주입
-    @Autowired
-    private ConstantAdmin constantAdmin;
-
 	// 관리자메뉴 - user list
-	@RequestMapping(value = "/manageList", method = RequestMethod.GET)
+	@GetMapping("/manageList")
 	public String manageList(Model model, Principal principal, User user) {
 		if (principal != null) {
-			GetUserInformation(principal, user, model);
+			userInfoMethod.GetUserInformation(principal, user, model, this.constantAdmin.getSTUDENT(), this.constantAdmin.getPROFESSOR(), this.constantAdmin.getADMINISTRATOR());
 		}
 		try {
 			String LoginID = principal.getName();// 로그인 한 아이디
@@ -63,8 +56,7 @@ public class AdministratorController {
 			SelectUserProfileInfo = userService.SelectUserProfileInfo(LoginID);
 			user.setUserName(SelectUserProfileInfo.get(0));
 			// 학생 이름
-			UserName = SelectUserProfileInfo.get(0);
-			model.addAttribute("UserName", UserName);
+			model.addAttribute("UserName", SelectUserProfileInfo.get(0));
 
 			List<UserList> SelectUserList = adminService.SelectUserlist();
 			model.addAttribute("list", SelectUserList);
@@ -78,9 +70,8 @@ public class AdministratorController {
 	// 관리자메뉴 - 관리자 권한으로 user 권한 변경
 	@ResponseBody
 	@RequestMapping(value = "/manageList.do")
-	public String changeAuth(RedirectAttributes redirectAttributes, Model model, HttpServletRequest request,
-			HttpServletResponse response) {
-
+	public String changeAuth(
+			RedirectAttributes redirectAttributes, Model model, HttpServletRequest request, HttpServletResponse response) {
 		String OptionValue = request.getParameter("OptionValue");
 		String[] AjaxMsg = request.getParameterValues("CheckArr");
 
@@ -145,7 +136,7 @@ public class AdministratorController {
 	/* 관리자 메뉴-휴면 계정 관리 화면 */
 	@RequestMapping(value = "/manageSleep", method = RequestMethod.GET)
 	public String manageSleep(Model model, Principal principal, User user) {
-		GetUserInformation(principal, user, model);
+		userInfoMethod.GetUserInformation(principal, user, model, this.constantAdmin.getSTUDENT(), this.constantAdmin.getPROFESSOR(), this.constantAdmin.getADMINISTRATOR());
 
 		try {
 			List<UserList> SelectDormantUserList = adminService.SelectDormantUserList();
@@ -173,7 +164,7 @@ public class AdministratorController {
 	/* 관리자 메뉴-탈퇴 계정 관리 화면 */
 	@RequestMapping(value = "/manageSecession", method = RequestMethod.GET)
 	public String manageSecession(Model model, Principal principal, User user) {
-		GetUserInformation(principal, user, model);
+		userInfoMethod.GetUserInformation(principal, user, model, this.constantAdmin.getSTUDENT(), this.constantAdmin.getPROFESSOR(), this.constantAdmin.getADMINISTRATOR());
 		
 		try {
 			List<UserList> SelectWithdrawalUserList = adminService.SelectWithdrawalUserList();
@@ -229,8 +220,10 @@ public class AdministratorController {
 
 	// 관리자 메뉴에서 회원 아이디, 이름 클릭 시 학생 정보 출력
 	@RequestMapping(value = "/detailStudent", method = RequestMethod.GET)
-	public String detailStudent(HttpServletRequest request, Model model, Principal principal, User user) {
-		GetUserInformation(principal, user, model);
+	public String detailStudent(
+			HttpServletRequest request, Model model, Principal principal, User user) {
+		userInfoMethod.GetUserInformation(
+				principal, user, model, this.constantAdmin.getSTUDENT(), this.constantAdmin.getPROFESSOR(), this.constantAdmin.getADMINISTRATOR());
 		
 		ArrayList<String> SelectUserProfileInfo = new ArrayList<String>();
 		SelectUserProfileInfo = userService.SelectUserProfileInfoByID(MysqlID);
@@ -299,7 +292,7 @@ public class AdministratorController {
 	// 관리자 메뉴에서 회원 아이디, 이름 클릭 시 교수 정보 출력
 	@RequestMapping(value = "/detailProfessor", method = RequestMethod.GET)
 	public String detailProfessor(HttpServletRequest request, Model model, Principal principal, User user) {
-		GetUserInformation(principal, user, model);
+		userInfoMethod.GetUserInformation(principal, user, model, this.constantAdmin.getSTUDENT(), this.constantAdmin.getPROFESSOR(), this.constantAdmin.getADMINISTRATOR());
 		ArrayList<String> SelectUserProfileInfo = new ArrayList<String>();
 		SelectUserProfileInfo = userService.SelectUserProfileInfoByID(MysqlID);
 		// 학번
@@ -533,21 +526,5 @@ public class AdministratorController {
 		return this.constantAdmin.getPManageModify();
 
 	}
-	private void GetUserInformation(Principal principal, User user, Model model) {
-		String LoginID = principal.getName();// 로그인 한 아이디
-		ArrayList<String> SelectUserProfileInfo = new ArrayList<String>();
-		SelectUserProfileInfo = userService.SelectUserProfileInfo(LoginID);
-		user.setUserLoginID(LoginID);
-		if (SelectUserProfileInfo.get(2).equals(this.constantAdmin.getSTUDENT())) {
-			ArrayList<String> StudentInfo = new ArrayList<String>();
-			StudentInfo = studentService.SelectStudentProfileInfo(SelectUserProfileInfo.get(1));
-			userInfoMethod.StudentInfo(model, SelectUserProfileInfo, StudentInfo);
-		} else if (SelectUserProfileInfo.get(2).equals(this.constantAdmin.getPROFESSOR())) {
-			ArrayList<String> ProfessorInfo = new ArrayList<String>();
-			ProfessorInfo = professorService.SelectProfessorProfileInfo(SelectUserProfileInfo.get(1));
-			userInfoMethod.ProfessorInfo(model, SelectUserProfileInfo, ProfessorInfo);
-		} else if (SelectUserProfileInfo.get(2).equals(this.constantAdmin.getADMINISTRATOR())) {
-			userInfoMethod.AdministratorInfo(model, SelectUserProfileInfo);
-		}
-	}
+// private GetUserInformation 메서드는 공통 유틸 호출로 대체되었으므로 제거되었습니다.
 }

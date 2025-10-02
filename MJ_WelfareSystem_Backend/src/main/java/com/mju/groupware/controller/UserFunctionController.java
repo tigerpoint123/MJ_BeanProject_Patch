@@ -13,7 +13,7 @@ import java.util.List;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.context.support.GenericXmlApplicationContext;
 import org.springframework.security.crypto.bcrypt.BCrypt;
 import org.springframework.stereotype.Controller;
@@ -38,7 +38,7 @@ import com.mju.groupware.dto.Professor;
 import com.mju.groupware.dto.Student;
 import com.mju.groupware.dto.User;
 import com.mju.groupware.dto.UserEmail;
-import com.mju.groupware.function.UserInfoMethod;
+import com.mju.groupware.util.UserInfoMethod;
 import com.mju.groupware.service.BoardService;
 import com.mju.groupware.service.EmailService;
 import com.mju.groupware.service.InquiryService;
@@ -48,25 +48,17 @@ import com.mju.groupware.service.UserEmailService;
 import com.mju.groupware.service.UserService;
 
 @Controller
+@RequiredArgsConstructor
 public class UserFunctionController {
-
-   @Autowired
-   private UserService userService;
-   @Autowired
-   private StudentService studentService;
-   @Autowired
-   private ProfessorService professorService;
-   @Autowired
-   private EmailService emailService;
-   @Autowired
-   private UserEmailService userEmailService;
-   @Autowired
-   private UserInfoMethod userInfoMethod;
-   @Autowired
-   private BoardService boardService;
-   @Autowired
-   private InquiryService inquiryService;
-   private GenericXmlApplicationContext ctx;
+   private final UserService userService;
+   private final StudentService studentService;
+   private final ProfessorService professorService;
+   private final EmailService emailService;
+   private final UserEmailService userEmailService;
+   private final UserInfoMethod userInfoMethod;
+   private final BoardService boardService;
+   private final InquiryService inquiryService;
+   private final GenericXmlApplicationContext ctx;
 
    private String StudentColleges;
    private String UserLoginID;
@@ -95,12 +87,6 @@ public class UserFunctionController {
    private ConstantMyPostList ConstantMyPostList;
    private ConstantMyInquiryList ConstantMyInquiryList;
    private ConstantUserFunctionURL ConstantUserFunctionURL;
-
-   public UserFunctionController() {
-      ctx = new GenericXmlApplicationContext();
-      ctx.load("classpath:/xmlForProperties/UserFunctionController.xml");
-      ctx.refresh();
-   }
 
    @RequestMapping(value = "/findPassword", method = RequestMethod.GET)
    public String findPassword() {

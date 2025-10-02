@@ -1,18 +1,17 @@
 package com.mju.groupware.controller;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
 import com.mju.groupware.constant.ConstantHomeController;
 
-
 @Controller
+@RequiredArgsConstructor
 public class HomeController {
 
-    @Autowired
-    private ConstantHomeController Constant;
+    private final ConstantHomeController Constant;
 
     private String Select;
     private String Consent;

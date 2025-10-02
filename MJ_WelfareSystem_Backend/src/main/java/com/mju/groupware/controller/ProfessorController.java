@@ -5,8 +5,7 @@ import java.util.ArrayList;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.support.GenericXmlApplicationContext;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -19,15 +18,13 @@ import com.mju.groupware.service.ProfessorService;
 import com.mju.groupware.service.UserService;
 
 @Controller
+@RequiredArgsConstructor
 public class ProfessorController {
 
-	@Autowired
-	private UserService userService;
-	@Autowired
-	private ProfessorService professorService;
+	private final UserService userService;
+	private final ProfessorService professorService;
 
-	@Autowired
-	private ConstantAdminProfessorController Constant;
+	private final ConstantAdminProfessorController Constant;
 	private String ProfessorColleges;
 	private String ProfessorRoom;
 	private String UserMajorForShow;
