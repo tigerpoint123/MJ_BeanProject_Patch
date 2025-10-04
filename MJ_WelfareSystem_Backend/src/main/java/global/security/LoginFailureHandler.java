@@ -5,12 +5,16 @@ import java.io.IOException;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import lombok.Getter;
+import lombok.Setter;
 import org.springframework.security.authentication.AuthenticationServiceException;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.DisabledException;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.authentication.AuthenticationFailureHandler;
 
+@Setter
+@Getter
 public class LoginFailureHandler implements AuthenticationFailureHandler { // 로그인 실패 후 부가작업
 
     private String LoginIdName;
@@ -42,38 +46,6 @@ public class LoginFailureHandler implements AuthenticationFailureHandler { // �
 
         // 로그인 페이지로 다시 포워딩
         request.getRequestDispatcher(DefaultFailureUrl).forward(request, response);
-    }
-
-    public String getLoginIdName() {
-        return LoginIdName;
-    }
-
-    public void setLoginIdName(String loginIdName) {
-        this.LoginIdName = loginIdName;
-    }
-
-    public String getLoginPwdName() {
-        return LoginPwdName;
-    }
-
-    public void setLoginPwdName(String loginPwdName) {
-        this.LoginPwdName = loginPwdName;
-    }
-
-    public String getErrorMsgName() {
-        return ErrorMsgName;
-    }
-
-    public void setErrorMsgName(String errorMsgName) {
-        this.ErrorMsgName = errorMsgName;
-    }
-
-    public String getDefaultFailureUrl() {
-        return DefaultFailureUrl;
-    }
-
-    public void setDefaultFailureUrl(String defaultFailureUrl) {
-        this.DefaultFailureUrl = defaultFailureUrl;
     }
 
 }

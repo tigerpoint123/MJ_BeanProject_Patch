@@ -27,7 +27,7 @@ import java.util.List;
 @Controller
 @RequestMapping("/admin")
 @RequiredArgsConstructor
-public class AdministratorController {
+public class AdministratorController { //TODO : 비즈니스 로직을 서비스 코드로 옮길 것.
     private final UserInfoMethod userInfoMethod;
     private final AdminService adminService;
     private final UserService userService;
@@ -37,20 +37,11 @@ public class AdministratorController {
 
     // 관리자메뉴 - user list
     @GetMapping("/manageList")
-    public String manageList(Model model, Principal principal, User user) {
-        if (principal != null) {
-            userInfoMethod.GetUserInformation(principal, user, model, this.constantAdmin.getSTUDENT(), this.constantAdmin.getPROFESSOR(), this.constantAdmin.getADMINISTRATOR());
-        }
+    public String manageList(Model model, User user) {
+        // GlobalUserModelAdvice에서 사용자 정보를 주입
         try {
-            String LoginID = principal.getName();// 로그인 한 아이디
-            ArrayList<String> SelectUserProfileInfo = userService.SelectUserProfileInfo(LoginID);
-            user.setUserName(SelectUserProfileInfo.get(0));
-            // 학생 이름
-            model.addAttribute("UserName", SelectUserProfileInfo.get(0));
-
             List<UserList> SelectUserList = adminService.SelectUserlist();
             model.addAttribute("list", SelectUserList);
-            // 여기서 선택된 학생번호 받아오시면됩니다.
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -122,8 +113,8 @@ public class AdministratorController {
     /* 관리자 메뉴-휴면 계정 관리 화면 */
     @GetMapping("/manageSleep")
     public String manageSleep(Model model, Principal principal, User user) {
-        userInfoMethod.GetUserInformation(
-                principal, user, model, this.constantAdmin.getSTUDENT(), this.constantAdmin.getPROFESSOR(), this.constantAdmin.getADMINISTRATOR());
+//        userInfoMethod.GetUserInformation(
+//                principal, user, model, this.constantAdmin.getSTUDENT(), this.constantAdmin.getPROFESSOR(), this.constantAdmin.getADMINISTRATOR());
 
         try {
             List<UserList> SelectDormantUserList = adminService.SelectDormantUserList();
@@ -150,7 +141,7 @@ public class AdministratorController {
     /* 관리자 메뉴-탈퇴 계정 관리 화면 */
     @GetMapping("/manageSecession")
     public String manageSecession(Model model, Principal principal, User user) {
-        userInfoMethod.GetUserInformation(principal, user, model, this.constantAdmin.getSTUDENT(), this.constantAdmin.getPROFESSOR(), this.constantAdmin.getADMINISTRATOR());
+//        userInfoMethod.GetUserInformation(principal, user, model, this.constantAdmin.getSTUDENT(), this.constantAdmin.getPROFESSOR(), this.constantAdmin.getADMINISTRATOR());
 
         try {
             List<UserList> SelectWithdrawalUserList = adminService.SelectWithdrawalUserList();

@@ -8,7 +8,9 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.context.TestConfiguration;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.ComponentScan;
+import org.springframework.context.annotation.FilterType;
+import org.springframework.context.annotation.Import;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.web.servlet.MockMvc;
@@ -35,11 +37,13 @@ import com.mju.groupware.util.UserInfoMethod;
 import com.mju.groupware.constant.ConstantScheduleController;
 import com.mju.groupware.dto.Calender;
 
-@WebMvcTest(controllers = ScheduleController.class)
+@WebMvcTest(controllers = ScheduleController.class,
+        excludeFilters = @ComponentScan.Filter(type = FilterType.ASSIGNABLE_TYPE, classes = GlobalUserModelAdvice.class))
 @AutoConfigureMockMvc(addFilters = false)
 @TestPropertySource(properties = {
         "spring.main.allow-bean-definition-overriding=true"
 })
+@Import(TestMvcSharedConfig.class)
 class ScheduleControllerWebMvcTest {
 
     @Autowired
@@ -51,17 +55,6 @@ class ScheduleControllerWebMvcTest {
     @MockBean private ProfessorService professorService;
     @MockBean private UserInfoMethod userInfoMethod;
     @MockBean private ConstantScheduleController constant;
-
-    @TestConfiguration
-    static class TestConfig {
-        @Bean(name = "testInternalResourceViewResolver")
-        ViewResolver testViewResolver() {
-            InternalResourceViewResolver resolver = new InternalResourceViewResolver();
-            resolver.setPrefix("/WEB-INF/views/");
-            resolver.setSuffix(".jsp");
-            return resolver;
-        }
-    }
 
     @BeforeEach
     void setupCommon() {

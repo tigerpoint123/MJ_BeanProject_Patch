@@ -84,7 +84,6 @@ public class BoardController {
     // 문의 글 작성
     @RequestMapping(value = "/inquiryWrite", method = RequestMethod.GET)
     public String inquiryWrite(Locale locale, User user, Principal principal, Model model) {
-
         if (principal != null) {
             userInfoMethod.GetUserInformation(principal, user, model, this.Constant.getSTUDENT(), this.Constant.getPROFESSOR(), this.Constant.getADMINISTRATOR());
         }

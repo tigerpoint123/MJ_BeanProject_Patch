@@ -10,7 +10,6 @@ import com.mju.groupware.dto.UserList;
 
 @Service
 public class AdminServiceImpl implements AdminService {
-
 	@Autowired
 	private UserListDao userListDao;
 

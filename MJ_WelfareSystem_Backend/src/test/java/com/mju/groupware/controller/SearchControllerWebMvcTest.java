@@ -8,7 +8,9 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.context.TestConfiguration;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.ComponentScan;
+import org.springframework.context.annotation.FilterType;
+import org.springframework.context.annotation.Import;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.web.servlet.MockMvc;
@@ -35,11 +37,13 @@ import com.mju.groupware.constant.ConstantSearchController;
 import com.mju.groupware.dto.SearchKeyWord;
 import com.mju.groupware.dto.UserReview;
 
-@WebMvcTest(controllers = SearchController.class)
+@WebMvcTest(controllers = SearchController.class,
+        excludeFilters = @ComponentScan.Filter(type = FilterType.ASSIGNABLE_TYPE, classes = GlobalUserModelAdvice.class))
 @AutoConfigureMockMvc(addFilters = false)
 @TestPropertySource(properties = {
         "spring.main.allow-bean-definition-overriding=true"
 })
+@Import(TestMvcSharedConfig.class)
 class SearchControllerWebMvcTest {
 
     @Autowired
@@ -51,17 +55,6 @@ class SearchControllerWebMvcTest {
     @MockBean private ProfessorService professorService;
     @MockBean private UserInfoMethod userInfoMethod;
     @MockBean private ConstantSearchController constant;
-
-    @TestConfiguration
-    static class TestConfig {
-        @Bean(name = "testInternalResourceViewResolver")
-        ViewResolver testViewResolver() {
-            InternalResourceViewResolver resolver = new InternalResourceViewResolver();
-            resolver.setPrefix("/WEB-INF/views/");
-            resolver.setSuffix(".jsp");
-            return resolver;
-        }
-    }
 
     @BeforeEach
     void setupCommon() {

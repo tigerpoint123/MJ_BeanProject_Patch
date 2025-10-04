@@ -1,8 +1,10 @@
 package com.mju.groupware.constant;
 
 import lombok.Getter;
+import lombok.Setter;
 
 @Getter
+@Setter
 public class ConstantAdminStudentDao {
 	private String InsertInformation;
 	private String UpdateUserID;

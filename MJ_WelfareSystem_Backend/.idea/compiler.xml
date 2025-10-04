@@ -12,14 +12,9 @@
         <module name="MJ_WelfareSystem_Backend.test" />
       </profile>
     </annotationProcessing>
-    <bytecodeTargetLevel target="21">
-      <module name="groupware" target="17" />
-    </bytecodeTargetLevel>
+    <bytecodeTargetLevel target="21" />
   </component>
   <component name="JavacSettings">
     <option name="ADDITIONAL_OPTIONS_STRING" value="-parameters" />
-    <option name="ADDITIONAL_OPTIONS_OVERRIDE">
-      <module name="groupware" options="-Xlint:all" />
-    </option>
   </component>
 </project>

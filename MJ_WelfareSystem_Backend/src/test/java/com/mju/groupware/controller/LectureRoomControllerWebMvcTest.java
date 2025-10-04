@@ -8,7 +8,9 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.context.TestConfiguration;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.ComponentScan;
+import org.springframework.context.annotation.FilterType;
+import org.springframework.context.annotation.Import;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.web.servlet.ViewResolver;
@@ -32,11 +34,13 @@ import com.mju.groupware.constant.ConstantLectureRoomController;
 import com.mju.groupware.dto.LectureRoom;
 import com.mju.groupware.dto.UserReservation;
 
-@WebMvcTest(controllers = LectureRoomController.class)
+@WebMvcTest(controllers = LectureRoomController.class,
+        excludeFilters = @ComponentScan.Filter(type = FilterType.ASSIGNABLE_TYPE, classes = GlobalUserModelAdvice.class))
 @AutoConfigureMockMvc(addFilters = false)
 @TestPropertySource(properties = {
         "spring.main.allow-bean-definition-overriding=true"
 })
+@Import(TestMvcSharedConfig.class)
 class LectureRoomControllerWebMvcTest {
 
     @Autowired
@@ -48,17 +52,6 @@ class LectureRoomControllerWebMvcTest {
     @MockBean private ProfessorService professorService;
     @MockBean private UserInfoMethod userInfoMethod;
     @MockBean private ConstantLectureRoomController constantLecture;
-
-    @TestConfiguration
-    static class TestConfig {
-        @Bean(name = "testInternalResourceViewResolver")
-        ViewResolver testViewResolver() {
-            InternalResourceViewResolver resolver = new InternalResourceViewResolver();
-            resolver.setPrefix("/WEB-INF/views/");
-            resolver.setSuffix(".jsp");
-            return resolver;
-        }
-    }
 
     @BeforeEach
     void setupUserProfile() {

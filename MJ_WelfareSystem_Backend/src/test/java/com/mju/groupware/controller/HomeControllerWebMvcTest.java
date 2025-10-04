@@ -1,46 +1,44 @@
 package com.mju.groupware.controller;
 
+import com.mju.groupware.constant.ConstantHomeController;
+import com.mju.groupware.service.ProfessorService;
+import com.mju.groupware.service.StudentService;
+import com.mju.groupware.service.UserService;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.boot.test.context.TestConfiguration;
+import org.springframework.context.annotation.ComponentScan;
+import org.springframework.context.annotation.FilterType;
+import org.springframework.context.annotation.Import;
 import org.springframework.test.context.TestPropertySource;
-import org.springframework.context.annotation.Bean;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.web.servlet.ViewResolver;
-import org.springframework.web.servlet.view.InternalResourceViewResolver;
 
+import static org.mockito.BDDMockito.given;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-import static org.mockito.BDDMockito.given;
 
-import com.mju.groupware.constant.ConstantHomeController;
-@WebMvcTest(controllers = HomeController.class)
+@WebMvcTest(controllers = HomeController.class,
+        excludeFilters = @ComponentScan.Filter(type = FilterType.ASSIGNABLE_TYPE, classes = GlobalUserModelAdvice.class))
 @AutoConfigureMockMvc(addFilters = false)
 @TestPropertySource(properties = {
         "spring.main.allow-bean-definition-overriding=true"
 })
+@Import(TestMvcSharedConfig.class)
 class HomeControllerWebMvcTest {
-
     @Autowired
     private MockMvc mockMvc;
 
     @MockBean
     private ConstantHomeController constantHomeController;
-
-    @TestConfiguration
-    static class TestConfig {
-        @Bean(name = "testInternalResourceViewResolver")
-        ViewResolver testViewResolver() {
-            InternalResourceViewResolver resolver = new InternalResourceViewResolver();
-            resolver.setPrefix("/WEB-INF/views/");
-            resolver.setSuffix(".jsp");
-            return resolver;
-        }
-    }
+    @MockBean
+    private UserService userService;
+    @MockBean
+    private StudentService studentService;
+    @MockBean
+    private ProfessorService professorService;
 
     @Test
     @DisplayName("GET /login 는 200을 반환한다")

@@ -1,53 +1,48 @@
 package com.mju.groupware.controller;
 
-import org.junit.jupiter.api.DisplayName;
+import com.mju.groupware.constant.ConstantAdminBoardController;
+import com.mju.groupware.service.*;
+import com.mju.groupware.util.UserInfoMethod;
+import global.config.AdminXmlConfig;
+import global.config.BoardXmlConfig;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
-import org.springframework.boot.test.context.TestConfiguration;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.context.annotation.Bean;
-import org.springframework.test.context.TestPropertySource;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.FilterType;
-import global.config.AdminXmlConfig;
-import global.config.BoardXmlConfig;
+import org.springframework.context.annotation.Import;
+import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.web.servlet.ViewResolver;
-import org.springframework.web.servlet.view.InternalResourceViewResolver;
 
 import java.security.Principal;
-import java.util.Collections;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 
 import static org.mockito.BDDMockito.given;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-import com.mju.groupware.service.BoardService;
-import com.mju.groupware.service.InquiryService;
-import com.mju.groupware.service.UserService;
-import com.mju.groupware.service.StudentService;
-import com.mju.groupware.service.ProfessorService;
-import com.mju.groupware.util.UserInfoMethod;
-import com.mju.groupware.constant.ConstantAdminBoardController;
-
 @WebMvcTest(
         controllers = BoardController.class,
-        excludeFilters = @ComponentScan.Filter(type = FilterType.ASSIGNABLE_TYPE, classes = {
-                AdminXmlConfig.class,
-                BoardXmlConfig.class
-        })
+        excludeFilters = {
+                @ComponentScan.Filter(type = FilterType.ASSIGNABLE_TYPE, classes = {
+                        AdminXmlConfig.class,
+                        BoardXmlConfig.class
+                }),
+                @ComponentScan.Filter(type = FilterType.ASSIGNABLE_TYPE, classes = GlobalUserModelAdvice.class)
+        }
 )
 @AutoConfigureMockMvc(addFilters = false)
 @TestPropertySource(properties = {
         "spring.main.allow-bean-definition-overriding=true"
 })
+@Import(TestMvcSharedConfig.class)
 class BoardControllerWebMvcTest {
-
     @Autowired
     private MockMvc mockMvc;
 
@@ -58,17 +53,6 @@ class BoardControllerWebMvcTest {
     @MockBean private ProfessorService professorService;
     @MockBean private UserInfoMethod userInfoMethod;
     @MockBean private ConstantAdminBoardController constant;
-
-    @TestConfiguration
-    static class TestConfig {
-        @Bean(name = "testInternalResourceViewResolver")
-        ViewResolver testViewResolver() {
-            InternalResourceViewResolver resolver = new InternalResourceViewResolver();
-            resolver.setPrefix("/WEB-INF/views/");
-            resolver.setSuffix(".jsp");
-            return resolver;
-        }
-    }
 
     @BeforeEach
     void setupUserProfile() {
