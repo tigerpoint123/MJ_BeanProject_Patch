@@ -1,8 +1,11 @@
 package com.mju.groupware.dao;
 
-import java.util.ArrayList;
-import java.util.List;
-
+import com.mju.groupware.constant.ConstantAdminUserDao;
+import com.mju.groupware.dto.Professor;
+import com.mju.groupware.dto.Student;
+import com.mju.groupware.dto.User;
+import com.mju.groupware.dto.UserInfoOpen;
+import global.security.UsersDetails;
 import org.mybatis.spring.SqlSessionTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.support.GenericXmlApplicationContext;
@@ -10,12 +13,8 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Repository;
 import org.springframework.stereotype.Service;
 
-import com.mju.groupware.constant.ConstantAdminUserDao;
-import com.mju.groupware.dto.Professor;
-import com.mju.groupware.dto.Student;
-import com.mju.groupware.dto.User;
-import com.mju.groupware.dto.UserInfoOpen;
-import global.security.UsersDetails;
+import java.util.ArrayList;
+import java.util.List;
 
 @Service
 @Repository
@@ -265,10 +264,9 @@ public class UserDaoImpl implements UserDao {
 
 	@Override
 	public ArrayList<String> SelectMyPageUserInfoByID(String mysqlID) {
-		ArrayList<String> Info = new ArrayList<String>();
+		ArrayList<String> Info = new ArrayList<>();
 		List<User> Output = this.sqlSession.selectList(this.Constant.getSelectMyPageInfoByID(), mysqlID);
-		if (Output == null) {
-		} else {
+		if (Output != null) {
 			for (User Item : Output) {
 				UserLoginID = Item.getUserLoginID();
 				UserName = Item.getUserName();

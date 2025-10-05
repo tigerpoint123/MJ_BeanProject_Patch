@@ -6,6 +6,7 @@ import com.mju.groupware.service.ProfessorService;
 import com.mju.groupware.service.StudentService;
 import com.mju.groupware.service.UserService;
 import com.mju.groupware.util.UserInfoMethod;
+import jakarta.servlet.http.HttpServletRequest;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -18,11 +19,14 @@ import org.springframework.context.annotation.FilterType;
 import org.springframework.context.annotation.Import;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.ui.Model;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.security.Principal;
-import java.util.ArrayList;
 
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
+import static org.mockito.BDDMockito.willAnswer;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
@@ -66,6 +70,8 @@ class AdministratorControllerWebMvcTest {
         given(constantAdmin.getSTUDENT()).willReturn("STUDENT");
         given(constantAdmin.getPROFESSOR()).willReturn("PROFESSOR");
         given(constantAdmin.getADMINISTRATOR()).willReturn("ADMINISTRATOR");
+        given(constantAdmin.getReSDetail()).willReturn("redirect:detailStudent");
+        given(constantAdmin.getRePDetail()).willReturn("redirect:detailProfessor");
     }
 
     @Test
@@ -125,30 +131,41 @@ class AdministratorControllerWebMvcTest {
     @Test
     @DisplayName("GET /admin/manageModifyStudent returns 200")
     void manageModifyStudentReturnsOk() throws Exception {
-        // given
-        com.mju.groupware.dto.User user = new com.mju.groupware.dto.User();
-        user.setUserEmail("student@example.com");
-        user.setOpenPhoneNum("010-0000-0000");
-        user.setOpenGrade("학년");
-        given(userService.SelectModifyUserInfo("U001")).willReturn(user);
-
+        // given: AdminService.modifyStudentList가 호출될 때 모델에 속성들을 추가하도록 모킹
+        willAnswer(invocation -> {
+            Model model = invocation.getArgument(1);
+            model.addAttribute("UserLoginID", "U001");
+            model.addAttribute("Email", "student");
+            model.addAttribute("OpenPhoneNum", "010-0000-0000");
+            model.addAttribute("OpenGrade", "학년");
+            return null;
+        }).given(adminService).modifyStudentList(any(HttpServletRequest.class), any(Model.class));
+        
+        // when & then
         mockMvc.perform(get("/admin/manageModifyStudent").param("no", "U001"))
                 .andExpect(status().isOk())
                 .andExpect(view().name(constantAdmin.getSManageModify()))
                 .andExpect(model().attributeExists("UserLoginID"))
                 .andExpect(model().attributeExists("Email"))
                 .andExpect(model().attributeExists("OpenPhoneNum"))
-                .andExpect(model().attributeExists("OpenGrade"));
+                .andExpect(model().attributeExists("OpenGrade"))
+                .andExpect(model().attribute("UserLoginID", "U001"))
+                .andExpect(model().attribute("Email", "student"))
+                .andExpect(model().attribute("OpenPhoneNum", "010-0000-0000"))
+                .andExpect(model().attribute("OpenGrade", "학년"));
     }
 
     @Test
     @DisplayName("GET /admin/manageModifyProfessor returns 200")
     void manageModifyProfessorReturnsOk() throws Exception {
-        // given
-        com.mju.groupware.dto.User puser = new com.mju.groupware.dto.User();
-        puser.setUserEmail("test@example.com");
-        puser.setOpenPhoneNum("02-123-4567");
-        given(userService.SelectModifyUserInfo("P001")).willReturn(puser);
+        // given: AdminService.modifyProfessorList가 호출될 때 모델에 속성들을 추가하도록 모킹
+        willAnswer(invocation -> {
+            Model model = invocation.getArgument(0);
+            model.addAttribute("UserLoginID", "P001");
+            model.addAttribute("Email", "test");
+            model.addAttribute("OpenPhoneNum", "02-123-4567");
+            return null;
+        }).given(adminService).modifyProfessorList(any(Model.class), any(HttpServletRequest.class), any(String.class));
 
         mockMvc.perform(get("/admin/manageModifyProfessor").param("no", "P001"))
                 .andExpect(status().isOk())
@@ -161,35 +178,37 @@ class AdministratorControllerWebMvcTest {
     @Test
     @DisplayName("GET /admin/detail may return 3xx redirect")
     void detailReturnsView() throws Exception {
-        // 최소 happy path: 학생 역할과 ROLE_USER 조합으로 분기 타지 않고 목록으로 돌려보내는 경우 등 다양함.
+        // given: AdminService가 getDetailPage 호출 시 redirect 문자열을 반환하도록 설정
+        given(adminService.getDetailPage(any(HttpServletRequest.class), any(RedirectAttributes.class)))
+                .willReturn("redirect:/admin/manageList");
+        
+        // when & then
         mockMvc.perform(get("/admin/detail")
                         .param("no", "1")
-                        .param("R", "SROLE")
+                        .param("R", "UNKNOWN_ROLE")
                         .param("A", "ROLE_USER"))
                 .andExpect(status().is3xxRedirection())
-                .andExpect(view().name(constantAdmin.getReList()));
+                .andExpect(view().name("redirect:/admin/manageList"));
     }
-
-    // 내부 유틸: 알 수 없는 역할 문자열(컨트롤러 내부 분기 안 타도록)
-    private String constantRoleUnknown() { return "UNKNOWN_ROLE"; }
 
     @Test
     @DisplayName("GET /admin/detailStudent returns 200 and sDetail view")
     void detailStudentReturnsOk() throws Exception {
-        // given: 학생 프로필 정보 스텁 (필요 인덱스: 0,1,2,3,4,5,6,7,8,9,10)
-        ArrayList<String> info = new ArrayList<>();
-        info.add("U001");                     // 0: UserLoginID
-        info.add("홍길동");                      // 1: SUserName
-        info.add("010-0000-0000");            // 2: UserPhoneNum
-        info.add("student@example.com");      // 3: UserEmail
-        info.add("전화번호");                    // 4: 공개 항목1
-        info.add("학년");                        // 5: 공개 항목2
-        info.add("공과대학");                    // 6: StudentColleges
-        info.add("컴퓨터공학");                  // 7: StudentMajor
-        info.add("3");                         // 8: StudentGrade
-        info.add("수학");                        // 9: StudentDoubleMajor
-        info.add("남");                         // 10: StudentGender
-        given(userService.SelectUserProfileInfoByID("U001")).willReturn(info);
+        // given: AdminService.detailStudent가 호출될 때 모델에 속성들을 추가하도록 모킹
+        willAnswer(invocation -> {
+            Model model = invocation.getArgument(0);
+            model.addAttribute("UserLoginID", "U001");
+            model.addAttribute("SUserName", "홍길동");
+            model.addAttribute("StudentGender", "남");
+            model.addAttribute("UserPhoneNum", "010-0000-0000");
+            model.addAttribute("StudentGrade", "3");
+            model.addAttribute("StudentColleges", "공과대학");
+            model.addAttribute("StudentMajor", "컴퓨터공학");
+            model.addAttribute("StudentDoubleMajor", "수학");
+            model.addAttribute("UserEmail", "student@example.com");
+            model.addAttribute("StudentInfoOpen", "전화번호,학년");
+            return true;
+        }).given(adminService).detailStudent(any(Model.class), any(String.class));
 
         // when/then
         mockMvc.perform(get("/admin/detailStudent").param("no", "U001"))

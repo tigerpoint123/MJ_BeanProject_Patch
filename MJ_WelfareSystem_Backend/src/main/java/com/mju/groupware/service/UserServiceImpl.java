@@ -1,12 +1,5 @@
 package com.mju.groupware.service;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Random;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-
 import com.mju.groupware.dao.ProfessorDao;
 import com.mju.groupware.dao.StudentDao;
 import com.mju.groupware.dao.UserDao;
@@ -14,18 +7,19 @@ import com.mju.groupware.dto.Professor;
 import com.mju.groupware.dto.Student;
 import com.mju.groupware.dto.User;
 import com.mju.groupware.dto.UserInfoOpen;
+import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Service;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Random;
 
 @Service
+@RequiredArgsConstructor
 public class UserServiceImpl implements UserService {
-
-	@Autowired
-	private UserDao userDao;
-
-	@Autowired
-	private StudentDao studentDao;
-
-	@Autowired
-	private ProfessorDao professorDao;
+	private final UserDao userDao;
+	private final StudentDao studentDao;
+	private final ProfessorDao professorDao;
 
 	@Override
 	public void InsertForSignUp(User user) {
@@ -145,14 +139,10 @@ public class UserServiceImpl implements UserService {
 
 	@Override
 	public ArrayList<String> SelectMyPageUserInfo(String userId) {
-		ArrayList<String> Info = new ArrayList<String>();
-		ArrayList<String> UserInfo = new ArrayList<String>();
-		ArrayList<String> StudentInfo = new ArrayList<String>();
-		ArrayList<String> ProfessorInfo = new ArrayList<String>();
-
-		UserInfo = userDao.SelectMyPageUserInfo(userId);
-		StudentInfo = studentDao.SelectMyPageUserInfo(UserInfo.get(0));
-		ProfessorInfo = professorDao.SelectMyPageUserInfo(UserInfo.get(0));
+		ArrayList<String> Info = new ArrayList<>();
+		ArrayList<String> UserInfo = userDao.SelectMyPageUserInfo(userId);
+		ArrayList<String> StudentInfo = studentDao.SelectMyPageUserInfo(UserInfo.get(0));
+		ArrayList<String> ProfessorInfo = professorDao.SelectMyPageUserInfo(UserInfo.get(0));
 		UserInfo.remove(0);
 
 		for (int i = 0; i < UserInfo.size(); i++) {
@@ -169,25 +159,17 @@ public class UserServiceImpl implements UserService {
 
 	@Override
 	public ArrayList<String> SelectUserProfileInfoByID(String mysqlID) {
-		ArrayList<String> Info = new ArrayList<String>();
-		ArrayList<String> UserInfo = new ArrayList<String>();
-		ArrayList<String> StudentInfo = new ArrayList<String>();
-		ArrayList<String> ProfessorInfo = new ArrayList<String>();
-		// 유저정보를 mysqlID를 던져줘서 받아온다.
-		UserInfo = userDao.SelectMyPageUserInfoByID(mysqlID);
-		// 학생정보를 mysqlID를 통해서 받아온다.
-		StudentInfo = studentDao.SelectMyPageUserInfoByID(mysqlID);
-		// 교수정보를 mysqlID를 통해서 받아온다.
-		ProfessorInfo = professorDao.SelectMyPageUserInfoByID(mysqlID);
-		// Data의 크기만큼 Info List에 채워준다.
+		ArrayList<String> Info = new ArrayList<>();
+		ArrayList<String> UserInfo = userDao.SelectMyPageUserInfoByID(mysqlID);
+		ArrayList<String> StudentInfo = studentDao.SelectMyPageUserInfoByID(mysqlID);
+		ArrayList<String> ProfessorInfo = professorDao.SelectMyPageUserInfoByID(mysqlID);
+
 		for (int i = 0; i < UserInfo.size(); i++) {
 			Info.add(UserInfo.get(i));
 		}
-		// Data의 크기만큼 Info List에 채워준다.
 		for (int i = 0; i < StudentInfo.size(); i++) {
 			Info.add(StudentInfo.get(i));
 		}
-		// Data의 크기만큼 Info List에 채워준다.
 		for (int i = 0; i < ProfessorInfo.size(); i++) {
 			Info.add(ProfessorInfo.get(i));
 		}
@@ -216,8 +198,6 @@ public class UserServiceImpl implements UserService {
 
 	@Override
 	public String SelectOpenInfo(String userID) {
-		// XML화해야할지 팀원들과 얘기하기
-		// 추후 Entity로 옮겨야함
 		List<UserInfoOpen> SelectOpenInfo = userDao.SelectOpenInfo(userID);
 		String result = "Error";
 
