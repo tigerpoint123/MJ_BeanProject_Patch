@@ -41,7 +41,7 @@ class HomeControllerWebMvcTest {
     private ProfessorService professorService;
 
     @Test
-    @DisplayName("GET /login 는 200을 반환한다")
+    @DisplayName("GET /login returns 200")
     void loginReturnsOk() throws Exception {
         given(constantHomeController.getLogin()).willReturn("/signin/login");
         mockMvc.perform(get("/login"))
@@ -49,7 +49,7 @@ class HomeControllerWebMvcTest {
     }
 
     @Test
-    @DisplayName("GET /signupSelect 는 200을 반환한다")
+    @DisplayName("GET /signupSelect returns 200")
     void signupSelectReturnsOk() throws Exception {
         given(constantHomeController.getSelect()).willReturn("/signup/signupSelect");
         mockMvc.perform(get("/signupSelect"))
@@ -57,7 +57,7 @@ class HomeControllerWebMvcTest {
     }
 
     @Test
-    @DisplayName("GET /infoConsent 는 200을 반환한다")
+    @DisplayName("GET /infoConsent returns 200")
     void infoConsentReturnsOk() throws Exception {
         given(constantHomeController.getConsent()).willReturn("/signup/infoConsent");
         mockMvc.perform(get("/infoConsent"))
@@ -65,7 +65,7 @@ class HomeControllerWebMvcTest {
     }
 
     @Test
-    @DisplayName("GET /access_denied 는 200을 반환한다")
+    @DisplayName("GET /access_denied returns 200")
     void accessDeniedReturnsOk() throws Exception {
         given(constantHomeController.getDenied()).willReturn("/homeView/accessDenied");
         mockMvc.perform(get("/access_denied"))

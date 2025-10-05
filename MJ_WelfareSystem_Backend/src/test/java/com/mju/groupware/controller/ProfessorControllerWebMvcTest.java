@@ -53,7 +53,7 @@ class ProfessorControllerWebMvcTest {
     }
 
     @Test
-    @DisplayName("GET /signupProfessor 는 200을 반환한다")
+    @DisplayName("GET /signupProfessor returns 200")
     void signupProfessorReturnsOk() throws Exception {
         given(constant.getRSignupProfessor()).willReturn("professor/signupProfessor");
         mockMvc.perform(get("/signupProfessor"))
@@ -61,7 +61,7 @@ class ProfessorControllerWebMvcTest {
     }
 
     @Test
-    @DisplayName("GET /myPageProfessor 는 200을 반환한다")
+    @DisplayName("GET /myPageProfessor returns 200")
     void myPageProfessorReturnsOk() throws Exception {
         Principal principal = () -> "testUser";
         // 교수 기본 정보
@@ -97,7 +97,7 @@ class ProfessorControllerWebMvcTest {
     }
 
     @Test
-    @DisplayName("GET /modifyProfessor 는 200을 반환한다")
+    @DisplayName("GET /modifyProfessor returns 200")
     void modifyProfessorReturnsOk() throws Exception {
         Principal principal = () -> "testUser";
         User user = new User();
@@ -122,7 +122,7 @@ class ProfessorControllerWebMvcTest {
     }
 
     @Test
-    @DisplayName("POST /modifyProfessor.do 는 200을 반환한다")
+    @DisplayName("POST /modifyProfessor.do returns 200")
     void modifyProfessorPostReturnsOk() throws Exception {
         Principal principal = () -> "testUser";
         given(userService.SelectUserInformation("testUser"))

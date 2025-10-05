@@ -5,6 +5,7 @@ import com.mju.groupware.service.AdminService;
 import com.mju.groupware.service.ProfessorService;
 import com.mju.groupware.service.StudentService;
 import com.mju.groupware.service.UserService;
+import com.mju.groupware.util.UserInfoMethod;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -19,6 +20,7 @@ import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.web.servlet.MockMvc;
 
 import java.security.Principal;
+import java.util.ArrayList;
 
 import static org.mockito.BDDMockito.given;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -43,6 +45,8 @@ class AdministratorControllerWebMvcTest {
     @MockBean
     private ProfessorService professorService;
     @MockBean
+    private UserInfoMethod userInfoMethod;
+    @MockBean
     private ConstantAdmin constantAdmin;
 
     @BeforeEach
@@ -57,6 +61,7 @@ class AdministratorControllerWebMvcTest {
         given(constantAdmin.getSManageModify()).willReturn("admin/manageModifyStudent");
         given(constantAdmin.getPManageModify()).willReturn("admin/manageModifyProfessor");
         given(constantAdmin.getReList()).willReturn("redirect:/admin/manageList");
+        given(constantAdmin.getSDetail()).willReturn("admin/sDetail");
         given(constantAdmin.getEmail()).willReturn("Email");
         given(constantAdmin.getSTUDENT()).willReturn("STUDENT");
         given(constantAdmin.getPROFESSOR()).willReturn("PROFESSOR");
@@ -64,7 +69,7 @@ class AdministratorControllerWebMvcTest {
     }
 
     @Test
-    @DisplayName("GET /admin/manageList 는 200을 반환한다")
+    @DisplayName("GET /admin/manageList returns 200")
     void manageListReturnsOk() throws Exception {
         // given
         Principal principal = () -> "testUser";
@@ -78,7 +83,7 @@ class AdministratorControllerWebMvcTest {
     }
 
     @Test
-    @DisplayName("GET /admin/manageSleep 는 200을 반환한다")
+    @DisplayName("GET /admin/manageSleep returns 200")
     void manageSleepReturnsOk() throws Exception {
         Principal principal = () -> "testUser";
         // advice에서 사용자 정보 메서드 호출은 mock으로 통과
@@ -90,7 +95,7 @@ class AdministratorControllerWebMvcTest {
     }
 
     @Test
-    @DisplayName("GET /admin/manageSecession 는 200을 반환한다")
+    @DisplayName("GET /admin/manageSecession returns 200")
     void manageSecessionReturnsOk() throws Exception {
         Principal principal = () -> "testUser";
         // advice에서 사용자 정보 메서드 호출은 mock으로 통과
@@ -102,7 +107,7 @@ class AdministratorControllerWebMvcTest {
     }
 
     @Test
-    @DisplayName("GET /admin/manageStudent 는 200을 반환한다")
+    @DisplayName("GET /admin/manageStudent returns 200")
     void manageStudentReturnsOk() throws Exception {
         mockMvc.perform(get("/admin/manageStudent"))
                 .andExpect(status().isOk())
@@ -110,7 +115,7 @@ class AdministratorControllerWebMvcTest {
     }
 
     @Test
-    @DisplayName("GET /admin/manageProfessor 는 200을 반환한다")
+    @DisplayName("GET /admin/manageProfessor returns 200")
     void manageProfessorReturnsOk() throws Exception {
         mockMvc.perform(get("/admin/manageProfessor"))
                 .andExpect(status().isOk())
@@ -118,7 +123,7 @@ class AdministratorControllerWebMvcTest {
     }
 
     @Test
-    @DisplayName("GET /admin/manageModifyStudent 는 200을 반환한다")
+    @DisplayName("GET /admin/manageModifyStudent returns 200")
     void manageModifyStudentReturnsOk() throws Exception {
         // given
         com.mju.groupware.dto.User user = new com.mju.groupware.dto.User();
@@ -137,7 +142,7 @@ class AdministratorControllerWebMvcTest {
     }
 
     @Test
-    @DisplayName("GET /admin/manageModifyProfessor 는 200을 반환한다")
+    @DisplayName("GET /admin/manageModifyProfessor returns 200")
     void manageModifyProfessorReturnsOk() throws Exception {
         // given
         com.mju.groupware.dto.User puser = new com.mju.groupware.dto.User();
@@ -154,7 +159,7 @@ class AdministratorControllerWebMvcTest {
     }
 
     @Test
-    @DisplayName("GET /admin/detail 는 3xx 리다이렉트를 반환할 수 있다")
+    @DisplayName("GET /admin/detail may return 3xx redirect")
     void detailReturnsView() throws Exception {
         // 최소 happy path: 학생 역할과 ROLE_USER 조합으로 분기 타지 않고 목록으로 돌려보내는 경우 등 다양함.
         mockMvc.perform(get("/admin/detail")
@@ -167,6 +172,42 @@ class AdministratorControllerWebMvcTest {
 
     // 내부 유틸: 알 수 없는 역할 문자열(컨트롤러 내부 분기 안 타도록)
     private String constantRoleUnknown() { return "UNKNOWN_ROLE"; }
+
+    @Test
+    @DisplayName("GET /admin/detailStudent returns 200 and sDetail view")
+    void detailStudentReturnsOk() throws Exception {
+        // given: 학생 프로필 정보 스텁 (필요 인덱스: 0,1,2,3,4,5,6,7,8,9,10)
+        ArrayList<String> info = new ArrayList<>();
+        info.add("U001");                     // 0: UserLoginID
+        info.add("홍길동");                      // 1: SUserName
+        info.add("010-0000-0000");            // 2: UserPhoneNum
+        info.add("student@example.com");      // 3: UserEmail
+        info.add("전화번호");                    // 4: 공개 항목1
+        info.add("학년");                        // 5: 공개 항목2
+        info.add("공과대학");                    // 6: StudentColleges
+        info.add("컴퓨터공학");                  // 7: StudentMajor
+        info.add("3");                         // 8: StudentGrade
+        info.add("수학");                        // 9: StudentDoubleMajor
+        info.add("남");                         // 10: StudentGender
+        given(userService.SelectUserProfileInfoByID("U001")).willReturn(info);
+
+        // when/then
+        mockMvc.perform(get("/admin/detailStudent").param("no", "U001"))
+                .andExpect(status().isOk())
+                .andExpect(view().name("admin/sDetail"))
+                .andExpect(model().attributeExists(
+                        "UserLoginID",
+                        "SUserName",
+                        "StudentGender",
+                        "UserPhoneNum",
+                        "StudentGrade",
+                        "StudentColleges",
+                        "StudentMajor",
+                        "StudentDoubleMajor",
+                        "UserEmail",
+                        "StudentInfoOpen"
+                ));
+    }
 }
 
 

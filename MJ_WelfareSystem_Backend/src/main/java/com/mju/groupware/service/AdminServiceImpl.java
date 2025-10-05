@@ -1,12 +1,12 @@
 package com.mju.groupware.service;
 
-import java.util.List;
-
+import com.mju.groupware.dao.UserListDao;
+import com.mju.groupware.dto.UserList;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.mju.groupware.dao.UserListDao;
-import com.mju.groupware.dto.UserList;
+import java.util.List;
+import java.util.Map;
 
 @Service
 public class AdminServiceImpl implements AdminService {
@@ -28,4 +28,10 @@ public class AdminServiceImpl implements AdminService {
 		return userListDao.SelectWithdrawalUserList();
 	}
 
+	@Override
+	public Map<String, Object> detailStudent() {
+
+
+		return Map.of();
+	}
 }

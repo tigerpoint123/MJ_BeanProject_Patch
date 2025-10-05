@@ -72,7 +72,7 @@ class SearchControllerWebMvcTest {
     }
 
     @Test
-    @DisplayName("GET /search/searchUser 는 200을 반환한다")
+    @DisplayName("GET /search/searchUser returns 200")
     void searchUserReturnsOk() throws Exception {
         Principal principal = () -> "testUser";
         mockMvc.perform(get("/search/searchUser").principal(principal))
@@ -80,7 +80,7 @@ class SearchControllerWebMvcTest {
     }
 
     @Test
-    @DisplayName("POST /search/searchUser.do 는 200을 반환한다")
+    @DisplayName("POST /search/searchUser.do returns 200")
     void doSearchUserReturnsOk() throws Exception {
         Principal principal = () -> "testUser";
         // 빈 결과
@@ -94,7 +94,7 @@ class SearchControllerWebMvcTest {
     }
 
     @Test
-    @DisplayName("GET /search/reviewList 는 200 또는 3xx를 반환한다(리뷰 존재 케이스)")
+    @DisplayName("GET /search/reviewList returns 200 or 3xx (reviews exist)")
     void reviewListReturnsOk() throws Exception {
         Principal principal = () -> "testUser";
         given(userService.SelectIDForReview("email@example.com")).willReturn("1");

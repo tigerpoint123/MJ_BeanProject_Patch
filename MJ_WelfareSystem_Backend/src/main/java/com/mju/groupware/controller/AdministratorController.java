@@ -37,8 +37,9 @@ public class AdministratorController { //TODO : 비즈니스 로직을 서비스
 
     // 관리자메뉴 - user list
     @GetMapping("/manageList")
-    public String manageList(Model model, User user) {
-        // GlobalUserModelAdvice에서 사용자 정보를 주입
+    public String manageList(Model model, User user, Principal principal) {
+        userInfoMethod.GetUserInformation(principal, user, model, this.constantAdmin.getSTUDENT(), this.constantAdmin.getPROFESSOR(), this.constantAdmin.getADMINISTRATOR());
+
         try {
             List<UserList> SelectUserList = adminService.SelectUserlist();
             model.addAttribute("list", SelectUserList);
@@ -80,7 +81,6 @@ public class AdministratorController { //TODO : 비즈니스 로직을 서비스
     @ResponseBody
     @RequestMapping(value = "/withdrawal.do")
     public String DoWithdrawlByAdmin(HttpServletRequest request, User user, Student student, Professor professor) {
-
         String[] AjaxMsg = request.getParameterValues("CheckArr");
         for (int i = 0; i < AjaxMsg.length; i++) {
             User UserInfo = userService.SelectUserInfo(AjaxMsg[i]);
@@ -93,7 +93,6 @@ public class AdministratorController { //TODO : 비즈니스 로직을 서비스
             user.setDate(Date.format(Now));
             // 탈퇴 업데이트
             userService.UpdateWithdrawal(user);
-
         }
         return this.constantAdmin.getReList();
     }
@@ -101,8 +100,7 @@ public class AdministratorController { //TODO : 비즈니스 로직을 서비스
     // 관리자 휴면 메뉴 - 관리자 권한으로 휴면 계정 탈퇴
     @ResponseBody
     @RequestMapping(value = "/dormantWithdrawal.do")
-    public String DoDormantWithdrawalByAdmin(HttpServletRequest request, User user, Student student,
-                                             Professor professor) {
+    public String DoDormantWithdrawalByAdmin(HttpServletRequest request) {
         String[] AjaxMsg = request.getParameterValues("CheckArr");
         for (int i = 0; i < AjaxMsg.length; i++) {
             userService.UpdateWithdrawalByDormant(AjaxMsg[i]);
@@ -113,8 +111,8 @@ public class AdministratorController { //TODO : 비즈니스 로직을 서비스
     /* 관리자 메뉴-휴면 계정 관리 화면 */
     @GetMapping("/manageSleep")
     public String manageSleep(Model model, Principal principal, User user) {
-//        userInfoMethod.GetUserInformation(
-//                principal, user, model, this.constantAdmin.getSTUDENT(), this.constantAdmin.getPROFESSOR(), this.constantAdmin.getADMINISTRATOR());
+        userInfoMethod.GetUserInformation(
+                principal, user, model, this.constantAdmin.getSTUDENT(), this.constantAdmin.getPROFESSOR(), this.constantAdmin.getADMINISTRATOR());
 
         try {
             List<UserList> SelectDormantUserList = adminService.SelectDormantUserList();
@@ -141,7 +139,7 @@ public class AdministratorController { //TODO : 비즈니스 로직을 서비스
     /* 관리자 메뉴-탈퇴 계정 관리 화면 */
     @GetMapping("/manageSecession")
     public String manageSecession(Model model, Principal principal, User user) {
-//        userInfoMethod.GetUserInformation(principal, user, model, this.constantAdmin.getSTUDENT(), this.constantAdmin.getPROFESSOR(), this.constantAdmin.getADMINISTRATOR());
+        userInfoMethod.GetUserInformation(principal, user, model, this.constantAdmin.getSTUDENT(), this.constantAdmin.getPROFESSOR(), this.constantAdmin.getADMINISTRATOR());
 
         try {
             List<UserList> SelectWithdrawalUserList = adminService.SelectWithdrawalUserList();
@@ -196,10 +194,10 @@ public class AdministratorController { //TODO : 비즈니스 로직을 서비스
 
     // 관리자 메뉴에서 회원 아이디, 이름 클릭 시 학생 정보 출력
     @RequestMapping(value = "/detailStudent", method = RequestMethod.GET)
-    public String detailStudent(
-            HttpServletRequest request, Model model, Principal principal, User user, @RequestParam("no") String no) {
+    public String detailStudent(Model model, @RequestParam("no") String no, Principal principal, User user) {
         userInfoMethod.GetUserInformation(
                 principal, user, model, this.constantAdmin.getSTUDENT(), this.constantAdmin.getPROFESSOR(), this.constantAdmin.getADMINISTRATOR());
+
         ArrayList<String> SelectUserProfileInfo = userService.SelectUserProfileInfoByID(no);
         // 학번추가
         model.addAttribute("UserLoginID", SelectUserProfileInfo.get(0));
@@ -221,8 +219,7 @@ public class AdministratorController { //TODO : 비즈니스 로직을 서비스
         model.addAttribute("UserEmail", SelectUserProfileInfo.get(3));
 
         // 정보공개여부
-        String Result = "Error";
-        Result = SelectUserProfileInfo.get(4) + "," + SelectUserProfileInfo.get(5);
+        String Result = SelectUserProfileInfo.get(4) + "," + SelectUserProfileInfo.get(5);
         if (Result.contains(",비공개") || Result.contains("비공개")) {
             Result = Result.replaceAll(",비공개", "");
             Result = Result.replaceAll("비공개", "");
@@ -236,7 +233,6 @@ public class AdministratorController { //TODO : 비즈니스 로직을 서비스
             model.addAttribute("StudentInfoOpen", Result);
         }
         return this.constantAdmin.getSDetail();
-
     }
 
     // 관리자 메뉴에서 회원 아이디, 이름 클릭 시 교수 정보 출력

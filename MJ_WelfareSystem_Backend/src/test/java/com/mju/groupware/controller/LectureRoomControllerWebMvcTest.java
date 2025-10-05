@@ -60,7 +60,7 @@ class LectureRoomControllerWebMvcTest {
     }
 
     @Test
-    @DisplayName("GET /lectureRoom/lectureRoomList 는 200을 반환한다")
+    @DisplayName("GET /lectureRoom/lectureRoomList returns 200")
     void lectureRoomListReturnsOk() throws Exception {
         Principal principal = () -> "testUser";
         given(constantLecture.getRLectureRoomList()).willReturn("lecture/lectureRoomList");
@@ -71,7 +71,7 @@ class LectureRoomControllerWebMvcTest {
     }
 
     @Test
-    @DisplayName("GET /lectureRoom/reservation 는 200을 반환한다")
+    @DisplayName("GET /lectureRoom/reservation returns 200")
     void reservationReturnsOk() throws Exception {
         Principal principal = () -> "testUser";
         given(constantLecture.getRReservation()).willReturn("lecture/reservation");
@@ -83,7 +83,7 @@ class LectureRoomControllerWebMvcTest {
     }
 
     @Test
-    @DisplayName("POST /lectureRoom/LectureRoomReservation 는 3xx를 반환한다")
+    @DisplayName("POST /lectureRoom/LectureRoomReservation returns 3xx")
     void lectureRoomReservationPostReturns3xx() throws Exception {
         Principal principal = () -> "testUser";
         given(constantLecture.getRRLectureRoomList()).willReturn("redirect:/lectureRoom/lectureRoomList");
@@ -101,7 +101,7 @@ class LectureRoomControllerWebMvcTest {
     }
 
     @Test
-    @DisplayName("GET /lectureRoom/reservationConfirm 는 200 또는 3xx를 반환한다(성공 케이스)")
+    @DisplayName("GET /lectureRoom/reservationConfirm returns 200 or 3xx (success case)")
     void reservationConfirmReturnsOk() throws Exception {
         Principal principal = () -> "testUser";
         given(constantLecture.getNine()).willReturn("9");
@@ -125,7 +125,7 @@ class LectureRoomControllerWebMvcTest {
     }
 
     @Test
-    @DisplayName("POST /lectureRoom/ReservationConfirm 는 3xx를 반환한다")
+    @DisplayName("POST /lectureRoom/ReservationConfirm returns 3xx")
     void reservationConfirmPostReturns3xx() throws Exception {
         Principal principal = () -> "testUser";
         given(constantLecture.getRRLectureRoomList()).willReturn("redirect:/lectureRoom/lectureRoomList");
@@ -140,7 +140,7 @@ class LectureRoomControllerWebMvcTest {
     }
 
     @Test
-    @DisplayName("GET /lectureRoom/reservationModify 는 200을 반환한다")
+    @DisplayName("GET /lectureRoom/reservationModify returns 200")
     void reservationModifyReturnsOk() throws Exception {
         Principal principal = () -> "testUser";
         given(constantLecture.getRReservationModify()).willReturn("lecture/reservationModify");
@@ -150,7 +150,7 @@ class LectureRoomControllerWebMvcTest {
     }
 
     @Test
-    @DisplayName("GET /confirmMyReservation 는 200을 반환한다(성공 케이스)")
+    @DisplayName("GET /confirmMyReservation returns 200 (success case)")
     void confirmMyReservationReturnsOk() throws Exception {
         Principal principal = () -> "testUser";
         given(constantLecture.getNine()).willReturn("9");

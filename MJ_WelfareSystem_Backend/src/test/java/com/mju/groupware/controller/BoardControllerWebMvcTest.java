@@ -62,7 +62,7 @@ class BoardControllerWebMvcTest {
     }
 
     @Test
-    @DisplayName("GET /inquiryList 는 200을 반환한다")
+    @DisplayName("GET /inquiryList returns 200")
     void inquiryListReturnsOk() throws Exception {
         Principal principal = () -> "testUser";
         given(constant.getRInquiryList()).willReturn("board/inquiryList");
@@ -73,7 +73,7 @@ class BoardControllerWebMvcTest {
     }
 
     @Test
-    @DisplayName("GET /noticeList 는 200을 반환한다")
+    @DisplayName("GET /noticeList returns 200")
     void noticeListReturnsOk() throws Exception {
         Principal principal = () -> "testUser";
         given(constant.getRNoticeList()).willReturn("board/noticeList");
@@ -84,7 +84,7 @@ class BoardControllerWebMvcTest {
     }
 
     @Test
-    @DisplayName("GET /communityList 는 200을 반환한다")
+    @DisplayName("GET /communityList returns 200")
     void communityListReturnsOk() throws Exception {
         Principal principal = () -> "testUser";
         given(constant.getRCommunityList()).willReturn("board/communityList");
@@ -95,7 +95,7 @@ class BoardControllerWebMvcTest {
     }
 
     @Test
-    @DisplayName("GET /inquiryWrite 는 200을 반환한다")
+    @DisplayName("GET /inquiryWrite returns 200")
     void inquiryWriteReturnsOk() throws Exception {
         Principal principal = () -> "testUser";
         given(constant.getRInquiryWrite()).willReturn("board/inquiryWrite");
@@ -112,7 +112,7 @@ class BoardControllerWebMvcTest {
     }
 
     @Test
-    @DisplayName("GET /noticeWrite 는 200을 반환한다")
+    @DisplayName("GET /noticeWrite returns 200")
     void noticeWriteReturnsOk() throws Exception {
         Principal principal = () -> "testUser";
         given(constant.getRNoticeWrite()).willReturn("board/noticeWrite");
@@ -126,7 +126,7 @@ class BoardControllerWebMvcTest {
     }
 
     @Test
-    @DisplayName("GET /inquiryContent 는 200을 반환한다")
+    @DisplayName("GET /inquiryContent returns 200")
     void inquiryContentReturnsOk() throws Exception {
         Principal principal = () -> "testUser";
         given(constant.getRInquiryContent()).willReturn("board/inquiryContent");
@@ -154,7 +154,7 @@ class BoardControllerWebMvcTest {
     }
 
     @Test
-    @DisplayName("GET /noticeModify 는 200을 반환한다")
+    @DisplayName("GET /noticeModify returns 200")
     void noticeModifyReturnsOk() throws Exception {
         Principal principal = () -> "testUser";
         given(constant.getRNoticeModify()).willReturn("board/noticeModify");
@@ -178,7 +178,7 @@ class BoardControllerWebMvcTest {
     }
 
     @Test
-    @DisplayName("GET /noticeContent 는 200을 반환한다")
+    @DisplayName("GET /noticeContent returns 200")
     void noticeContentReturnsOk() throws Exception {
         Principal principal = () -> "testUser";
         given(constant.getRNoticeContent()).willReturn("board/noticeContent");
@@ -198,7 +198,7 @@ class BoardControllerWebMvcTest {
     }
 
     @Test
-    @DisplayName("GET /communityModify 는 200을 반환한다")
+    @DisplayName("GET /communityModify returns 200")
     void communityModifyReturnsOk() throws Exception {
         Principal principal = () -> "testUser";
         given(constant.getRCommunityModify()).willReturn("board/communityModify");
@@ -220,7 +220,7 @@ class BoardControllerWebMvcTest {
     }
 
     @Test
-    @DisplayName("GET /communityContent 는 200을 반환한다")
+    @DisplayName("GET /communityContent returns 200")
     void communityContentReturnsOk() throws Exception {
         Principal principal = () -> "testUser";
         given(constant.getRCommunityContent()).willReturn("board/communityContent");
@@ -245,7 +245,7 @@ class BoardControllerWebMvcTest {
     }
 
     @Test
-    @DisplayName("POST /InquiryWrite 는 3xx를 반환한다")
+    @DisplayName("POST /InquiryWrite returns 3xx")
     void inquiryWritePostReturns3xx() throws Exception {
         Principal principal = () -> "testUser";
         given(constant.getRRInquiryList()).willReturn("redirect:/inquiryList");
@@ -263,7 +263,7 @@ class BoardControllerWebMvcTest {
     }
 
     @Test
-    @DisplayName("POST /noticeWrite 는 3xx를 반환한다")
+    @DisplayName("POST /noticeWrite returns 3xx")
     void noticeWritePostReturns3xx() throws Exception {
         Principal principal = () -> "testUser";
         given(constant.getRRNoticeList()).willReturn("redirect:/noticeList");
@@ -278,7 +278,7 @@ class BoardControllerWebMvcTest {
     }
 
     @Test
-    @DisplayName("POST /communityWrite 는 3xx를 반환한다")
+    @DisplayName("POST /communityWrite returns 3xx")
     void communityWritePostReturns3xx() throws Exception {
         Principal principal = () -> "testUser";
         given(constant.getRRCommunityList()).willReturn("redirect:/communityList");
@@ -293,7 +293,7 @@ class BoardControllerWebMvcTest {
     }
 
     @Test
-    @DisplayName("POST /InquiryDelete.do 는 3xx를 반환한다")
+    @DisplayName("POST /InquiryDelete.do returns 3xx")
     void inquiryDeletePostReturns3xx() throws Exception {
         given(constant.getRInquiryList()).willReturn("redirect:/inquiryList");
         mockMvc.perform(org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post("/InquiryDelete.do")
@@ -302,7 +302,7 @@ class BoardControllerWebMvcTest {
     }
 
     @Test
-    @DisplayName("POST /NoticeDelete.do 는 3xx를 반환한다")
+    @DisplayName("POST /NoticeDelete.do returns 3xx")
     void noticeDeletePostReturns3xx() throws Exception {
         given(constant.getRRNoticeList()).willReturn("redirect:/noticeList");
         mockMvc.perform(org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post("/NoticeDelete.do")
@@ -311,7 +311,7 @@ class BoardControllerWebMvcTest {
     }
 
     @Test
-    @DisplayName("POST /CommunityDelete.do 는 3xx를 반환한다")
+    @DisplayName("POST /CommunityDelete.do returns 3xx")
     void communityDeletePostReturns3xx() throws Exception {
         given(constant.getRRCommunityList()).willReturn("redirect:/communityList");
         mockMvc.perform(org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post("/CommunityDelete.do")
@@ -320,7 +320,7 @@ class BoardControllerWebMvcTest {
     }
 
     @Test
-    @DisplayName("POST /Answer.do 는 3xx를 반환한다")
+    @DisplayName("POST /Answer.do returns 3xx")
     void answerPostReturns3xx() throws Exception {
         Principal principal = () -> "testUser";
         given(constant.getRRInquiryList()).willReturn("redirect:/inquiryList");
@@ -333,7 +333,7 @@ class BoardControllerWebMvcTest {
     }
 
     @Test
-    @DisplayName("POST /AnswerDelete.do 는 3xx를 반환한다")
+    @DisplayName("POST /AnswerDelete.do returns 3xx")
     void answerDeletePostReturns3xx() throws Exception {
         given(constant.getRRInquiryList()).willReturn("redirect:/inquiryList");
 
@@ -343,7 +343,7 @@ class BoardControllerWebMvcTest {
     }
 
     @Test
-    @DisplayName("POST /CommunityModify.do 는 3xx를 반환한다")
+    @DisplayName("POST /CommunityModify.do returns 3xx")
     void communityModifyPostReturns3xx() throws Exception {
         Principal principal = () -> "testUser";
         given(constant.getRRCommunityList()).willReturn("redirect:/communityList");
@@ -359,7 +359,7 @@ class BoardControllerWebMvcTest {
     }
 
     @Test
-    @DisplayName("POST /NoticeModify 는 3xx를 반환한다")
+    @DisplayName("POST /NoticeModify returns 3xx")
     void noticeModifyPostReturns3xx() throws Exception {
         Principal principal = () -> "testUser";
         given(constant.getRRNoticeList()).willReturn("redirect:/noticeList");
