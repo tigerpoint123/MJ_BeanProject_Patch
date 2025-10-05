@@ -1,12 +1,12 @@
 package com.mju.groupware.dao;
 
-import java.util.List;
-
 import com.mju.groupware.dto.UserList;
+
+import java.util.List;
 
 public interface UserListDao {
 
-	List<UserList> SelectUserlist() throws Exception;
+	List<UserList> SelectUserlist();
 
 	List<UserList> SelectDormantUserList();
 

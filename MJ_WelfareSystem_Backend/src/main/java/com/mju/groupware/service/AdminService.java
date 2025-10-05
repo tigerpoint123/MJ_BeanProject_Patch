@@ -10,7 +10,7 @@ import java.util.List;
 
 public interface AdminService {
 
-    List<UserList> SelectUserlist() throws Exception;
+    List<UserList> SelectUserlist() ;
 
     List<UserList> SelectDormantUserList();
 
@@ -35,4 +35,10 @@ public interface AdminService {
     void modifyProfessor(Principal professor, HttpServletRequest request, String no);
 
     void dormantUserDelete(HttpServletRequest request);
+
+    void deleteUserRollback(HttpServletRequest request);
+
+    void manageSession(Model model);
+
+    void dormantUserRollback(HttpServletRequest request);
 }

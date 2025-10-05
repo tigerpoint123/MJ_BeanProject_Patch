@@ -1,15 +1,14 @@
 package com.mju.groupware.dao;
 
-import java.util.List;
-
+import com.mju.groupware.constant.ConstantAdminUserListDao;
+import com.mju.groupware.dto.UserList;
 import org.apache.ibatis.session.SqlSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.support.GenericXmlApplicationContext;
 import org.springframework.stereotype.Repository;
 import org.springframework.stereotype.Service;
 
-import com.mju.groupware.constant.ConstantAdminUserListDao;
-import com.mju.groupware.dto.UserList;
+import java.util.List;
 
 @Service
 @Repository
@@ -29,7 +28,7 @@ public class UserListDaoImpl implements UserListDao {
 
 	// userList를 호출하기 위한 dao
 	@Override
-	public List<UserList> SelectUserlist() throws Exception {
+	public List<UserList> SelectUserlist() {
 		List<UserList> Output = this.sqlSession.selectList(this.Constant.getSelectUserList());
 		return Output;
 	}

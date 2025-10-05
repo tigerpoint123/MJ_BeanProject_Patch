@@ -32,13 +32,8 @@ public class AdministratorController { //TODO : 비즈니스 로직을 서비스
     @GetMapping("/manageList")
     public String manageList(Model model, User user, Principal principal) {
         userInfoMethod.GetUserInformation(principal, user, model, this.constantAdmin.getSTUDENT(), this.constantAdmin.getPROFESSOR(), this.constantAdmin.getADMINISTRATOR());
-
-        try {
-            List<UserList> SelectUserList = adminService.SelectUserlist();
-            model.addAttribute("list", SelectUserList);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+        List<UserList> SelectUserList = adminService.SelectUserlist();
+        model.addAttribute("list", SelectUserList);
         return this.constantAdmin.getList();
     }
 
@@ -79,12 +74,8 @@ public class AdministratorController { //TODO : 비즈니스 로직을 서비스
         userInfoMethod.GetUserInformation(
                 principal, user, model, this.constantAdmin.getSTUDENT(), this.constantAdmin.getPROFESSOR(), this.constantAdmin.getADMINISTRATOR());
 
-        try {
-            List<UserList> SelectDormantUserList = adminService.SelectDormantUserList();
-            model.addAttribute("DormantList", SelectDormantUserList);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+        List<UserList> SelectDormantUserList = adminService.SelectDormantUserList();
+        model.addAttribute("DormantList", SelectDormantUserList);
         return this.constantAdmin.getSleepList();
     }
 
@@ -92,11 +83,8 @@ public class AdministratorController { //TODO : 비즈니스 로직을 서비스
     @ResponseBody
     @RequestMapping(value = "/dormantRecovery.do")
     public String DoDormantRecoveryByAdmin(HttpServletRequest request) {
-        String[] AjaxMsg = request.getParameterValues("CheckArr");
-        for (int i = 0; i < AjaxMsg.length; i++) {
-            // 쿼리문 작동
-            userService.UpdateDormantOneToZero(AjaxMsg[i]);
-        }
+        adminService.dormantUserRollback(request);
+
         return this.constantAdmin.getReSleep();
     }
 
@@ -104,23 +92,17 @@ public class AdministratorController { //TODO : 비즈니스 로직을 서비스
     @GetMapping("/manageSecession")
     public String manageSecession(Model model, Principal principal, User user) {
         userInfoMethod.GetUserInformation(principal, user, model, this.constantAdmin.getSTUDENT(), this.constantAdmin.getPROFESSOR(), this.constantAdmin.getADMINISTRATOR());
-        try {
-            List<UserList> SelectWithdrawalUserList = adminService.SelectWithdrawalUserList();
-            model.addAttribute("SelectWithdrawalUserList", SelectWithdrawalUserList);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+
+        List<UserList> SelectWithdrawalUserList = adminService.SelectWithdrawalUserList();
+        model.addAttribute("SelectWithdrawalUserList", SelectWithdrawalUserList);
         return this.constantAdmin.getSecessionList();
     }
 
     // 관리자 탈퇴 메뉴 - 관리자 권한으로 탈퇴 계정 복구
     @ResponseBody
     @RequestMapping(value = "/withdrawalRecovery.do")
-    public String DoWithdrawalRecoveryByAdmin(HttpServletRequest request, User user) {
-        String[] AjaxMsg = request.getParameterValues("CheckArr");
-        for (String msg : AjaxMsg) {
-            userService.UpdateDoWithdrawalRecoveryByAdmin(msg);
-        }
+    public String DoWithdrawalRecoveryByAdmin(HttpServletRequest request) {
+        adminService.deleteUserRollback(request);
         return this.constantAdmin.getSecessionList();
     }
 

@@ -30,7 +30,7 @@ public class AdminServiceImpl implements AdminService {
     private final ProfessorService professorService;
 
     @Override
-    public List<UserList> SelectUserlist() throws Exception {
+    public List<UserList> SelectUserlist() {
         return userListDao.SelectUserlist();
     }
 
@@ -359,6 +359,27 @@ public class AdminServiceImpl implements AdminService {
         String[] AjaxMsg = request.getParameterValues("CheckArr");
         for (String msg : AjaxMsg) {
             userDao.UpdateWithdrawalByDormant(msg);
+        }
+    }
+
+    @Override
+    public void deleteUserRollback(HttpServletRequest request) {
+        String[] AjaxMsg = request.getParameterValues("CheckArr");
+        for (String msg : AjaxMsg) {
+            userService.UpdateDoWithdrawalRecoveryByAdmin(msg);
+        }
+    }
+
+    @Override
+    public void manageSession(Model model) {
+
+    }
+
+    @Override
+    public void dormantUserRollback(HttpServletRequest request) {
+        String[] AjaxMsg = request.getParameterValues("CheckArr");
+        for (int i = 0; i < AjaxMsg.length; i++) {
+            userDao.UpdateDormantOneToZero(AjaxMsg[i]);
         }
     }
 }
