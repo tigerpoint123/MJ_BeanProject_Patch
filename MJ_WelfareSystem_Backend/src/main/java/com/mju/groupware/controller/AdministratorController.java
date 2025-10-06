@@ -6,7 +6,6 @@ import com.mju.groupware.dto.Student;
 import com.mju.groupware.dto.User;
 import com.mju.groupware.dto.UserList;
 import com.mju.groupware.service.AdminService;
-import com.mju.groupware.service.UserService;
 import com.mju.groupware.util.UserInfoMethod;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -25,7 +24,6 @@ import java.util.List;
 public class AdministratorController { //TODO : 비즈니스 로직을 서비스 코드로 옮긴 다음
     private final UserInfoMethod userInfoMethod;
     private final AdminService adminService;
-    private final UserService userService;
     private final ConstantAdmin constantAdmin;
 
     // 관리자메뉴 - user list

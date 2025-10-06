@@ -3,7 +3,11 @@ package com.mju.groupware.service;
 import com.mju.groupware.dto.Board;
 import com.mju.groupware.dto.TeamBoard;
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+import org.springframework.ui.Model;
 
+import java.io.IOException;
+import java.security.Principal;
 import java.util.List;
 import java.util.Map;
 
@@ -11,7 +15,7 @@ public interface BoardService {
 
 	void InsertBoard(Board board, HttpServletRequest request);
 
-	List<Board> SelectCommunityBoardList();
+	List<Board> getCommunityList();
 	
 	List<Board> SelectNoticeBoardList();
 
@@ -28,6 +32,8 @@ public interface BoardService {
 	void DeleteCommunity(int boardID);
 	
 	void DeleteNotice(int boardID);
+
+	void communityDelete(int boardID);
 
 	List<Map<String, Object>> SelectCommunityFileList(int parseInt);
 	
@@ -58,4 +64,22 @@ public interface BoardService {
 
 	List<Board> SelectMyBoardList(String loginID);
 
+	void getInquiryContent(Principal principal, HttpServletRequest request, Model model);
+	
+	// BoardController 메서드별 서비스 메서드들 (void 타입으로 통일)
+	// GET 메서드들
+	void getNoticeWrite(Principal principal, HttpServletRequest request, Model model);
+	void getNoticeModify(Model model, HttpServletRequest request);
+	void getNoticeContent(Principal principal, Model model, HttpServletRequest request);
+	void getCommunityWrite(Principal principal, Model model);
+	void getCommunityModify(Model model, HttpServletRequest request);
+	void getCommunityContent(Principal principal, HttpServletRequest request, Model model);
+	void getFileDown(HttpServletResponse response, Map<String, Object> map) throws Exception;
+	
+	// POST 메서드들
+	String postNoticeWrite(Principal principal, HttpServletRequest request, HttpServletResponse response) throws IOException;
+	void postNoticeModify(HttpServletRequest request, Principal principal, String[] fileList, String[] fileNameList);
+	void postDeleteNotice(HttpServletRequest request);
+	String postCommunityWrite(HttpServletRequest request, Principal principal, HttpServletResponse response) throws IOException;
+	void postCommunityModify(HttpServletRequest request, String[] fileList, String[] fileNameList, Principal principal);
 }
