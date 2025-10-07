@@ -1,25 +1,24 @@
 package com.mju.groupware.dao;
 
-import java.util.HashMap;
-import java.util.List;
-
+import com.mju.groupware.constant.ConstantCalenderDao;
+import com.mju.groupware.dto.Calender;
 import org.apache.ibatis.session.SqlSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.support.GenericXmlApplicationContext;
 import org.springframework.stereotype.Repository;
 import org.springframework.stereotype.Service;
 
-import com.mju.groupware.constant.ConstantCalenderDao;
-import com.mju.groupware.dto.Calender;
+import java.util.HashMap;
+import java.util.List;
 
 @Service
 @Repository
-public class CalenderDaoImpl implements CalenderDao {
+public class ScheduleDaoImpl implements ScheduleDao {
 
 	private ConstantCalenderDao Constant;
 
 	@SuppressWarnings("resource")
-	public CalenderDaoImpl() {
+	public ScheduleDaoImpl() {
 		GenericXmlApplicationContext CTX = new GenericXmlApplicationContext();
 		CTX.load("classpath:/xmlForProperties/CalenderDao.xml");
 		CTX.refresh();

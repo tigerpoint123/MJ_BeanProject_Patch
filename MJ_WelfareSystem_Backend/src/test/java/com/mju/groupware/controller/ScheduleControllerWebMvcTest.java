@@ -1,12 +1,18 @@
 package com.mju.groupware.controller;
 
+import com.mju.groupware.constant.ConstantScheduleController;
+import com.mju.groupware.dto.Calender;
+import com.mju.groupware.service.ProfessorService;
+import com.mju.groupware.service.ScheduleService;
+import com.mju.groupware.service.StudentService;
+import com.mju.groupware.service.UserService;
+import com.mju.groupware.util.UserInfoMethod;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
-import org.springframework.boot.test.context.TestConfiguration;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.FilterType;
@@ -14,28 +20,14 @@ import org.springframework.context.annotation.Import;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.web.servlet.ViewResolver;
-import org.springframework.web.servlet.view.InternalResourceViewResolver;
 
 import java.security.Principal;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
+import java.util.*;
 
 import static org.mockito.BDDMockito.given;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-
-import com.mju.groupware.service.CalenderService;
-import com.mju.groupware.service.UserService;
-import com.mju.groupware.service.StudentService;
-import com.mju.groupware.service.ProfessorService;
-import com.mju.groupware.util.UserInfoMethod;
-import com.mju.groupware.constant.ConstantScheduleController;
-import com.mju.groupware.dto.Calender;
 
 @WebMvcTest(controllers = ScheduleController.class,
         excludeFilters = @ComponentScan.Filter(type = FilterType.ASSIGNABLE_TYPE, classes = GlobalUserModelAdvice.class))
@@ -49,7 +41,7 @@ class ScheduleControllerWebMvcTest {
     @Autowired
     private MockMvc mockMvc;
 
-    @MockBean private CalenderService calenderService;
+    @MockBean private ScheduleService scheduleService;
     @MockBean private UserService userService;
     @MockBean private StudentService studentService;
     @MockBean private ProfessorService professorService;
@@ -60,7 +52,7 @@ class ScheduleControllerWebMvcTest {
     void setupCommon() {
         given(userService.selectUserProfileInfo("testUser"))
                 .willReturn(new ArrayList<>(Arrays.asList("Name", "UID123", "STUDENT")));
-        given(calenderService.SelectUserIdForCalender("testUser")).willReturn(1);
+        given(scheduleService.selectUserIdForCalender("testUser")).willReturn(1);
         given(constant.getUserID()).willReturn("UserID");
         given(constant.getSRole()).willReturn("STUDENT");
         given(constant.getPRole()).willReturn("PROFESSOR");
@@ -93,7 +85,7 @@ class ScheduleControllerWebMvcTest {
     void getScheduleReturnsOk() throws Exception {
         Principal principal = () -> "testUser";
         List<HashMap<String, Object>> list = Collections.emptyList();
-        given(calenderService.SelectSchedule(1)).willReturn(list);
+        given(scheduleService.selectSchedule(1)).willReturn(list);
 
         mockMvc.perform(get("/schedule/GetSchedule.do").principal(principal))
                 .andExpect(status().isOk());
@@ -103,7 +95,7 @@ class ScheduleControllerWebMvcTest {
     @DisplayName("POST /schedule/AddSchedule.do 는 200을 반환한다")
     void addScheduleReturnsOk() throws Exception {
         Principal principal = () -> "testUser";
-        given(calenderService.InsertSchedule(org.mockito.ArgumentMatchers.any(Calender.class))).willReturn(1);
+        given(scheduleService.insertSchedule(org.mockito.ArgumentMatchers.any(Calender.class))).willReturn(1);
 
         String json = "{\"id\":\"1\",\"title\":\"t\",\"start\":\"2025-01-01\",\"end\":\"2025-01-01\"}";
         mockMvc.perform(post("/schedule/AddSchedule.do").principal(principal)
@@ -116,7 +108,7 @@ class ScheduleControllerWebMvcTest {
     @DisplayName("POST /schedule/ModifySchedule.do 는 200을 반환한다")
     void modifyScheduleReturnsOk() throws Exception {
         Principal principal = () -> "testUser";
-        given(calenderService.UpdateSchedule(org.mockito.ArgumentMatchers.eq("1"), org.mockito.ArgumentMatchers.eq("1"), org.mockito.ArgumentMatchers.any(Calender.class)))
+        given(scheduleService.updateSchedule(org.mockito.ArgumentMatchers.eq("1"), org.mockito.ArgumentMatchers.eq("1"), org.mockito.ArgumentMatchers.any(Calender.class)))
                 .willReturn(1);
 
         String json = "{\"id\":\"1\",\"title\":\"t\"}";
@@ -130,7 +122,7 @@ class ScheduleControllerWebMvcTest {
     @DisplayName("POST /schedule/modifyScheduleFromMonth.do 는 200을 반환한다")
     void modifyFromMonthReturnsOk() throws Exception {
         Principal principal = () -> "testUser";
-        given(calenderService.UpdateTimeInMonth(org.mockito.ArgumentMatchers.any(HashMap.class)))
+        given(scheduleService.updateTimeInMonth(org.mockito.ArgumentMatchers.any(HashMap.class)))
                 .willReturn(1);
 
         String json = "{\"id\":\"1\",\"start\":\"2025-01-01\",\"end\":\"2025-01-02\"}";
@@ -144,7 +136,7 @@ class ScheduleControllerWebMvcTest {
     @DisplayName("POST /schedule/ModifyScheduleFromWeek.do 는 200을 반환한다")
     void modifyFromWeekReturnsOk() throws Exception {
         Principal principal = () -> "testUser";
-        given(calenderService.UpdateTimeInWeek(org.mockito.ArgumentMatchers.eq("1"), org.mockito.ArgumentMatchers.eq("1"), org.mockito.ArgumentMatchers.any(Calender.class)))
+        given(scheduleService.updateTimeInWeek(org.mockito.ArgumentMatchers.eq("1"), org.mockito.ArgumentMatchers.eq("1"), org.mockito.ArgumentMatchers.any(Calender.class)))
                 .willReturn(1);
 
         String json = "{\"id\":\"1\",\"start\":\"2025-01-01\",\"end\":\"2025-01-02\"}";
@@ -158,7 +150,7 @@ class ScheduleControllerWebMvcTest {
     @DisplayName("POST /schedule/DeleteSchedule.do 는 200을 반환한다")
     void deleteScheduleReturnsOk() throws Exception {
         Principal principal = () -> "testUser";
-        given(calenderService.DeleteSchedule(org.mockito.ArgumentMatchers.eq("1"), org.mockito.ArgumentMatchers.eq("1")))
+        given(scheduleService.deleteSchedule(org.mockito.ArgumentMatchers.eq("1"), org.mockito.ArgumentMatchers.eq("1")))
                 .willReturn(1);
 
         String json = "{\"id\":\"1\"}";

@@ -5,7 +5,7 @@ import java.util.List;
 
 import com.mju.groupware.dto.Calender;
 
-public interface CalenderDao {
+public interface ScheduleDao {
 
 	int InsertSchedule(Calender calender);
 
