@@ -21,8 +21,10 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import com.mju.groupware.service.LectureRoomService;
@@ -53,118 +55,109 @@ class LectureRoomControllerWebMvcTest {
     @MockBean private UserInfoMethod userInfoMethod;
     @MockBean private ConstantLectureRoomController constantLecture;
 
+    private Principal testPrincipal;
+
     @BeforeEach
-    void setupUserProfile() {
+    void setUp() {
+        // Principal 설정
+        testPrincipal = () -> "testUser";
+
+        // 사용자 프로필 Mock
         given(userService.selectUserProfileInfo("testUser"))
                 .willReturn(new ArrayList<>(Arrays.asList("name", "someId", "UNKNOWN_ROLE")));
-    }
 
-    @Test
-    @DisplayName("GET /lectureRoom/lectureRoomList returns 200")
-    void lectureRoomListReturnsOk() throws Exception {
-        Principal principal = () -> "testUser";
+        // Constant Mock - View 이름들
         given(constantLecture.getRLectureRoomList()).willReturn("lecture/lectureRoomList");
-        given(lectureRoomService.selectLectureRoomList()).willReturn(Collections.<LectureRoom>emptyList());
-
-        mockMvc.perform(get("/lectureRoom/lectureRoomList").principal(principal))
-                .andExpect(status().isOk());
-    }
-
-    @Test
-    @DisplayName("GET /lectureRoom/reservation returns 200")
-    void reservationReturnsOk() throws Exception {
-        Principal principal = () -> "testUser";
         given(constantLecture.getRReservation()).willReturn("lecture/reservation");
-        given(lectureRoomService.selectMaxNumOfPeople("101")).willReturn(20);
-        given(lectureRoomService.selectStartTime("101")).willReturn(Collections.<UserReservation>emptyList());
-
-        mockMvc.perform(get("/lectureRoom/reservation").param("no", "101").param("ReservationDate", "2025-01-01").principal(principal))
-                .andExpect(status().isOk());
-    }
-
-    @Test
-    @DisplayName("POST /lectureRoom/LectureRoomReservation returns 3xx")
-    void lectureRoomReservationPostReturns3xx() throws Exception {
-        Principal principal = () -> "testUser";
         given(constantLecture.getRRLectureRoomList()).willReturn("redirect:/lectureRoom/lectureRoomList");
-        given(lectureRoomService.selectMaxNumOfPeople("101")).willReturn(10);
-        given(lectureRoomService.selectLoginUserId("testUser")).willReturn("123");
-        given(lectureRoomService.selectReservationUserId(123)).willReturn(0);
-        given(lectureRoomService.selectReservationStartTimeForException("09:00")).willReturn("0");
+        given(constantLecture.getRReservationConfirm()).willReturn("lecture/reservationConfirm");
+        given(constantLecture.getRReservationModify()).willReturn("lecture/reservationModify");
+        given(constantLecture.getRConfirmMyReservation()).willReturn("lecture/confirmMyReservation");
 
-        mockMvc.perform(org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post("/lectureRoom/LectureRoomReservation")
-                        .principal(principal)
-                        .param("ReservationStartTime", "09:00~11:00")
-                        .param("roomNum", "101")
-                        .param("ReservationNumOfPeople", "2"))
-                .andExpect(status().is3xxRedirection());
-    }
-
-    @Test
-    @DisplayName("GET /lectureRoom/reservationConfirm returns 200 or 3xx (success case)")
-    void reservationConfirmReturnsOk() throws Exception {
-        Principal principal = () -> "testUser";
+        // Constant Mock - 시간 상수들
         given(constantLecture.getNine()).willReturn("9");
         given(constantLecture.getEleven()).willReturn("11");
         given(constantLecture.getThirteen()).willReturn("13");
         given(constantLecture.getFifteen()).willReturn("15");
         given(constantLecture.getSeventeen()).willReturn("17");
         given(constantLecture.getNineteen()).willReturn("19");
-        given(constantLecture.getRReservationConfirm()).willReturn("lecture/reservationConfirm");
+    }
 
+    @Test
+    @DisplayName("GET /lectureRoom/lectureRoomList returns 200")
+    void lectureRoomListReturnsOk() throws Exception {
+        given(lectureRoomService.selectLectureRoomList()).willReturn(Collections.<LectureRoom>emptyList());
+
+        mockMvc.perform(get("/lectureRoom/lectureRoomList").principal(testPrincipal))
+                .andExpect(status().isOk());
+    }
+
+    @Test
+    @DisplayName("GET /lectureRoom/reservation returns 200")
+    void reservationReturnsOk() throws Exception {
+        given(lectureRoomService.selectMaxNumOfPeople("101")).willReturn(20);
+        given(lectureRoomService.selectStartTime("101")).willReturn(Collections.<UserReservation>emptyList());
+
+        mockMvc.perform(get("/lectureRoom/reservation")
+                        .param("no", "101")
+                        .param("ReservationDate", "2025-01-01")
+                        .principal(testPrincipal))
+                .andExpect(status().isOk());
+    }
+
+    @Test
+    @DisplayName("POST /lectureRoom/LectureRoomReservation returns 3xx")
+    void lectureRoomReservationPostReturns3xx() throws Exception {
+        given(lectureRoomService.isExceedingCapacity(101, 2)).willReturn(false);
+        given(lectureRoomService.hasDuplicateReservation("testUser")).willReturn(false);
+        given(lectureRoomService.hasTimeConflict("09:00")).willReturn(false);
+
+        mockMvc.perform(post("/lectureRoom/LectureRoomReservation")
+                        .principal(testPrincipal)
+                        .param("ReservationStartTime", "09:00~11:00")
+                        .param("roomNum", "101")
+                        .param("ReservationNumOfPeople", "2")
+                        .param("ReservationDate", "2025-01-01"))
+                .andExpect(status().is3xxRedirection());
+    }
+
+    @Test
+    @DisplayName("GET /lectureRoom/reservationConfirm returns 200 (success case)")
+    void reservationConfirmReturnsOk() throws Exception {
         given(lectureRoomService.selectUserIdForReservationConfirm("testUser")).willReturn("123");
         given(lectureRoomService.selectLectureRoomNo("123")).willReturn(101);
-        given(lectureRoomService.selectLectureRoomLocation(101)).willReturn("A");
-        given(lectureRoomService.selectRoomFloor(101)).willReturn(1);
-        given(lectureRoomService.selectLectureRoomMaxNumOfPeople(101)).willReturn(20);
-        given(lectureRoomService.selectReservationNumOfPeople("123")).willReturn(2);
-        given(lectureRoomService.selectReservationStartTime("123")).willReturn("9");
+        given(lectureRoomService.getReservationConfirm(101, any(), "123"))
+                .willReturn("lecture/reservationConfirm");
 
-        mockMvc.perform(get("/lectureRoom/reservationConfirm").principal(principal))
+        mockMvc.perform(get("/lectureRoom/reservationConfirm").principal(testPrincipal))
                 .andExpect(status().isOk());
     }
 
     @Test
     @DisplayName("POST /lectureRoom/ReservationConfirm returns 3xx")
     void reservationConfirmPostReturns3xx() throws Exception {
-        Principal principal = () -> "testUser";
-        given(constantLecture.getRRLectureRoomList()).willReturn("redirect:/lectureRoom/lectureRoomList");
-        given(lectureRoomService.selectLoginUserId("testUser")).willReturn("123");
-        given(lectureRoomService.selectRoomInfo(org.mockito.ArgumentMatchers.eq("123"), org.mockito.ArgumentMatchers.any(UserReservation.class)))
-                .willReturn(new UserReservation());
-        given(lectureRoomService.deleteReservation(org.mockito.ArgumentMatchers.any(UserReservation.class))).willReturn(true);
+        given(lectureRoomService.cancelReservation("testUser")).willReturn(true);
 
-        mockMvc.perform(org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post("/lectureRoom/ReservationConfirm")
-                        .principal(principal))
+        mockMvc.perform(post("/lectureRoom/ReservationConfirm").principal(testPrincipal))
                 .andExpect(status().is3xxRedirection());
     }
 
     @Test
     @DisplayName("GET /lectureRoom/reservationModify returns 200")
     void reservationModifyReturnsOk() throws Exception {
-        Principal principal = () -> "testUser";
-        given(constantLecture.getRReservationModify()).willReturn("lecture/reservationModify");
-
-        mockMvc.perform(get("/lectureRoom/reservationModify").principal(principal))
+        mockMvc.perform(get("/lectureRoom/reservationModify").principal(testPrincipal))
                 .andExpect(status().isOk());
     }
 
     @Test
     @DisplayName("GET /confirmMyReservation returns 200 (success case)")
     void confirmMyReservationReturnsOk() throws Exception {
-        Principal principal = () -> "testUser";
-        given(constantLecture.getNine()).willReturn("9");
-        given(constantLecture.getRConfirmMyReservation()).willReturn("lecture/confirmMyReservation");
-
         given(lectureRoomService.selectUserIdForReservationConfirm("testUser")).willReturn("123");
         given(lectureRoomService.selectLectureRoomNo("123")).willReturn(101);
-        given(lectureRoomService.selectLectureRoomLocation(101)).willReturn("A");
-        given(lectureRoomService.selectRoomFloor(101)).willReturn(1);
-        given(lectureRoomService.selectLectureRoomMaxNumOfPeople(101)).willReturn(20);
-        given(lectureRoomService.selectReservationNumOfPeople("123")).willReturn(2);
-        given(lectureRoomService.selectReservationStartTime("123")).willReturn("9");
+        given(lectureRoomService.getMyReservation(any(), 101, "123"))
+                .willReturn("lecture/confirmMyReservation");
 
-        mockMvc.perform(get("/confirmMyReservation").principal(principal))
+        mockMvc.perform(get("/confirmMyReservation").principal(testPrincipal))
                 .andExpect(status().isOk());
     }
 }
