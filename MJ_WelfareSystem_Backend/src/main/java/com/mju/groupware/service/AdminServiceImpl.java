@@ -325,22 +325,22 @@ public class AdminServiceImpl implements AdminService {
             if (!request.getParameter("ProfessorColleges").isEmpty()) {
                 // 단과대학
                 professor.setProfessorColleges(request.getParameter("ProfessorColleges"));
-                professorService.UpdateProfessorColleges(professor);
+                professorService.updateProfessorColleges(professor);
             }
             if (!request.getParameter("ProfessorMajor").isEmpty()) {
                 // 전공
                 professor.setProfessorMajor(request.getParameter("ProfessorMajor"));
-                professorService.UpdateProfessorMajor(professor);
+                professorService.updateProfessorMajor(professor);
             }
             if (!request.getParameter("ProfessorRoom").isEmpty()) {
                 // 교수실
                 professor.setProfessorRoom(request.getParameter("ProfessorRoom"));
-                professorService.UpdateProfessorRoom(professor);
+                professorService.updateProfessorRoom(professor);
             }
             if (!request.getParameter("ProfessorRoomNum").isEmpty()) {
                 // 교수실 전화번호
                 professor.setProfessorRoomNum(request.getParameter("ProfessorRoomNum"));
-                professorService.UpdateProfessorRoomNum(professor);
+                professorService.updateProfessorRoomNum(professor);
             }
             if (request.getParameter("UserPhone") != null) {
                 String OpenPhoneNum = "전화번호";

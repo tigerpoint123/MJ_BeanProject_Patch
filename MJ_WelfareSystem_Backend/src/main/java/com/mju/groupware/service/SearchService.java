@@ -14,7 +14,7 @@ public interface SearchService {
 
     Student SelectStudentInfo(int i);
 
-    Professor SelectProfessorInfo(int userID);
+    Professor selectProfessorInfo(int userID);
 
     List<UserReview> SelectUserReview(String userID);
 

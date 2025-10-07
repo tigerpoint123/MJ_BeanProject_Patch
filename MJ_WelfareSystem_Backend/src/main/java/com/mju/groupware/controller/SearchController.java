@@ -68,7 +68,7 @@ public class SearchController {
 	private HashMap<String, Object> addProfessorInfo(User user) {
 		HashMap<String, Object> Map = new HashMap<String, Object>();
 		Map.put(this.Constant.getUName(), user.getUserName());
-		Professor professor = searchService.SelectProfessorInfo(user.getUserID());
+		Professor professor = searchService.selectProfessorInfo(user.getUserID());
 
 		Map.put(this.Constant.getUserEmail(), user.getUserEmail());
 

@@ -111,7 +111,7 @@ class ProfessorControllerWebMvcTest {
         professor.setUserPhoneNum("010-0000-0000");
         professor.setProfessorColleges("COLL");
         professor.setProfessorMajor("MAJOR");
-        given(professorService.SelectModifyProfessorInfo(1)).willReturn(professor);
+        given(professorService.selectModifyProfessorInfo(1)).willReturn(professor);
 
         given(constant.getEmail()).willReturn("Email");
         given(constant.getUserPhoneNum()).willReturn("UserPhoneNum");

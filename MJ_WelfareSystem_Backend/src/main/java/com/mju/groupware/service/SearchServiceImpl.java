@@ -29,7 +29,7 @@ public class SearchServiceImpl implements SearchService {
 	}
 
 	@Override
-	public Professor SelectProfessorInfo(int userID) {
+	public Professor selectProfessorInfo(int userID) {
 		return searchDao.SelectProfessorInfo(userID);
 	}
 

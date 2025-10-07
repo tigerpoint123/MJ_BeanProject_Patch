@@ -1,15 +1,9 @@
 package com.mju.groupware.controller;
 
-import java.io.IOException;
-import java.io.PrintWriter;
-import java.security.Principal;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.List;
-
+import com.mju.groupware.constant.*;
+import com.mju.groupware.dto.*;
+import com.mju.groupware.service.*;
+import com.mju.groupware.util.UserInfoMethod;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -23,30 +17,15 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import com.mju.groupware.constant.ConstantDoEmail;
-import com.mju.groupware.constant.ConstantDoFindPassword;
-import com.mju.groupware.constant.ConstantDoSignUp;
-import com.mju.groupware.constant.ConstantEmail;
-import com.mju.groupware.constant.ConstantFindPassword;
-import com.mju.groupware.constant.ConstantHome;
-import com.mju.groupware.constant.ConstantMyInquiryList;
-import com.mju.groupware.constant.ConstantMyPostList;
-import com.mju.groupware.constant.ConstantUserFunctionURL;
-import com.mju.groupware.constant.ConstantWithdrawal;
-import com.mju.groupware.dto.Board;
-import com.mju.groupware.dto.Inquiry;
-import com.mju.groupware.dto.Professor;
-import com.mju.groupware.dto.Student;
-import com.mju.groupware.dto.User;
-import com.mju.groupware.dto.UserEmail;
-import com.mju.groupware.util.UserInfoMethod;
-import com.mju.groupware.service.BoardService;
-import com.mju.groupware.service.EmailService;
-import com.mju.groupware.service.InquiryService;
-import com.mju.groupware.service.ProfessorService;
-import com.mju.groupware.service.StudentService;
-import com.mju.groupware.service.UserEmailService;
-import com.mju.groupware.service.UserService;
+import java.io.IOException;
+import java.io.PrintWriter;
+import java.security.Principal;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.List;
 
 @Controller
 @RequiredArgsConstructor
@@ -147,7 +126,7 @@ public class UserFunctionController {
          professor.setUserID(UserID);
          userService.UpdateLoginDate(user);
          studentService.UpdateStudentLoginDate(student);
-         professorService.UpdateProfessorLoginDate(professor);
+         professorService.updateProfessorLoginDate(professor);
 
       }
 
@@ -205,7 +184,7 @@ public class UserFunctionController {
          professor.setUserID(UserID);
          userService.UpdateLoginDate(user);
          studentService.UpdateStudentLoginDate(student);
-         professorService.UpdateProfessorLoginDate(professor);
+         professorService.updateProfessorLoginDate(professor);
       }
 
       // 공지사항 리스트 띄우기
@@ -674,7 +653,7 @@ public class UserFunctionController {
             professor.setProfessorRoomNum(ProfessorRoomNum);
             professor.setUserID(user.getUserID());
 
-            this.professorService.InsertInformation(professor); // insert into student table
+            this.professorService.insertInformation(professor); // insert into student table
 
             redirectAttributes.addFlashAttribute("msg", "signupERED");
             response.setContentType("text/html; charset=UTF-8");
