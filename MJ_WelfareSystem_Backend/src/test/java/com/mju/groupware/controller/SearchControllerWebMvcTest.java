@@ -58,7 +58,7 @@ class SearchControllerWebMvcTest {
 
     @BeforeEach
     void setupCommon() {
-        given(userService.SelectUserProfileInfo("testUser"))
+        given(userService.selectUserProfileInfo("testUser"))
                 .willReturn(new ArrayList<>(Arrays.asList("Name", "UID123", "STUDENT")));
         given(constant.getSRole()).willReturn("STUDENT");
         given(constant.getPRole()).willReturn("PROFESSOR");

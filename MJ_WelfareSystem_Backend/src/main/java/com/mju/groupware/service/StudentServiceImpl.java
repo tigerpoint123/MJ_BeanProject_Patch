@@ -40,10 +40,10 @@ public class StudentServiceImpl implements StudentService {
 	}
 
 	@Override
-	public ArrayList<String> SelectStudentProfileInfo(String userID) {
-		ArrayList<String> StudentInfo = new ArrayList<String>();
-		StudentInfo = studentDao.SelectStudentProfileInfo(userID);
-		return StudentInfo;
+	public ArrayList<String> selectStudentProfileInfo(String userID) {
+		ArrayList<String> studentInfo = new ArrayList<String>();
+		studentInfo = studentDao.selectStudentProfileInfo(userID);
+		return studentInfo;
 	}
 
 	@Override

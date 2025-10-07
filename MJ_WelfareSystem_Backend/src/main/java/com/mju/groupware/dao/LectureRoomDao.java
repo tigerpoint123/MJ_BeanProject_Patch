@@ -7,37 +7,37 @@ import com.mju.groupware.dto.UserReservation;
 
 public interface LectureRoomDao {
 
-	List<LectureRoom> SelectLectureRoomList();
+	List<LectureRoom> selectLectureRoomList();
 
-	int SelectMaxNumOfPeople(String lectureRoomNo);
+	int selectMaxNumOfPeople(String lectureRoomNo);
 
-	String SelectLoginUserID(String userLoginID);
+	String selectLoginUserId(String userLoginID);
 
-	void InsertReservation(UserReservation userReservation);
+	void insertReservation(UserReservation userReservation);
 
-	List<UserReservation> SelectStartTime(String lectureRoomNo);
+	List<UserReservation> selectStartTime(String lectureRoomNo);
 
-	int SelectReservationUserID(int userID);
+	int selectReservationUserId(int userID);
 
-	String SelectUserIDForReservationConfirm(String loginID);
+	String selectUserIdForReservationConfirm(String loginID);
 
-	int SelectLectureRoomNo(String userID);
+	int selectLectureRoomNo(String userID);
 
-	String SelectLectureRoomLocation(int lectureRoomNo);
+	String selectLectureRoomLocation(int lectureRoomNo);
 
-	int SelectLectureRoomMaxNumOfPeople(int lectureRoomNo);
+	int selectLectureRoomMaxNumOfPeople(int lectureRoomNo);
 
-	int SelectReservationNumOfPeople(String userID);
+	int selectReservationNumOfPeople(String userID);
 
-	String SelectReservationStartTime(String userID);
+	String selectReservationStartTime(String userID);
 
-	int SelectRoomFloor(int lectureRoomNo);
+	int selectRoomFloor(int lectureRoomNo);
 
-	String SelectReservationStartTimeForException(String startTime);
+	String selectReservationStartTimeForException(String startTime);
 
-	boolean DeleteReservation(UserReservation userReservation);
+	boolean deleteReservation(UserReservation userReservation);
 
-	UserReservation SelectRoomInfo(String userID, UserReservation userReservation);
+	UserReservation selectRoomInfo(String userID, UserReservation userReservation);
 
 
 }

@@ -148,28 +148,28 @@ public class UserDaoImpl implements UserDao {
 	}
 
 	@Override
-	public ArrayList<String> SelectUserProfileInfo(String id) {
+	public ArrayList<String> selectUserProfileInfo(String id) {
 		// 정보를 저장하기 위한 ArrayList
-		ArrayList<String> Info = new ArrayList<String>();
+		ArrayList<String> info = new ArrayList<String>();
 		// 학생정보를 가져오는 query문 실행
-		List<User> Output = this.sqlSession.selectList(this.Constant.getSelectUserInfo(), id);
+		List<User> output = this.sqlSession.selectList(this.Constant.getSelectUserInfo(), id);
 
-		if (Output == null) {
+		if (output == null) {
 
 		} else {
-			for (User Item : Output) {
-				UserID = Item.getUserID();
-				UserName = Item.getUserName();
-				UserRole = Item.getUserRole();
+			for (User item : output) {
+				UserID = item.getUserID();
+				UserName = item.getUserName();
+				UserRole = item.getUserRole();
 			}
 			// 이름 0
-			Info.add(UserName);
+			info.add(UserName);
 			// 아이디 1
-			Info.add(Integer.toString(UserID));
+			info.add(Integer.toString(UserID));
 			// role 2
-			Info.add(UserRole);
+			info.add(UserRole);
 		}
-		return Info;
+		return info;
 	}
 
 	@Override

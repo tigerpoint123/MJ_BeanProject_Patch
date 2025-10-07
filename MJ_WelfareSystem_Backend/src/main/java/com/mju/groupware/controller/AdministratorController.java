@@ -29,7 +29,7 @@ public class AdministratorController { //TODO : 비즈니스 로직을 서비스
     // 관리자메뉴 - user list
     @GetMapping("/manageList")
     public String manageList(Model model, User user, Principal principal) {
-        userInfoMethod.GetUserInformation(principal, user, model, this.constantAdmin.getSTUDENT(), this.constantAdmin.getPROFESSOR(), this.constantAdmin.getADMINISTRATOR());
+        userInfoMethod.getUserInformation(principal, user, model, this.constantAdmin.getSTUDENT(), this.constantAdmin.getPROFESSOR(), this.constantAdmin.getADMINISTRATOR());
         List<UserList> SelectUserList = adminService.SelectUserlist();
         model.addAttribute("list", SelectUserList);
         return this.constantAdmin.getList();
@@ -69,7 +69,7 @@ public class AdministratorController { //TODO : 비즈니스 로직을 서비스
     /* 관리자 메뉴-휴면 계정 관리 화면 */
     @GetMapping("/manageSleep")
     public String manageSleep(Model model, Principal principal, User user) {
-        userInfoMethod.GetUserInformation(
+        userInfoMethod.getUserInformation(
                 principal, user, model, this.constantAdmin.getSTUDENT(), this.constantAdmin.getPROFESSOR(), this.constantAdmin.getADMINISTRATOR());
 
         List<UserList> SelectDormantUserList = adminService.SelectDormantUserList();
@@ -89,7 +89,7 @@ public class AdministratorController { //TODO : 비즈니스 로직을 서비스
     /* 관리자 메뉴-탈퇴 계정 관리 화면 */
     @GetMapping("/manageSecession")
     public String manageSecession(Model model, Principal principal, User user) {
-        userInfoMethod.GetUserInformation(principal, user, model, this.constantAdmin.getSTUDENT(), this.constantAdmin.getPROFESSOR(), this.constantAdmin.getADMINISTRATOR());
+        userInfoMethod.getUserInformation(principal, user, model, this.constantAdmin.getSTUDENT(), this.constantAdmin.getPROFESSOR(), this.constantAdmin.getADMINISTRATOR());
 
         List<UserList> SelectWithdrawalUserList = adminService.SelectWithdrawalUserList();
         model.addAttribute("SelectWithdrawalUserList", SelectWithdrawalUserList);
@@ -115,7 +115,7 @@ public class AdministratorController { //TODO : 비즈니스 로직을 서비스
     // 관리자 메뉴에서 회원 아이디, 이름 클릭 시 학생 정보 출력
     @GetMapping("/detailStudent")
     public String detailStudent(Model model, @RequestParam("no") String no, Principal principal, User user) {
-        userInfoMethod.GetUserInformation(
+        userInfoMethod.getUserInformation(
                 principal, user, model, this.constantAdmin.getSTUDENT(), this.constantAdmin.getPROFESSOR(), this.constantAdmin.getADMINISTRATOR());
 
         boolean result = adminService.detailStudent(model, no);
@@ -126,7 +126,7 @@ public class AdministratorController { //TODO : 비즈니스 로직을 서비스
     // 관리자 메뉴에서 회원 아이디, 이름 클릭 시 교수 정보 출력
     @GetMapping("/detailProfessor")
     public String detailProfessor(HttpServletRequest request, Model model, Principal principal, User user, @RequestParam("no") String no) {
-        userInfoMethod.GetUserInformation(principal, user, model, this.constantAdmin.getSTUDENT(), this.constantAdmin.getPROFESSOR(), this.constantAdmin.getADMINISTRATOR());
+        userInfoMethod.getUserInformation(principal, user, model, this.constantAdmin.getSTUDENT(), this.constantAdmin.getPROFESSOR(), this.constantAdmin.getADMINISTRATOR());
 
         boolean result = adminService.detailProfessor(model, no);
 

@@ -19,7 +19,7 @@ public class UserInfoMethod {
     private final StudentService studentService;
     private final ProfessorService professorService;
 
-    public void StudentInfo(Model model, ArrayList<String> selectUserProfileInfo, ArrayList<String> studentInfo) {
+    public void studentInfo(Model model, ArrayList<String> selectUserProfileInfo, ArrayList<String> studentInfo) {
         // 학생 이름
         model.addAttribute("UserName", selectUserProfileInfo.get(0));
         // 학생 소속
@@ -30,7 +30,7 @@ public class UserInfoMethod {
         model.addAttribute("UserRole", selectUserProfileInfo.get(2));
     }
 
-    public void ProfessorInfo(Model model, ArrayList<String> selectUserProfileInfo, ArrayList<String> professorInfo) {
+    public void professorInfo(Model model, ArrayList<String> selectUserProfileInfo, ArrayList<String> professorInfo) {
         // 교수 이름
         model.addAttribute("UserName", selectUserProfileInfo.get(0));
         // 교수 소속
@@ -41,27 +41,27 @@ public class UserInfoMethod {
         model.addAttribute("UserRole", selectUserProfileInfo.get(2));
     }
 
-    public void AdministratorInfo(Model model, ArrayList<String> selectUserProfileInfo) {
+    public void administratorInfo(Model model, ArrayList<String> selectUserProfileInfo) {
         model.addAttribute("UserName", selectUserProfileInfo.get(0));
     }
 
-    public void GetUserInformation(
+    public void getUserInformation(
             Principal principal, User user, Model model, String sRole, String pRole, String aRole
     ) {
-        String LoginID = principal.getName();
-        ArrayList<String> SelectUserProfileInfo = userService.SelectUserProfileInfo(LoginID);
-        user.setUserLoginID(LoginID);
-        if (!SelectUserProfileInfo.isEmpty()) {
-            user.setUserName(SelectUserProfileInfo.get(0));
+        String loginID = principal.getName();
+        ArrayList<String> selectUserProfileInfo = userService.selectUserProfileInfo(loginID);
+        user.setUserLoginID(loginID);
+        if (!selectUserProfileInfo.isEmpty()) {
+            user.setUserName(selectUserProfileInfo.get(0));
         }
-        if (SelectUserProfileInfo.get(2).equals(sRole)) {
-            ArrayList<String> StudentInfo = studentService.SelectStudentProfileInfo(SelectUserProfileInfo.get(1));
-            StudentInfo(model, SelectUserProfileInfo, StudentInfo);
-        } else if (SelectUserProfileInfo.get(2).equals(pRole)) {
-            ArrayList<String> ProfessorInfo = professorService.SelectProfessorProfileInfo(SelectUserProfileInfo.get(1));
-            ProfessorInfo(model, SelectUserProfileInfo, ProfessorInfo);
-        } else if (SelectUserProfileInfo.get(2).equals(aRole)) {
-            AdministratorInfo(model, SelectUserProfileInfo);
+        if (selectUserProfileInfo.get(2).equals(sRole)) {
+            ArrayList<String> studentInfo = studentService.selectStudentProfileInfo(selectUserProfileInfo.get(1));
+            studentInfo(model, selectUserProfileInfo, studentInfo);
+        } else if (selectUserProfileInfo.get(2).equals(pRole)) {
+            ArrayList<String> professorInfo = professorService.selectProfessorProfileInfo(selectUserProfileInfo.get(1));
+            professorInfo(model, selectUserProfileInfo, professorInfo);
+        } else if (selectUserProfileInfo.get(2).equals(aRole)) {
+            administratorInfo(model, selectUserProfileInfo);
         }
     }
 }

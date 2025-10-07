@@ -22,7 +22,7 @@ public interface StudentService {
     void UpdateStudentDobuleMajor(Student student);
 
     // 로그인 완료 화면에 띄울 데이터 select
-    ArrayList<String> SelectStudentProfileInfo(String userID);
+    ArrayList<String> selectStudentProfileInfo(String userID);
 
     void UpdateStudentGender(Student student);
 

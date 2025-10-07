@@ -22,7 +22,7 @@ public interface ProfessorDao {
 
 	public void UpdateProfessorRoomNum(Professor professor);
 
-	public ArrayList<String> SelectProfessorProfileInfo(String userID);
+	public ArrayList<String> selectProfessorProfileInfo(String userID);
 	
 	public ArrayList<String> SelectMyPageUserInfoByID(String mysqlID);
 

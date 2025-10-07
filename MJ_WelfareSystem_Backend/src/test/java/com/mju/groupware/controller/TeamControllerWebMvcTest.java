@@ -59,7 +59,7 @@ class TeamControllerWebMvcTest {
 
     @BeforeEach
     void setupProfile() {
-        given(userService.SelectUserProfileInfo("testUser"))
+        given(userService.selectUserProfileInfo("testUser"))
                 .willReturn(new ArrayList<String>() {{ add("Name"); add("UID123"); add("UNKNOWN_ROLE"); }});
     }
 

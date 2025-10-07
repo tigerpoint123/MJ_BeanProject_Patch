@@ -54,25 +54,25 @@ public class ProfessorDaoImpl implements ProfessorDao {
 	}
 
 	@Override
-	public ArrayList<String> SelectProfessorProfileInfo(String userID) {
-		ArrayList<String> ProfessorInfo = new ArrayList<String>();
+	public ArrayList<String> selectProfessorProfileInfo(String userID) {
+		ArrayList<String> professorInfo = new ArrayList<String>();
 		if (!userID.equals("")) {
-			List<Professor> Output = this.sqlSession.selectList("SelectProfessorProfileInfo", userID);
-			if (Output == null) {
+			List<Professor> output = this.sqlSession.selectList("SelectProfessorProfileInfo", userID);
+			if (output == null) {
 
 			} else {
-				for (Professor Item : Output) {
-					ProfessorColleges = Item.getProfessorColleges().toString();
-					ProfessorMajor = Item.getProfessorMajor().toString();
-					ProfessorRoom = Item.getProfessorRoom().toString();
+				for (Professor item : output) {
+					ProfessorColleges = item.getProfessorColleges().toString();
+					ProfessorMajor = item.getProfessorMajor().toString();
+					ProfessorRoom = item.getProfessorRoom().toString();
 				}
 
-				ProfessorInfo.add(ProfessorColleges);
-				ProfessorInfo.add(ProfessorMajor);
-				ProfessorInfo.add(ProfessorRoom);
+				professorInfo.add(ProfessorColleges);
+				professorInfo.add(ProfessorMajor);
+				professorInfo.add(ProfessorRoom);
 			}
 		}
-		return ProfessorInfo;
+		return professorInfo;
 	}
 
 	@Override

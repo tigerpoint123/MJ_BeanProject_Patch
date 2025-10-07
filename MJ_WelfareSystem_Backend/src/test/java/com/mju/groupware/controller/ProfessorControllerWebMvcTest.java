@@ -48,7 +48,7 @@ class ProfessorControllerWebMvcTest {
     @BeforeEach
     void setupCommon() {
         // 공통적으로 참조되는 사용자 프로필 스텁
-        given(userService.SelectUserProfileInfo("testUser"))
+        given(userService.selectUserProfileInfo("testUser"))
                 .willReturn(new ArrayList<>(Arrays.asList("Name", "UID123", "PROFESSOR")));
     }
 
@@ -65,10 +65,10 @@ class ProfessorControllerWebMvcTest {
     void myPageProfessorReturnsOk() throws Exception {
         Principal principal = () -> "testUser";
         // 교수 기본 정보
-        given(professorService.SelectProfessorProfileInfo("UID123"))
+        given(professorService.selectProfessorProfileInfo("UID123"))
                 .willReturn(new ArrayList<>(Arrays.asList("COLL", "MAJOR", "ROOM")));
         // 역할/마이페이지 표시용 정보
-        given(userService.SelectUserProfileInfo("testUser"))
+        given(userService.selectUserProfileInfo("testUser"))
                 .willReturn(new ArrayList<>(Arrays.asList("Name", "UID123", "PROFESSOR")));
         // 마이페이지 상세 정보 (인덱스 매핑 주석 참조)
         ArrayList<String> myPage = new ArrayList<>(Arrays.asList(

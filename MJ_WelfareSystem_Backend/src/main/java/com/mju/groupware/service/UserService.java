@@ -34,7 +34,7 @@ public interface UserService {
 
     ArrayList<String> SelectMyPageUserInfo(String userId);
 
-    ArrayList<String> SelectUserProfileInfo(String loginID);
+    ArrayList<String> selectUserProfileInfo(String loginID);
 
     void updateUserPhoneNumber(User user);
 

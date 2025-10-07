@@ -34,53 +34,53 @@ public class ProfessorController {
 	public String myPageProfessor(User user, Model model, HttpServletRequest requestm, Principal Principal) {
 
 		String LoginID = Principal.getName();// 로그인 한 아이디
-		ArrayList<String> SelectUserProfileInfo = userService.SelectUserProfileInfo(LoginID);
+		ArrayList<String> selectUserProfileInfo = userService.selectUserProfileInfo(LoginID);
 
 		user.setUserLoginID(LoginID);
-		ArrayList<String> ProfessorInfo = professorService.SelectProfessorProfileInfo(SelectUserProfileInfo.get(1));
+		ArrayList<String> professorInfo = professorService.selectProfessorProfileInfo(selectUserProfileInfo.get(1));
 
 		// 교수 이름
-		model.addAttribute("UserName", SelectUserProfileInfo.get(0));
+		model.addAttribute("UserName", selectUserProfileInfo.get(0));
 		// 교수 소속
-		model.addAttribute("Colleges", ProfessorInfo.get(0));
+		model.addAttribute("Colleges", professorInfo.get(0));
 		// 교수 전공
-		model.addAttribute("UserMajor", ProfessorInfo.get(1));
+		model.addAttribute("UserMajor", professorInfo.get(1));
 		// 교수실
-		model.addAttribute("ProfessorRoom", ProfessorInfo.get(2));
+		model.addAttribute("ProfessorRoom", professorInfo.get(2));
 
 		// user role 가져오기
 		String UserLoginID = Principal.getName();
-		ArrayList<String> Info = userService.SelectUserProfileInfo(UserLoginID);
-		model.addAttribute("UserRole", Info.get(2));
+		ArrayList<String> info = userService.selectUserProfileInfo(UserLoginID);
+		model.addAttribute("UserRole", info.get(2));
 
 		// -------------------------------------------------------
 
 		String UserID = Principal.getName();
-		ArrayList<String> SelectUserInfo = userService.SelectMyPageUserInfo(UserID);
-		String SelectOpenInfo = userService.SelectOpenInfo(UserID);
+		ArrayList<String> selectUserInfo = userService.SelectMyPageUserInfo(UserID);
+		String selectOpenInfo = userService.SelectOpenInfo(UserID);
 		// jsp화면 설정
 		// 아이디 0
-		model.addAttribute(this.Constant.getUserLoginID(), SelectUserInfo.get(0));
+		model.addAttribute(this.Constant.getUserLoginID(), selectUserInfo.get(0));
 		// 이름 1
-		model.addAttribute(this.Constant.getUserName(), SelectUserInfo.get(1));
+		model.addAttribute(this.Constant.getUserName(), selectUserInfo.get(1));
 		// 교수실 전화번호 7
-		model.addAttribute("ProfessorRoomNum", SelectUserInfo.get(12));
+		model.addAttribute("ProfessorRoomNum", selectUserInfo.get(12));
 		// 연락처 2
-		model.addAttribute(this.Constant.getUserPhoneNum(), SelectUserInfo.get(2));
+		model.addAttribute(this.Constant.getUserPhoneNum(), selectUserInfo.get(2));
 		// 단과대학 9
-		model.addAttribute("ProfessorColleges", SelectUserInfo.get(9));
+		model.addAttribute("ProfessorColleges", selectUserInfo.get(9));
 		// 전공 10
-		model.addAttribute("ProfessorMajor", SelectUserInfo.get(10));
+		model.addAttribute("ProfessorMajor", selectUserInfo.get(10));
 		// 교수실 11
-		model.addAttribute("ProfessorRoom", SelectUserInfo.get(11));
+		model.addAttribute("ProfessorRoom", selectUserInfo.get(11));
 		// 이메일 3
-		int Idx = SelectUserInfo.get(3).indexOf("@"); // 메일에서 @의 인덱스 번호를 찾음
-		String Email = SelectUserInfo.get(3).substring(0, Idx);
-		model.addAttribute(this.Constant.getUserEmail(), Email);
+		int idx = selectUserInfo.get(3).indexOf("@"); // 메일에서 @의 인덱스 번호를 찾음
+		String email = selectUserInfo.get(3).substring(0, idx);
+		model.addAttribute(this.Constant.getUserEmail(), email);
 
 		// 정보공개여부
-		if (!SelectOpenInfo.equals("Error")) {
-			model.addAttribute("UserInfoOpen", SelectOpenInfo);
+		if (!selectOpenInfo.equals("Error")) {
+			model.addAttribute("UserInfoOpen", selectOpenInfo);
 		}
 		return this.Constant.getRMyPageProfessor();
 
@@ -89,22 +89,22 @@ public class ProfessorController {
 	/* 교수 정보 수정 화면 */
 	@RequestMapping(value = "/modifyProfessor", method = RequestMethod.GET)
 	public String modifyProfessor(Model model, Principal principal) {
-		String LoginID = principal.getName();
+		String loginID = principal.getName();
 
-		User SelectUserProfileInfo = userService.SelectModifyUserInfo(LoginID);
-		Professor professor = professorService.SelectModifyProfessorInfo(SelectUserProfileInfo.getUserID());
+		User selectUserProfileInfo = userService.SelectModifyUserInfo(loginID);
+		Professor professor = professorService.SelectModifyProfessorInfo(selectUserProfileInfo.getUserID());
 
-		model.addAttribute("UserLoginID", SelectUserProfileInfo.getUserLoginID());
-		model.addAttribute("UserName", SelectUserProfileInfo.getUserName());
-		String UserEmail = SelectUserProfileInfo.getUserEmail();
-		int Location = UserEmail.indexOf("@");
-		UserEmail = UserEmail.substring(0, Location);
-		model.addAttribute(this.Constant.getEmail(), UserEmail);
+		model.addAttribute("UserLoginID", selectUserProfileInfo.getUserLoginID());
+		model.addAttribute("UserName", selectUserProfileInfo.getUserName());
+		String userEmail = selectUserProfileInfo.getUserEmail();
+		int location = userEmail.indexOf("@");
+		userEmail = userEmail.substring(0, location);
+		model.addAttribute(this.Constant.getEmail(), userEmail);
 		model.addAttribute(this.Constant.getUserPhoneNum(), professor.getUserPhoneNum());
 		model.addAttribute("ProfessorColleges", professor.getProfessorColleges());
 		model.addAttribute("ProfessorMajor", professor.getProfessorMajor());
 		// 연락처 공개
-        model.addAttribute("OpenPhoneNum", SelectUserProfileInfo.getOpenPhoneNum());
+        model.addAttribute("OpenPhoneNum", selectUserProfileInfo.getOpenPhoneNum());
 
 		return this.Constant.getRModifyProfessor();
 	}
@@ -114,13 +114,13 @@ public class ProfessorController {
 	public String DoModifyProfessor(HttpServletResponse response, HttpServletRequest request, Model model,
 									Professor professor, User user, Principal Principal) {
 		// 업데이트문 where절을 위한 데이터 get
-		String UserID = Principal.getName();
-		ArrayList<String> UserInfo = userService.SelectUserInformation(UserID);
-		UserInfo.get(0); // 유저아이디 get
-		UserInfo.get(1); // 로그인아이디 get
-		user.setUserLoginID(UserInfo.get(1));
+		String userID = Principal.getName();
+		ArrayList<String> userInfo = userService.SelectUserInformation(userID);
+		userInfo.get(0); // 유저아이디 get
+		userInfo.get(1); // 로그인아이디 get
+		user.setUserLoginID(userInfo.get(1));
 
-		professor.setUserID(Integer.parseInt(UserInfo.get(0)));
+		professor.setUserID(Integer.parseInt(userInfo.get(0)));
 
 		// 연락처
 		if (!((String) request.getParameter(this.Constant.getUserPhoneNum())).equals("")) {

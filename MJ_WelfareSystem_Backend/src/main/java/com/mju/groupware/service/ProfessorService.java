@@ -25,7 +25,7 @@ public interface ProfessorService {
     void UpdateProfessorRoomNum(Professor professor);
 
     // 로그인 완료 화면에 띄울 데이터 select
-    ArrayList<String> SelectProfessorProfileInfo(String userID);
+    ArrayList<String> selectProfessorProfileInfo(String userID);
 
     Professor SelectProfessorInfo(String userID);
 

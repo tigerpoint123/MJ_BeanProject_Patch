@@ -23,7 +23,7 @@ public class GlobalUserModelAdvice {
             return;
         }
         User user = new User();
-        userInfoMethod.GetUserInformation(
+        userInfoMethod.getUserInformation(
                 principal,
                 user,
                 model,

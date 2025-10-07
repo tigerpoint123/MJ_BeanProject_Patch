@@ -46,7 +46,7 @@ class StudentControllerWebMvcTest {
 
     @BeforeEach
     void setupCommon() {
-        given(userService.SelectUserProfileInfo("testUser"))
+        given(userService.selectUserProfileInfo("testUser"))
                 .willReturn(new ArrayList<>(Arrays.asList("Name", "UID123", "STUDENT")));
         given(constant.getRSignupStudent()).willReturn("student/signupStudent");
         given(constant.getGrade()).willReturn("Grade");
@@ -72,7 +72,7 @@ class StudentControllerWebMvcTest {
     @DisplayName("GET /myPageStudent returns 200")
     void myPageStudentReturnsOk() throws Exception {
         Principal principal = () -> "testUser";
-        given(studentService.SelectStudentProfileInfo("UID123"))
+        given(studentService.selectStudentProfileInfo("UID123"))
                 .willReturn(new ArrayList<>(Arrays.asList("COLL", "MAJOR", "GRADE")));
         ArrayList<String> myPage = new ArrayList<>(Arrays.asList(
                 "loginId0", // 0

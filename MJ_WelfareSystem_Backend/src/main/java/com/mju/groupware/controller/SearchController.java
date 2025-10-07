@@ -22,9 +22,7 @@ import com.mju.groupware.dto.Student;
 import com.mju.groupware.dto.User;
 import com.mju.groupware.dto.UserReview;
 import com.mju.groupware.util.UserInfoMethod;
-import com.mju.groupware.service.ProfessorService;
 import com.mju.groupware.service.SearchService;
-import com.mju.groupware.service.StudentService;
 import com.mju.groupware.service.UserService;
 
 @Controller
@@ -39,7 +37,7 @@ public class SearchController {
 	@RequestMapping(value = "/search/searchUser", method = RequestMethod.GET)
 	public String searchUser(Principal principal, Model model, User user) {
 		// 유저 정보
-		userInfoMethod.GetUserInformation(principal, user, model, this.Constant.getSRole(), this.Constant.getPRole(), this.Constant.getARole());
+		userInfoMethod.getUserInformation(principal, user, model, this.Constant.getSRole(), this.Constant.getPRole(), this.Constant.getARole());
 		return this.Constant.getRSearchUser();
 	}
 
@@ -108,7 +106,7 @@ public class SearchController {
 	@RequestMapping(value = "/search/reviewList", method = RequestMethod.GET)
 	public String reviewList(Principal principal, Model model, User user, HttpServletRequest request, RedirectAttributes rttr) {
 		// 유저 정보
-		userInfoMethod.GetUserInformation(principal, user, model, this.Constant.getSRole(), this.Constant.getPRole(), this.Constant.getARole());
+		userInfoMethod.getUserInformation(principal, user, model, this.Constant.getSRole(), this.Constant.getPRole(), this.Constant.getARole());
 		String UserEmail = request.getParameter("no");
 		String UserID = userService.SelectIDForReview(UserEmail);
 		List<UserReview> Review = searchService.SelectUserReview(UserID);

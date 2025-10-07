@@ -71,25 +71,25 @@ public class StudentDaoImpl implements StudentDao {
 	}
 
 	@Override
-	public ArrayList<String> SelectStudentProfileInfo(String userID) {
-		ArrayList<String> StudentInfo = new ArrayList<String>();
+	public ArrayList<String> selectStudentProfileInfo(String userID) {
+		ArrayList<String> studentInfo = new ArrayList<String>();
 		if (!userID.equals("")) {
-			List<Student> Output = this.sqlSession.selectList(this.Constant.getSelectStudentProfileInfo(), userID);
-			if (Output == null) {
+			List<Student> output = this.sqlSession.selectList(this.Constant.getSelectStudentProfileInfo(), userID);
+			if (output == null) {
 
 			} else {
-				for (Student Item : Output) {
-					StudentColleges = Item.getStudentColleges().toString();
-					StudentMajor = Item.getStudentMajor().toString();
-					StudentGrade = Item.getStudentGrade().toString();
+				for (Student item : output) {
+					StudentColleges = item.getStudentColleges().toString();
+					StudentMajor = item.getStudentMajor().toString();
+					StudentGrade = item.getStudentGrade().toString();
 				}
 
-				StudentInfo.add(StudentColleges);
-				StudentInfo.add(StudentMajor);
-				StudentInfo.add(StudentGrade);
+				studentInfo.add(StudentColleges);
+				studentInfo.add(StudentMajor);
+				studentInfo.add(StudentGrade);
 			}
 		}
-		return StudentInfo;
+		return studentInfo;
 	}
 
 	@Override

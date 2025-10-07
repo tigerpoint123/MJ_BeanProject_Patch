@@ -35,7 +35,7 @@ public class BoardController { // TODO : 중복 코드 제거.
     @GetMapping("/inquiryList")
     public String inquiryList(User user, Principal principal, Model model) {
         if (principal != null) {
-            userInfoMethod.GetUserInformation(
+            userInfoMethod.getUserInformation(
                     principal, user, model, this.constantAdminBoardController.getSTUDENT(), this.constantAdminBoardController.getPROFESSOR(), this.constantAdminBoardController.getADMINISTRATOR()
             );
         }
@@ -49,7 +49,7 @@ public class BoardController { // TODO : 중복 코드 제거.
     @GetMapping("/inquiryContent")
     public String inquiryContent(User user, Principal principal, HttpServletRequest request, Model model) {
         if (principal != null) {
-            userInfoMethod.GetUserInformation(principal, user, model, this.constantAdminBoardController.getSTUDENT(), this.constantAdminBoardController.getPROFESSOR(), this.constantAdminBoardController.getADMINISTRATOR());
+            userInfoMethod.getUserInformation(principal, user, model, this.constantAdminBoardController.getSTUDENT(), this.constantAdminBoardController.getPROFESSOR(), this.constantAdminBoardController.getADMINISTRATOR());
         }
         inquiryService.getInquiryContent(principal, request, model);
 
@@ -60,7 +60,7 @@ public class BoardController { // TODO : 중복 코드 제거.
     @GetMapping("/inquiryWrite")
     public String inquiryWrite(Locale locale, User user, Principal principal, Model model) {
         if (principal != null) {
-            userInfoMethod.GetUserInformation(principal, user, model, this.constantAdminBoardController.getSTUDENT(), this.constantAdminBoardController.getPROFESSOR(), this.constantAdminBoardController.getADMINISTRATOR());
+            userInfoMethod.getUserInformation(principal, user, model, this.constantAdminBoardController.getSTUDENT(), this.constantAdminBoardController.getPROFESSOR(), this.constantAdminBoardController.getADMINISTRATOR());
         }
         inquiryService.getInquiryWrite(principal, model);
 
@@ -71,7 +71,7 @@ public class BoardController { // TODO : 중복 코드 제거.
     public String DoInquiryeWrite(Principal principal, HttpServletRequest request, User user,
                                   Model model, HttpServletResponse response) {
         if (principal != null) {
-            userInfoMethod.GetUserInformation(principal, user, model, this.constantAdminBoardController.getSTUDENT(), this.constantAdminBoardController.getPROFESSOR(), this.constantAdminBoardController.getADMINISTRATOR());
+            userInfoMethod.getUserInformation(principal, user, model, this.constantAdminBoardController.getSTUDENT(), this.constantAdminBoardController.getPROFESSOR(), this.constantAdminBoardController.getADMINISTRATOR());
         }
         return inquiryService.postInquiryWrite(principal, request, response);
     }
@@ -80,12 +80,12 @@ public class BoardController { // TODO : 중복 코드 제거.
     public String deleteInquiry(HttpServletRequest request) {
         inquiryService.postInquiryDelete(request);
 
-        return this.constantAdminBoardController.getRInquiryList();
+        return this.constantAdminBoardController.getRRInquiryList();
     }
 
     @PostMapping("/Answer.do")
     public String DoInquiryAnswer(Principal principal, HttpServletRequest request, User user, Model model) {
-        userInfoMethod.GetUserInformation(principal, user, model, this.constantAdminBoardController.getSTUDENT(), this.constantAdminBoardController.getPROFESSOR(), this.constantAdminBoardController.getADMINISTRATOR());
+        userInfoMethod.getUserInformation(principal, user, model, this.constantAdminBoardController.getSTUDENT(), this.constantAdminBoardController.getPROFESSOR(), this.constantAdminBoardController.getADMINISTRATOR());
         inquiryService.postInquiryAnswer(request);
 
         return this.constantAdminBoardController.getRRInquiryList();
@@ -103,7 +103,7 @@ public class BoardController { // TODO : 중복 코드 제거.
     @GetMapping("/noticeList")
     public String noticeList(User user, HttpServletRequest request, Model model, Principal principal) {
         if (principal != null) {
-            userInfoMethod.GetUserInformation(principal, user, model, this.constantAdminBoardController.getSTUDENT(), this.constantAdminBoardController.getPROFESSOR(), this.constantAdminBoardController.getADMINISTRATOR());
+            userInfoMethod.getUserInformation(principal, user, model, this.constantAdminBoardController.getSTUDENT(), this.constantAdminBoardController.getPROFESSOR(), this.constantAdminBoardController.getADMINISTRATOR());
         }
         List<Board> NoticeList = boardService.SelectNoticeBoardList();
         model.addAttribute("noticeList", NoticeList);
@@ -115,7 +115,7 @@ public class BoardController { // TODO : 중복 코드 제거.
     @GetMapping("/noticeWrite")
     public String noticeWrite(User user, HttpServletRequest request, Model model, Principal principal) {
         // 유저 정보
-        userInfoMethod.GetUserInformation(principal, user, model, this.constantAdminBoardController.getSTUDENT(), this.constantAdminBoardController.getPROFESSOR(), this.constantAdminBoardController.getADMINISTRATOR());
+        userInfoMethod.getUserInformation(principal, user, model, this.constantAdminBoardController.getSTUDENT(), this.constantAdminBoardController.getPROFESSOR(), this.constantAdminBoardController.getADMINISTRATOR());
         boardService.getNoticeWrite(principal, request, model);
 
         return this.constantAdminBoardController.getRNoticeWrite();
@@ -125,7 +125,7 @@ public class BoardController { // TODO : 중복 코드 제거.
     public String DoNoticeWrite(Principal principal, HttpServletRequest request, User user, Model model, HttpServletResponse response)
             throws Exception {
         // 유저 정보
-        userInfoMethod.GetUserInformation(principal, user, model, this.constantAdminBoardController.getSTUDENT(), this.constantAdminBoardController.getPROFESSOR(), this.constantAdminBoardController.getADMINISTRATOR());
+        userInfoMethod.getUserInformation(principal, user, model, this.constantAdminBoardController.getSTUDENT(), this.constantAdminBoardController.getPROFESSOR(), this.constantAdminBoardController.getADMINISTRATOR());
         return boardService.postNoticeWrite(principal, request, response);
     }
 
@@ -133,7 +133,7 @@ public class BoardController { // TODO : 중복 코드 제거.
     @GetMapping("/noticeModify")
     public String noticeModify(User user, Model model, Principal principal, HttpServletRequest request) {
         // 유저 정보
-        userInfoMethod.GetUserInformation(principal, user, model, this.constantAdminBoardController.getSTUDENT(), this.constantAdminBoardController.getPROFESSOR(), this.constantAdminBoardController.getADMINISTRATOR());
+        userInfoMethod.getUserInformation(principal, user, model, this.constantAdminBoardController.getSTUDENT(), this.constantAdminBoardController.getPROFESSOR(), this.constantAdminBoardController.getADMINISTRATOR());
         boardService.getNoticeModify(model, request);
 
         return this.constantAdminBoardController.getRNoticeModify();
@@ -236,6 +236,6 @@ public class BoardController { // TODO : 중복 코드 제거.
     }
 
     private void GetUserInformation(Principal principal, User user, Model model) {
-        userInfoMethod.GetUserInformation(principal, user, model, this.constantAdminBoardController.getSTUDENT(), this.constantAdminBoardController.getPROFESSOR(), this.constantAdminBoardController.getADMINISTRATOR());
+        userInfoMethod.getUserInformation(principal, user, model, this.constantAdminBoardController.getSTUDENT(), this.constantAdminBoardController.getPROFESSOR(), this.constantAdminBoardController.getADMINISTRATOR());
     }
 }

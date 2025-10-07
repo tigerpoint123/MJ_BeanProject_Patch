@@ -2,8 +2,8 @@ package com.mju.groupware.controller;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 
 import com.mju.groupware.constant.ConstantHomeController;
 
@@ -13,36 +13,32 @@ public class HomeController {
 
     private final ConstantHomeController Constant;
 
-    private String Select;
-    private String Consent;
-    private String Login;
-    private String Denied;
-
-    @RequestMapping(value = "/signupSelect", method = RequestMethod.GET)
-    public String signupSelect() {
-        this.Select = this.Constant.getSelect();
-        return Select;
-    }
+	@GetMapping("/signupSelect")
+	public String signupSelect() {
+		return this.Constant.getSelect();
+	}
 
     // 정보동의화면
-    @RequestMapping(value = "/infoConsent", method = RequestMethod.GET)
+    @GetMapping("/infoConsent")
     public String infoConsent() {
-        this.Consent = this.Constant.getConsent();
-        return Consent;
+        return this.Constant.getConsent();
     }
 
     // 사용자 로그인 화면
-    @RequestMapping(value = "/login", method = { RequestMethod.GET, RequestMethod.POST })
-    public String login() {
-        this.Login = this.Constant.getLogin();
-        return Login;
+    @GetMapping("/login")
+    public String loginGet() {
+        return this.Constant.getLogin();
+    }
+
+    @PostMapping("/login")
+    public String loginPost() {
+        return this.Constant.getLogin();
     }
 
     // 403 에러
-    @RequestMapping(value = "/access_denied")
+    @GetMapping("/access_denied")
     public String accessDeniedPage() throws Exception {
-        this.Denied = this.Constant.getDenied();
-        return Denied;
+        return this.Constant.getDenied();
     }
 
 }

@@ -42,7 +42,7 @@ public interface UserDao {
 
 	public ArrayList<String> SelectMyPageUserInfo(String userId);
 
-	public ArrayList<String> SelectUserProfileInfo(String id);
+	public ArrayList<String> selectUserProfileInfo(String id);
 
 	public void updateUserPhoneNumber(User user);
 

@@ -45,10 +45,10 @@ public class ProfessorServiceImpl implements ProfessorService {
 	}
 
 	@Override
-	public ArrayList<String> SelectProfessorProfileInfo(String userID) {
-		ArrayList<String> ProfessorInfo = new ArrayList<String>();
-		ProfessorInfo = professorDao.SelectProfessorProfileInfo(userID);
-		return ProfessorInfo;
+	public ArrayList<String> selectProfessorProfileInfo(String userID) {
+		ArrayList<String> professorInfo = new ArrayList<String>();
+		professorInfo = professorDao.selectProfessorProfileInfo(userID);
+		return professorInfo;
 	}
 
 	@Override

@@ -113,8 +113,8 @@ public class UserFunctionController {
       if (principal != null) { // 지우면 오류(로그인 안해서 principal 못가져오는)납니다
          // 유저 정보
          String LoginID = principal.getName();// 로그인 한 아이디
-         ArrayList<String> SelectUserProfileInfo = new ArrayList<String>();
-         SelectUserProfileInfo = userService.SelectUserProfileInfo(LoginID);
+         ArrayList<String> selectUserProfileInfo = new ArrayList<String>();
+         selectUserProfileInfo = userService.selectUserProfileInfo(LoginID);
          int UserID = Integer.parseInt(userService.SelectUserIDForDate(LoginID));
          user.setUserLoginID(LoginID);
 
@@ -124,19 +124,19 @@ public class UserFunctionController {
             userService.UpdateRecoveryDormant(LoginID);
          }
 
-         if (SelectUserProfileInfo.get(2).equals(this.ConstantHome.getSRole())) {
-            ArrayList<String> StudentInfo = new ArrayList<String>();
-            StudentInfo = studentService.SelectStudentProfileInfo(SelectUserProfileInfo.get(1));
+         if (selectUserProfileInfo.get(2).equals(this.ConstantHome.getSRole())) {
+            ArrayList<String> studentInfo = new ArrayList<String>();
+            studentInfo = studentService.selectStudentProfileInfo(selectUserProfileInfo.get(1));
 
-            userInfoMethod.StudentInfo(model, SelectUserProfileInfo, StudentInfo);
-         } else if (SelectUserProfileInfo.get(2).equals(this.ConstantHome.getPRole())) {
+            userInfoMethod.studentInfo(model, selectUserProfileInfo, studentInfo);
+         } else if (selectUserProfileInfo.get(2).equals(this.ConstantHome.getPRole())) {
 
-            ArrayList<String> ProfessorInfo = new ArrayList<String>();
-            ProfessorInfo = professorService.SelectProfessorProfileInfo(SelectUserProfileInfo.get(1));
+            ArrayList<String> professorInfo = new ArrayList<String>();
+            professorInfo = professorService.selectProfessorProfileInfo(selectUserProfileInfo.get(1));
 
-            userInfoMethod.ProfessorInfo(model, SelectUserProfileInfo, ProfessorInfo);
-         } else if (SelectUserProfileInfo.get(2).equals(this.ConstantHome.getARole())) {
-            userInfoMethod.AdministratorInfo(model, SelectUserProfileInfo);
+            userInfoMethod.professorInfo(model, selectUserProfileInfo, professorInfo);
+         } else if (selectUserProfileInfo.get(2).equals(this.ConstantHome.getARole())) {
+            userInfoMethod.administratorInfo(model, selectUserProfileInfo);
          }
          Date Now = new Date();
          SimpleDateFormat Date = new SimpleDateFormat(this.ConstantHome.getDFormat());
@@ -170,8 +170,8 @@ public class UserFunctionController {
       if (principal != null) {
          // 유저 정보
          String LoginID = principal.getName();// 로그인 한 아이디
-         ArrayList<String> SelectUserProfileInfo = new ArrayList<String>();
-         SelectUserProfileInfo = userService.SelectUserProfileInfo(LoginID);
+         ArrayList<String> selectUserProfileInfo = new ArrayList<String>();
+         selectUserProfileInfo = userService.selectUserProfileInfo(LoginID);
          int UserID = Integer.parseInt(userService.SelectUserIDForDate(LoginID));
          user.setUserLoginID(LoginID);
 
@@ -181,19 +181,19 @@ public class UserFunctionController {
             userService.UpdateRecoveryDormant(LoginID);
          }
 
-         if (SelectUserProfileInfo.get(2).equals(this.ConstantHome.getSRole())) {
-            ArrayList<String> StudentInfo = new ArrayList<String>();
-            StudentInfo = studentService.SelectStudentProfileInfo(SelectUserProfileInfo.get(1));
+         if (selectUserProfileInfo.get(2).equals(this.ConstantHome.getSRole())) {
+            ArrayList<String> studentInfo = new ArrayList<String>();
+            studentInfo = studentService.selectStudentProfileInfo(selectUserProfileInfo.get(1));
 
-            userInfoMethod.StudentInfo(model, SelectUserProfileInfo, StudentInfo);
-         } else if (SelectUserProfileInfo.get(2).equals(this.ConstantHome.getPRole())) {
+            userInfoMethod.studentInfo(model, selectUserProfileInfo, studentInfo);
+         } else if (selectUserProfileInfo.get(2).equals(this.ConstantHome.getPRole())) {
 
-            ArrayList<String> ProfessorInfo = new ArrayList<String>();
-            ProfessorInfo = professorService.SelectProfessorProfileInfo(SelectUserProfileInfo.get(1));
+            ArrayList<String> professorInfo = new ArrayList<String>();
+            professorInfo = professorService.selectProfessorProfileInfo(selectUserProfileInfo.get(1));
 
-            userInfoMethod.ProfessorInfo(model, SelectUserProfileInfo, ProfessorInfo);
-         } else if (SelectUserProfileInfo.get(2).equals(this.ConstantHome.getARole())) {
-            userInfoMethod.AdministratorInfo(model, SelectUserProfileInfo);
+            userInfoMethod.professorInfo(model, selectUserProfileInfo, professorInfo);
+         } else if (selectUserProfileInfo.get(2).equals(this.ConstantHome.getARole())) {
+            userInfoMethod.administratorInfo(model, selectUserProfileInfo);
          }
 
          Date Now = new Date();
@@ -946,20 +946,20 @@ public class UserFunctionController {
       this.ConstantHome = (ConstantHome) ctx.getBean("Home");
 
       String LoginID = principal.getName();// 로그인 한 아이디
-      ArrayList<String> SelectUserProfileInfo = new ArrayList<String>();
-      SelectUserProfileInfo = userService.SelectUserProfileInfo(LoginID);
+      ArrayList<String> selectUserProfileInfo = new ArrayList<String>();
+      selectUserProfileInfo = userService.selectUserProfileInfo(LoginID);
       user.setUserLoginID(LoginID);
 
-      if (SelectUserProfileInfo.get(2).equals(this.ConstantHome.getSRole())) {
-         ArrayList<String> StudentInfo = new ArrayList<String>();
-         StudentInfo = studentService.SelectStudentProfileInfo(SelectUserProfileInfo.get(1));
-         userInfoMethod.StudentInfo(model, SelectUserProfileInfo, StudentInfo);
-      } else if (SelectUserProfileInfo.get(2).equals(this.ConstantHome.getPRole())) {
-         ArrayList<String> ProfessorInfo = new ArrayList<String>();
-         ProfessorInfo = professorService.SelectProfessorProfileInfo(SelectUserProfileInfo.get(1));
-         userInfoMethod.ProfessorInfo(model, SelectUserProfileInfo, ProfessorInfo);
-      } else if (SelectUserProfileInfo.get(2).equals(this.ConstantHome.getARole())) {
-         userInfoMethod.AdministratorInfo(model, SelectUserProfileInfo);
+      if (selectUserProfileInfo.get(2).equals(this.ConstantHome.getSRole())) {
+         ArrayList<String> studentInfo = new ArrayList<String>();
+         studentInfo = studentService.selectStudentProfileInfo(selectUserProfileInfo.get(1));
+         userInfoMethod.studentInfo(model, selectUserProfileInfo, studentInfo);
+      } else if (selectUserProfileInfo.get(2).equals(this.ConstantHome.getPRole())) {
+         ArrayList<String> professorInfo = new ArrayList<String>();
+         professorInfo = professorService.selectProfessorProfileInfo(selectUserProfileInfo.get(1));
+         userInfoMethod.professorInfo(model, selectUserProfileInfo, professorInfo);
+      } else if (selectUserProfileInfo.get(2).equals(this.ConstantHome.getARole())) {
+         userInfoMethod.administratorInfo(model, selectUserProfileInfo);
       }
    }
 

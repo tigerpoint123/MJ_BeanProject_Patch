@@ -64,7 +64,7 @@ class BoardControllerWebMvcTest {
         testPrincipal = () -> "testUser";
         
         // GetUserInformation 호출 시 필요한 최소 사용자 프로필 정보 주입
-        given(userService.SelectUserProfileInfo("testUser"))
+        given(userService.selectUserProfileInfo("testUser"))
                 .willReturn(new ArrayList<>(Arrays.asList("name", "someId", "UNKNOWN_ROLE")));
         
         // 공통 사용자 서비스 Mock 설정

@@ -58,7 +58,7 @@ class ScheduleControllerWebMvcTest {
 
     @BeforeEach
     void setupCommon() {
-        given(userService.SelectUserProfileInfo("testUser"))
+        given(userService.selectUserProfileInfo("testUser"))
                 .willReturn(new ArrayList<>(Arrays.asList("Name", "UID123", "STUDENT")));
         given(calenderService.SelectUserIdForCalender("testUser")).willReturn(1);
         given(constant.getUserID()).willReturn("UserID");

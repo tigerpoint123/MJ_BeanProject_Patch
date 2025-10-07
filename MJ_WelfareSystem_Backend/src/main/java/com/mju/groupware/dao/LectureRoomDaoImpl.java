@@ -17,103 +17,103 @@ public class LectureRoomDaoImpl implements LectureRoomDao {
 	private SqlSessionTemplate sqlSession;
 
 	@Override
-	public List<LectureRoom> SelectLectureRoomList() {
+	public List<LectureRoom> selectLectureRoomList() {
 		return sqlSession.selectList("SelectLectureRoomList");
 	}
 
 	@Override
-	public int SelectMaxNumOfPeople(String lectureRoomNo) {
+	public int selectMaxNumOfPeople(String lectureRoomNo) {
 		return sqlSession.selectOne("SelectMaxNumOfPeople", lectureRoomNo);
 	}
 
 	@Override
-	public String SelectLoginUserID(String userLoginID) {
+	public String selectLoginUserId(String userLoginID) {
 		return sqlSession.selectOne("SelectLoginUserIDForLecture", userLoginID);
 	}
 
 	@Override
-	public void InsertReservation(UserReservation userReservation) {
+	public void insertReservation(UserReservation userReservation) {
 		sqlSession.insert("InsertReservation", userReservation);
 	}
 
 	@Override
-	public List<UserReservation> SelectStartTime(String lectureRoomNo) {
-		List<UserReservation> Output = sqlSession.selectList("SelectStartTime", lectureRoomNo);
-		return Output;
+	public List<UserReservation> selectStartTime(String lectureRoomNo) {
+		List<UserReservation> output = sqlSession.selectList("SelectStartTime", lectureRoomNo);
+		return output;
 	}
 
 	@Override
-	public int SelectReservationUserID(int userID) {
-		Integer Output = sqlSession.selectOne("SelectReservationUserID", userID);
-		if (Output != null) {
-			return Output;
+	public int selectReservationUserId(int userID) {
+		Integer output = sqlSession.selectOne("SelectReservationUserID", userID);
+		if (output != null) {
+			return output;
 		} else {
 			return 0;
 		}
 	}
 
 	@Override
-	public String SelectUserIDForReservationConfirm(String loginID) {
+	public String selectUserIdForReservationConfirm(String loginID) {
 		return sqlSession.selectOne("SelectUserIDForReservationConfirm", loginID);
 	}
 
 	@Override
-	public int SelectLectureRoomNo(String userID) {
+	public int selectLectureRoomNo(String userID) {
 
-		Integer SelectLectureRoomNo = sqlSession.selectOne("SelectLectureRoomNo", userID);
-		if (SelectLectureRoomNo != null) {
-			return SelectLectureRoomNo;
+		Integer selectLectureRoomNo = sqlSession.selectOne("SelectLectureRoomNo", userID);
+		if (selectLectureRoomNo != null) {
+			return selectLectureRoomNo;
 		} else {
 			return 0;
 		}
 	}
 
 	@Override
-	public String SelectLectureRoomLocation(int lectureRoomNo) {
+	public String selectLectureRoomLocation(int lectureRoomNo) {
 		return sqlSession.selectOne("SelectLectureRoomLocation", lectureRoomNo);
 	}
 
 	@Override
-	public int SelectLectureRoomMaxNumOfPeople(int lectureRoomNo) {
+	public int selectLectureRoomMaxNumOfPeople(int lectureRoomNo) {
 		return sqlSession.selectOne("SelectLectureRoomMaxNumOfPeople", lectureRoomNo);
 	}
 
 	@Override
-	public int SelectReservationNumOfPeople(String userID) {
+	public int selectReservationNumOfPeople(String userID) {
 		return sqlSession.selectOne("SelectReservationNumOfPeople", userID);
 	}
 
 	@Override
-	public String SelectReservationStartTime(String userID) {
+	public String selectReservationStartTime(String userID) {
 		return sqlSession.selectOne("SelectReservationStartTime", userID);
 	}
 
 	@Override
-	public int SelectRoomFloor(int lectureRoomNo) {
+	public int selectRoomFloor(int lectureRoomNo) {
 		return sqlSession.selectOne("SelectRoomFloor", lectureRoomNo);
 	}
 
 	@Override
-	public String SelectReservationStartTimeForException(String startTime) {
-		String Output = sqlSession.selectOne("SelectReservationTimeForException", startTime);
-		if (Output == null) {
+	public String selectReservationStartTimeForException(String startTime) {
+		String output = sqlSession.selectOne("SelectReservationTimeForException", startTime);
+		if (output == null) {
 			return "0";
 		} else {
-			return Output;
+			return output;
 		}
 	}
 
 	@Override
-	public UserReservation SelectRoomInfo(String userID, UserReservation userReservation) {
+	public UserReservation selectRoomInfo(String userID, UserReservation userReservation) {
 		userReservation = sqlSession.selectOne("SelectRoomInfo", userID);
 		return userReservation;
 	}
 
 	@Override
-	public boolean DeleteReservation(UserReservation userReservation) {
+	public boolean deleteReservation(UserReservation userReservation) {
 		// delete문의 경우 삭제된 row의 수를 return한다.
-		int Row = sqlSession.delete("DeleteReservation", userReservation);
-		if (Row == 0) {
+		int row = sqlSession.delete("DeleteReservation", userReservation);
+		if (row == 0) {
 			return false;
 		} else {
 			return true;

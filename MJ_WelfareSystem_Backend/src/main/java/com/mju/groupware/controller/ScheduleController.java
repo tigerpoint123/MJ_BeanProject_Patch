@@ -36,7 +36,7 @@ public class ScheduleController {
 			String LoginID = principal.getName();// 로그인 한 아이디
 			int UserID = calenderService.SelectUserIdForCalender(LoginID);
 			model.addAttribute(this.Constant.getUserID(), UserID);
-			userInfoMethod.GetUserInformation(principal, user, model, this.Constant.getSRole(), this.Constant.getPRole(), this.Constant.getARole());
+			userInfoMethod.getUserInformation(principal, user, model, this.Constant.getSRole(), this.Constant.getPRole(), this.Constant.getARole());
 
 		}
 		return this.Constant.getSchedule();

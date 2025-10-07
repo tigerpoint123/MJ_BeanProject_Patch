@@ -15,84 +15,84 @@ public class LectureRoomServiceImpl implements LectureRoomService {
 	private LectureRoomDao lectureRoomDao;
 
 	@Override
-	public List<LectureRoom> SelectLectureRoomList() {
-		return lectureRoomDao.SelectLectureRoomList();
+	public List<LectureRoom> selectLectureRoomList() {
+		return lectureRoomDao.selectLectureRoomList();
 	}
 
 	@Override
-	public int SelectMaxNumOfPeople(String lectureRoomNo) {
-		return lectureRoomDao.SelectMaxNumOfPeople(lectureRoomNo);
+	public int selectMaxNumOfPeople(String lectureRoomNo) {
+		return lectureRoomDao.selectMaxNumOfPeople(lectureRoomNo);
 	}
 
 	@Override
-	public String SelectLoginUserID(String userLoginID) {
-		return lectureRoomDao.SelectLoginUserID(userLoginID);
+	public String selectLoginUserId(String userLoginID) {
+		return lectureRoomDao.selectLoginUserId(userLoginID);
 	}
 
 	@Override
-	public void InsertReservation(UserReservation userReservation) {
-		lectureRoomDao.InsertReservation(userReservation);
+	public void insertReservation(UserReservation userReservation) {
+		lectureRoomDao.insertReservation(userReservation);
 	}
 
 	@Override
-	public List<UserReservation> SelectStartTime(String lectureRoomNo) {
-		return lectureRoomDao.SelectStartTime(lectureRoomNo);
+	public List<UserReservation> selectStartTime(String lectureRoomNo) {
+		return lectureRoomDao.selectStartTime(lectureRoomNo);
 	}
 
 	@Override
-	public int SelectReservationUserID(int userID) {
-		return lectureRoomDao.SelectReservationUserID(userID);
+	public int selectReservationUserId(int userID) {
+		return lectureRoomDao.selectReservationUserId(userID);
 	}
 
 	@Override
-	public String SelectUserIDForReservationConfirm(String loginID) {
-		return lectureRoomDao.SelectUserIDForReservationConfirm(loginID);
+	public String selectUserIdForReservationConfirm(String loginID) {
+		return lectureRoomDao.selectUserIdForReservationConfirm(loginID);
 	}
 
 	@Override
-	public int SelectLectureRoomNo(String userID) {
-		return lectureRoomDao.SelectLectureRoomNo(userID);
+	public int selectLectureRoomNo(String userID) {
+		return lectureRoomDao.selectLectureRoomNo(userID);
 	}
 
 	@Override
-	public String SelectLectureRoomLocation(int lectureRoomNo) {
-		return lectureRoomDao.SelectLectureRoomLocation(lectureRoomNo);
+	public String selectLectureRoomLocation(int lectureRoomNo) {
+		return lectureRoomDao.selectLectureRoomLocation(lectureRoomNo);
 	}
 
 	@Override
-	public int SelectLectureRoomMaxNumOfPeople(int lectureRoomNo) {
-		return lectureRoomDao.SelectLectureRoomMaxNumOfPeople(lectureRoomNo);
+	public int selectLectureRoomMaxNumOfPeople(int lectureRoomNo) {
+		return lectureRoomDao.selectLectureRoomMaxNumOfPeople(lectureRoomNo);
 	}
 
 	@Override
-	public int SelectReservationNumOfPeople(String userID) {
-		return lectureRoomDao.SelectReservationNumOfPeople(userID);
+	public int selectReservationNumOfPeople(String userID) {
+		return lectureRoomDao.selectReservationNumOfPeople(userID);
 	}
 
 	@Override
-	public String SelectReservationStartTime(String userID) {
-		return lectureRoomDao.SelectReservationStartTime(userID);
+	public String selectReservationStartTime(String userID) {
+		return lectureRoomDao.selectReservationStartTime(userID);
 	}
 
 	@Override
-	public int SelectRoomFloor(int lectureRoomNo) {
-		return lectureRoomDao.SelectRoomFloor(lectureRoomNo);
+	public int selectRoomFloor(int lectureRoomNo) {
+		return lectureRoomDao.selectRoomFloor(lectureRoomNo);
 	}
 
 	@Override
-	public String SelectReservationStartTimeForException(String startTime) {
-		return lectureRoomDao.SelectReservationStartTimeForException(startTime);
+	public String selectReservationStartTimeForException(String startTime) {
+		return lectureRoomDao.selectReservationStartTimeForException(startTime);
 	}
 
 	@Override
-	public UserReservation SelectRoomInfo(String UserID, UserReservation userReservation) {
-		userReservation = lectureRoomDao.SelectRoomInfo(UserID, userReservation);
+	public UserReservation selectRoomInfo(String userID, UserReservation userReservation) {
+		userReservation = lectureRoomDao.selectRoomInfo(userID, userReservation);
 		return userReservation;
 	}
 
 	@Override
-	public boolean DeleteReservation(UserReservation userReservation) {
-		boolean Check = lectureRoomDao.DeleteReservation(userReservation);
-		return Check;
+	public boolean deleteReservation(UserReservation userReservation) {
+		boolean check = lectureRoomDao.deleteReservation(userReservation);
+		return check;
 	}
 }

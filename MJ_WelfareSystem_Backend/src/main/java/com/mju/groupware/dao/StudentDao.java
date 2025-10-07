@@ -20,7 +20,7 @@ public interface StudentDao {
 
 	public void UpdateStudentDobuleMajor(Student student);
 
-	public ArrayList<String> SelectStudentProfileInfo(String userID);
+	public ArrayList<String> selectStudentProfileInfo(String userID);
 
 	public ArrayList<String> SelectMyPageUserInfoByID(String mysqlID);
 
