@@ -13,4 +13,10 @@ public interface UserEmailService {
 	// 일정시간 후 인증번호 삭제
 	 void DeleteInfo(UserEmail userEmail);
 
+	// 이메일 인증번호 발송 및 저장
+	String processEmailCertification(String userEmail, String dateFormat);
+
+	// 인증번호 확인
+	boolean verifyCertification(String authNum);
+
 }

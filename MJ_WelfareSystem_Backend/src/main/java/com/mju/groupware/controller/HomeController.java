@@ -10,7 +10,7 @@ import com.mju.groupware.constant.ConstantHomeController;
 @Controller
 @RequiredArgsConstructor
 public class HomeController {
-
+    // TODO : 컨트롤러 분리(userFunction). 트랜잭션 관리 추가. 통일된 예외처리. 상수 관리 개선. 유틸 클래스 정리 (중복 코드 제거, 공통 검증로직 추출). 테스트 코드 보강
     private final ConstantHomeController Constant;
 
 	@GetMapping("/signupSelect")

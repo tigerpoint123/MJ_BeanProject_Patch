@@ -1,10 +1,12 @@
 package com.mju.groupware.service;
 
-import java.util.ArrayList;
-
+import com.mju.groupware.dto.Board;
 import com.mju.groupware.dto.Professor;
 import com.mju.groupware.dto.Student;
 import com.mju.groupware.dto.User;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public interface UserService {
 
@@ -99,5 +101,38 @@ public interface UserService {
     String SelectIDForReview(String userLoginID);
 
     User SelectModifyUserInfo(String loginID);
+
+    void processLoginDateUpdate(String loginID, String dateFormat);
+
+    List<Board> getNoticeBoardList();
+
+    List<com.mju.groupware.dto.Board> getCommunityBoardList();
+
+    List<Board> getMyBoardList(String loginID);
+
+    List<com.mju.groupware.dto.Inquiry> getMyInquiryList(String loginID);
+
+    void processWithdrawal(String userLoginID, String dateFormat);
+
+    void registerStudent(User user, Student student, String studentColleges, String studentMajor, 
+                         String studentDoubleMajor, String userEmail, boolean isDoubleMajor);
+
+    void registerProfessor(User user, Professor professor, String professorColleges, String professorMajor,
+                          String professorRoom, String professorRoomNum, String userEmail);
+
+    String validateUserLoginID(String userLoginID, User user);
+
+    String validateStudentSignUp(String studentColleges, String studentMajor);
+
+    String validateProfessorSignUp(String professorColleges, String professorMajor);
+
+    boolean verifyUserForPasswordReset(User user);
+
+    String generateAndUpdateTemporaryPassword(User user);
+
+    String getRedirectUrlByRole(String userLoginID, String sRole, String pRole, 
+                                String rmsUrl, String rmpUrl);
+
+    void updatePassword(String userLoginID, String newPassword);
 
 }

@@ -7,24 +7,18 @@ import com.mju.groupware.util.UserInfoMethod;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
-import org.springframework.context.support.GenericXmlApplicationContext;
-import org.springframework.security.crypto.bcrypt.BCrypt;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.security.Principal;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
 import java.util.List;
 
 @Controller
@@ -36,909 +30,696 @@ public class UserFunctionController {
    private final EmailService emailService;
    private final UserEmailService userEmailService;
    private final UserInfoMethod userInfoMethod;
-   private final BoardService boardService;
-   private final InquiryService inquiryService;
-   private final GenericXmlApplicationContext ctx;
 
-   private String StudentColleges;
-   private String UserLoginID;
-
-   private String StudentGender;
-   private String StudentGradeForSignUp;
-   private String StudentMajor;
-   private String StudentDoubleMajor;
-   private String ProfessorColleges;
-   private String ProfessorMajor;
-   private String ProfessorRoom;
-   private String ProfessorRoomNum;
-   private String UserEmail;
-   private boolean IDChecker = false;
-   private boolean EmailChecker = false;
-   private boolean NameChecker = false;
-   private boolean EmailCheck = true;
-   private String Address;
-   private Date Now;
-   private Calendar Calendear;
-   private DateFormat DateFormat;
-
-   private ConstantWithdrawal ConstantWithdrawal;
-   private ConstantFindPassword ConstantFindPassword;
-   private ConstantHome ConstantHome;
-   private ConstantMyPostList ConstantMyPostList;
-   private ConstantMyInquiryList ConstantMyInquiryList;
-   private ConstantUserFunctionURL ConstantUserFunctionURL;
+    private final ConstantWithdrawal constantWithdrawal;
+    private final ConstantFindPassword constantFindPassword;
+    private final ConstantHome constantHome;
+    private final ConstantMyPostList constantMyPostList;
+    private final ConstantMyInquiryList constantMyInquiryList;
+    private final ConstantUserFunctionURL constantUserFunctionURL;
+    private final ConstantDoEmail constantDoEmail;
+    private final ConstantDoSignUp constantDoSignUp;
+    private final ConstantDoFindPassword constantDoFindPassword;
+    private final ConstantEmail constantEmail;
 
    @GetMapping("/findPassword")
    public String findPassword() {
-      ConstantFindPassword ConstantFindPassword = (ConstantFindPassword) ctx.getBean("FindPassword");
-      return ConstantFindPassword.getFPUrl();
+        return this.constantFindPassword.getFPUrl();
    }
 
    /* 이메일 인증 후 비밀번호 보여주기 */
-   @RequestMapping(value = "/showPassword", method = RequestMethod.GET)
-   public String showPassword(User user, RedirectAttributes redirectAttributes, Model model,
-                              HttpServletRequest request, HttpServletResponse response) throws IOException {
-      this.ConstantFindPassword = (ConstantFindPassword) ctx.getBean("FindPassword");
-
-      return this.ConstantFindPassword.getSPUrl();
+    @GetMapping("/showPassword")
+    public String showPassword() {
+        return this.constantFindPassword.getSPUrl();
    }
 
    // home 로그인 완료 화면 + 날짜 업데이트
-   @RequestMapping(value = "/home", method = RequestMethod.GET)
-   public String home(User user, Principal principal, Model model, HttpServletRequest request, Student student,
-         Professor professor) {
-      this.ConstantHome = (ConstantHome) ctx.getBean("Home");
-
+     @GetMapping("/home")
+     public String home(User user, Principal principal, Model model) {
       if (principal != null) { // 지우면 오류(로그인 안해서 principal 못가져오는)납니다
-         // 유저 정보
-         String LoginID = principal.getName();// 로그인 한 아이디
-         ArrayList<String> selectUserProfileInfo = new ArrayList<String>();
-         selectUserProfileInfo = userService.selectUserProfileInfo(LoginID);
-         int UserID = Integer.parseInt(userService.SelectUserIDForDate(LoginID));
-         user.setUserLoginID(LoginID);
+             // 유저 정보 조회 및 모델 설정
+             userInfoMethod.getUserInformation(principal, user, model, 
+                 this.constantHome.getSRole(), 
+                 this.constantHome.getPRole(), 
+                 this.constantHome.getARole());
 
-         // 휴먼계정 여부 확인 및 update
-         boolean DormantCheck = userService.SelectDormant(LoginID);
-         if (DormantCheck) {
-            userService.UpdateRecoveryDormant(LoginID);
-         }
-
-         if (selectUserProfileInfo.get(2).equals(this.ConstantHome.getSRole())) {
-            ArrayList<String> studentInfo = new ArrayList<String>();
-            studentInfo = studentService.selectStudentProfileInfo(selectUserProfileInfo.get(1));
-
-            userInfoMethod.studentInfo(model, selectUserProfileInfo, studentInfo);
-         } else if (selectUserProfileInfo.get(2).equals(this.ConstantHome.getPRole())) {
-
-            ArrayList<String> professorInfo = new ArrayList<String>();
-            professorInfo = professorService.selectProfessorProfileInfo(selectUserProfileInfo.get(1));
-
-            userInfoMethod.professorInfo(model, selectUserProfileInfo, professorInfo);
-         } else if (selectUserProfileInfo.get(2).equals(this.ConstantHome.getARole())) {
-            userInfoMethod.administratorInfo(model, selectUserProfileInfo);
-         }
-         Date Now = new Date();
-         SimpleDateFormat Date = new SimpleDateFormat(this.ConstantHome.getDFormat());
-         user.setDate(Date.format(Now));
-         student.setDate(Date.format(Now));
-         student.setUserID(UserID);
-         professor.setDate(Date.format(Now));
-         professor.setUserID(UserID);
-         userService.UpdateLoginDate(user);
-         studentService.UpdateStudentLoginDate(student);
-         professorService.updateProfessorLoginDate(professor);
-
+             // 로그인 날짜 업데이트 및 휴먼계정 복구
+             userService.processLoginDateUpdate(principal.getName(), this.constantHome.getDFormat());
       }
 
       // 공지사항 리스트 띄우기
-      List<Board> NoticeList = boardService.SelectNoticeBoardList();
-      model.addAttribute(this.ConstantHome.getNL(), NoticeList);
+         List<Board> noticeList = userService.getNoticeBoardList();
+         model.addAttribute(this.constantHome.getNL(), noticeList);
 
       // 커뮤니티 리스트 띄우기
-      List<Board> CommunityList = boardService.getCommunityList();
-      model.addAttribute(this.ConstantHome.getCL(), CommunityList);
+         List<Board> communityList = userService.getCommunityBoardList();
+         model.addAttribute(this.constantHome.getCL(), communityList);
 
-      return this.ConstantHome.getHUrl();
-   }
+         return this.constantHome.getHUrl();
+     }
 
-   @RequestMapping(value = "/", method = RequestMethod.GET)
-   public String BlankHome(User user, Principal principal, Model model, HttpServletRequest request, Student student,
-         Professor professor) {
-      this.ConstantHome = (ConstantHome) ctx.getBean("Home");
-
+    @GetMapping("/")
+    public String blankHome(User user, Principal principal, Model model) {
       if (principal != null) {
-         // 유저 정보
-         String LoginID = principal.getName();// 로그인 한 아이디
-         ArrayList<String> selectUserProfileInfo = new ArrayList<String>();
-         selectUserProfileInfo = userService.selectUserProfileInfo(LoginID);
-         int UserID = Integer.parseInt(userService.SelectUserIDForDate(LoginID));
-         user.setUserLoginID(LoginID);
+            // 유저 정보 조회 및 모델 설정
+            userInfoMethod.getUserInformation(principal, user, model, 
+                this.constantHome.getSRole(), 
+                this.constantHome.getPRole(), 
+                this.constantHome.getARole());
 
-         // 휴먼계정 여부 확인 및 update
-         boolean DormantCheck = userService.SelectDormant(LoginID);
-         if (DormantCheck) {
-            userService.UpdateRecoveryDormant(LoginID);
-         }
-
-         if (selectUserProfileInfo.get(2).equals(this.ConstantHome.getSRole())) {
-            ArrayList<String> studentInfo = new ArrayList<String>();
-            studentInfo = studentService.selectStudentProfileInfo(selectUserProfileInfo.get(1));
-
-            userInfoMethod.studentInfo(model, selectUserProfileInfo, studentInfo);
-         } else if (selectUserProfileInfo.get(2).equals(this.ConstantHome.getPRole())) {
-
-            ArrayList<String> professorInfo = new ArrayList<String>();
-            professorInfo = professorService.selectProfessorProfileInfo(selectUserProfileInfo.get(1));
-
-            userInfoMethod.professorInfo(model, selectUserProfileInfo, professorInfo);
-         } else if (selectUserProfileInfo.get(2).equals(this.ConstantHome.getARole())) {
-            userInfoMethod.administratorInfo(model, selectUserProfileInfo);
-         }
-
-         Date Now = new Date();
-         SimpleDateFormat Date = new SimpleDateFormat(this.ConstantHome.getDFormat());
-         user.setDate(Date.format(Now));
-         student.setDate(Date.format(Now));
-         student.setUserID(UserID);
-         professor.setDate(Date.format(Now));
-         professor.setUserID(UserID);
-         userService.UpdateLoginDate(user);
-         studentService.UpdateStudentLoginDate(student);
-         professorService.updateProfessorLoginDate(professor);
+            // 로그인 날짜 업데이트 및 휴먼계정 복구
+            userService.processLoginDateUpdate(principal.getName(), this.constantHome.getDFormat());
       }
 
       // 공지사항 리스트 띄우기
-      List<Board> NoticeList = boardService.SelectNoticeBoardList();
-      model.addAttribute("noticeList", NoticeList);
+        List<Board> noticeList = userService.getNoticeBoardList();
+        model.addAttribute("noticeList", noticeList);
 
       // 커뮤니티 리스트 띄우기
-      List<Board> CommunityList = boardService.getCommunityList();
-      model.addAttribute(this.ConstantHome.getCL(), CommunityList);
+        List<Board> communityList = userService.getCommunityBoardList();
+        model.addAttribute(this.constantHome.getCL(), communityList);
 
-      return this.ConstantHome.getHUrl();
+        return this.constantHome.getHUrl();
    }
 
    // home에서 마이페이지 클릭 시 회원 role에 따라 페이지 리턴
-   @RequestMapping(value = "/myPage", method = RequestMethod.GET)
+    @GetMapping("/myPage")
    public String myPageByRole(HttpServletRequest request, Model model) throws IOException {
-      String MysqlRole = request.getParameter("R");
-      this.ConstantHome = (ConstantHome) ctx.getBean("Home");
+        String mysqlRole = request.getParameter("R");
 
-      if (MysqlRole.equals(this.ConstantHome.getSRole())) {
-         return this.ConstantHome.getMPSUrl();
-      } else if (MysqlRole.equals(this.ConstantHome.getPRole())) {
-         return this.ConstantHome.getMPPUrl();
-      } else if (MysqlRole.equals(this.ConstantHome.getARole())) {
-         return this.ConstantHome.getRUrl();
-      }
-      return this.ConstantHome.getRUrl();
+        if (mysqlRole.equals(this.constantHome.getSRole()))
+            return this.constantHome.getMPSUrl();
+
+        if (mysqlRole.equals(this.constantHome.getPRole()))
+            return this.constantHome.getMPPUrl();
+
+        if (mysqlRole.equals(this.constantHome.getARole()))
+            return this.constantHome.getRUrl();
+
+        return this.constantHome.getRUrl();
    }
 
    // 마이페이지 - 내 게시글 조회
-   @RequestMapping(value = "/myPostList", method = RequestMethod.GET)
+    @GetMapping("/myPostList")
    public String myPostList(Model model, Principal principal, User user) {
-      // 유저 정보
-      this.ConstantMyPostList = (ConstantMyPostList) ctx.getBean("MyPostList");
+        // 유저 정보 조회
+        getUserInformation(principal, user, model);
+        
+        // 내 게시글 리스트 조회
+        String loginID = principal.getName();
+        List<Board> myBoardList = userService.getMyBoardList(loginID);
+        model.addAttribute(this.constantMyPostList.getMBList(), myBoardList);
 
-      String LoginID = principal.getName();// 로그인 한 아이디
-      GetUserInformation(principal, user, model);
-      //
-      String UserID = userService.SelectUserIDForMyBoard(LoginID);
-      List<Board> MyBoardList = boardService.SelectMyBoardList(UserID);
-
-      model.addAttribute(this.ConstantMyPostList.getMBList(), MyBoardList);
-
-      return this.ConstantMyPostList.getMBUrl();
+        return this.constantMyPostList.getMBUrl();
    }
 
    // 마이페이지 - 내 문의 조회
-   @RequestMapping(value = "/myInquiryList", method = RequestMethod.GET)
+    @GetMapping("/myInquiryList")
    public String myInquiryList(Model model, Principal principal, User user) {
-      // 유저 정보
-      this.ConstantMyInquiryList = (ConstantMyInquiryList) ctx.getBean("MyInquiryList");
-
-      String LoginID = principal.getName();// 로그인 한 아이디
-      GetUserInformation(principal, user, model);
-      //
-      String UserID = userService.SelectUserIDForMyBoard(LoginID);
-      List<Inquiry> MyInquiryList = inquiryService.SelectMyInquiryList(UserID);
-      if (!MyInquiryList.isEmpty()) {
-         model.addAttribute(this.ConstantMyInquiryList.getMIList(), MyInquiryList);
-      }
-      System.out.println(this.ConstantMyInquiryList.getMIUrl());
-      return this.ConstantMyInquiryList.getMIUrl();
+        // 유저 정보 조회
+        getUserInformation(principal, user, model);
+        
+        // 내 문의 리스트 조회
+        String loginID = principal.getName();
+        List<Inquiry> myInquiryList = userService.getMyInquiryList(loginID);
+        if (!myInquiryList.isEmpty()) {
+            model.addAttribute(this.constantMyInquiryList.getMIList(), myInquiryList);
+        }
+        return this.constantMyInquiryList.getMIUrl();
    }
 
    /* 마이페이지 - 내 팀 조회 */
-   @RequestMapping(value = "/checkMyTeam", method = RequestMethod.GET)
+    @GetMapping("/checkMyTeam")
    public String checkMyTeam(Model model, Principal principal, User user) {
       // 유저 정보
-      GetUserInformation(principal, user, model);
+        getUserInformation(principal, user, model);
       //
-      this.ConstantUserFunctionURL = (ConstantUserFunctionURL) ctx.getBean("UserFunctionURL");
-
-      return this.ConstantUserFunctionURL.getCMTUrl();
+        return this.constantUserFunctionURL.getCMTUrl();
    }
 
    /* 정보 수정 버튼 클릭 시 비밀번호 확인 */
-   @RequestMapping(value = "/checkPassword", method = RequestMethod.GET)
+    @GetMapping("/checkPassword")
    public String checkPassword() {
-      this.ConstantUserFunctionURL = (ConstantUserFunctionURL) ctx.getBean("UserFunctionURL");
-
-      return this.ConstantUserFunctionURL.getCPUrl();
+        return this.constantUserFunctionURL.getCPUrl();
    }
 
    /* 비밀번호 변경 화면 */
-   @RequestMapping(value = "/modifyPassword", method = RequestMethod.GET)
+   @GetMapping("/modifyPassword")
    public String modifyPassword() {
-      this.ConstantUserFunctionURL = (ConstantUserFunctionURL) ctx.getBean("UserFunctionURL");
-
-      return this.ConstantUserFunctionURL.getMPUrl();
+        return this.constantUserFunctionURL.getMPUrl();
    }
 
    // 탈퇴 매뉴얼
-   @RequestMapping(value = "/withdrawal", method = RequestMethod.GET)
+   @GetMapping("/withdrawal")
    public String withdrawal() {
-      this.ConstantWithdrawal = (ConstantWithdrawal) ctx.getBean("Withdrawal");
-      return ConstantWithdrawal.getUrl();
-   }
+        return this.constantWithdrawal.getUrl();
+    }
 
-   @RequestMapping(value = "/withdrawal", method = RequestMethod.POST)
-   public String DoWithdrawl(HttpServletRequest request, Principal Principal, User user, Student student,
-         Professor professor) {
-      this.ConstantWithdrawal = (ConstantWithdrawal) ctx.getBean("Withdrawal");
-      String UserLoginID = Principal.getName();// 학번
-      user.setUserLoginID(UserLoginID);
-
-      if ((String) request.getParameter(ConstantWithdrawal.getParameter1()) != null) {
-         // user정보 select해서 user에 set
-         User UserInfo = userService.SelectUserInfo(UserLoginID);
-         user.setUserLoginID(UserInfo.getUserLoginID());
-         // 탈퇴한 날짜 set
-         Date Now = new Date();
-         SimpleDateFormat Date = new SimpleDateFormat(ConstantWithdrawal.getParameter2());
-         user.setDate(Date.format(Now));
-
-         userService.UpdateWithdrawal(user);
-      }
-      return ConstantWithdrawal.getUrl();
+    @PostMapping("/withdrawal")
+    public String doWithdrawal(HttpServletRequest request, Principal principal) {
+        if (request.getParameter(this.constantWithdrawal.getParameter1()) == null) {
+            return this.constantWithdrawal.getUrl();
+        }
+        
+        String userLoginID = principal.getName();
+        userService.processWithdrawal(userLoginID, this.constantWithdrawal.getParameter2());
+        return this.constantWithdrawal.getUrl();
    }
 
    // 이거는 탈퇴 전에 비밀번호를 확인하기 위함. 수정하기 눌렀을때의 화면, 로직 다 똑같음.
-   @RequestMapping(value = "/checkPassword2", method = RequestMethod.GET)
+    @GetMapping("/checkPassword2")
    public String checkPassword2() {
-      this.ConstantUserFunctionURL = (ConstantUserFunctionURL) ctx.getBean("UserFunctionURL");
-
-      return this.ConstantUserFunctionURL.getCPWUrl();
+        return this.constantUserFunctionURL.getCPWUrl();
    }
 
-   @RequestMapping(value = "/checkPassword2.do", method = RequestMethod.POST)
-   public String checkPassword2(HttpServletResponse response, HttpServletRequest request, Principal Principal)
+    @PostMapping("/checkPassword2.do")
+    public String checkPassword2(HttpServletResponse response, HttpServletRequest request, Principal principal)
          throws IOException {
-      this.ConstantUserFunctionURL = (ConstantUserFunctionURL) ctx.getBean("UserFunctionURL");
-      String UserID = Principal.getName();
+        String userID = principal.getName();
 
-      boolean Checker = userService.SelectForPwdCheckBeforeModify(UserID,
-            (String) request.getParameter(this.ConstantUserFunctionURL.getULPWD()));
-      if (Checker == true) {
-         return this.ConstantUserFunctionURL.getRWUrl();
+        boolean checker = userService.SelectForPwdCheckBeforeModify(userID,
+                request.getParameter(this.constantUserFunctionURL.getULPWD()));
+        if (checker) {
+            return this.constantUserFunctionURL.getRWUrl();
       } else {
          response.setContentType("text/html; charset=UTF-8");
-         PrintWriter Out = response.getWriter();
-         Out.println("<script>alert('비밀번호를 다시 입력해주세요.' );</script>");
-         Out.flush();
-         return this.ConstantUserFunctionURL.getCPWUrl();
+            PrintWriter out = response.getWriter();
+            out.println("<script>alert('비밀번호를 다시 입력해주세요.' );</script>");
+            out.flush();
+            return this.constantUserFunctionURL.getCPWUrl();
       }
    }
 
-   @RequestMapping(value = "/emailAuthentication", method = RequestMethod.GET)
+    @GetMapping("/emailAuthentication")
    public String emailAuthentication() {
-      this.ConstantUserFunctionURL = (ConstantUserFunctionURL) ctx.getBean("UserFunctionURL");
-
-      return this.ConstantUserFunctionURL.getEAUrl();
+        return this.constantUserFunctionURL.getEAUrl();
    }
 
    // 이메일 중복확인, 이메일 발송
-   @RequestMapping(value = "/email.do", method = RequestMethod.POST)
-   public String DoEmail(User user, UserEmail userEmail, RedirectAttributes redirectAttributes, Model model,
-         HttpServletRequest request, HttpServletResponse response) throws IOException {
+   @PostMapping("/email.do")
+    public String doEmail(RedirectAttributes redirectAttributes, Model model,
+                          HttpServletRequest request, HttpServletResponse response, HttpSession session) throws IOException {
+        String userEmail = request.getParameter(this.constantDoEmail.getEM());
 
-      ConstantDoEmail constantDoEmail = (ConstantDoEmail) ctx.getBean("DoEmail");
-      UserEmail = (String) request.getParameter(constantDoEmail.getEM());
-      if ((String) request.getParameter(constantDoEmail.getEM()) != null) {
-         model.addAttribute(constantDoEmail.getEM(), UserEmail);
-         Address = constantDoEmail.getEmailAdress();
-         UserEmail = UserEmail + Address;
-         user.setUserEmail(UserEmail);
-      }
-      if ((String) request.getParameter(constantDoEmail.getAuthNum()) != null) {
-         model.addAttribute(constantDoEmail.getAuthNum(),
-               (String) request.getParameter(constantDoEmail.getAuthNum()));
-      }
-      if (request.getParameter(constantDoEmail.getEC()) != null && !UserEmail.equals("")) {
-         user.setUserEmail(UserEmail);
-         // 이메일 중복확인
-         EmailCheck = emailService.SelectForEmailDuplicateCheck(user);
+        // 이메일 값이 있으면 모델에 추가
+        if (request.getParameter(this.constantDoEmail.getEM()) != null) {
+            model.addAttribute(this.constantDoEmail.getEM(), userEmail);
+            String address = this.constantDoEmail.getEmailAdress();
+            userEmail = userEmail + address;
+        }
+        
+        // 인증번호 값이 있으면 모델에 추가
+        if (request.getParameter(this.constantDoEmail.getAuthNum()) != null) {
+            model.addAttribute(this.constantDoEmail.getAuthNum(),
+                    request.getParameter(this.constantDoEmail.getAuthNum()));
+        }
 
-         if (!EmailCheck) {
-            int Num = emailService.sendEmail(user);
-            // 현재 시간 계산
-            Calendear = Calendar.getInstance();
-            DateFormat = new SimpleDateFormat(constantDoEmail.getDateFormat());
-            Now = new Date();
-            Calendear.setTime(Now);
-            ///////////////////////////////////////////////////////////
+        // 이메일 체크 (이메일 발송)
+        if (request.getParameter(this.constantDoEmail.getEC()) != null && !userEmail.isEmpty()) {
+            String result = userEmailService.processEmailCertification(userEmail, this.constantDoEmail.getDateFormat());
+            
             response.setContentType("text/html; charset=UTF-8");
-            PrintWriter Out = response.getWriter();
-            Out.println("<script>alert('성공적으로 이메일 발송이 완료되었습니다.' );</script>");
-            Out.flush();
-            // 유저 이메일과 인증번호, 현재날짜시각을 디비에 저장하기 위한 데이터 셋
-            userEmail.setUserEmail(UserEmail);
-            userEmail.setUserCertificationNum(Num);
-            // 인증 데이터 저장
-            userEmail.setUserCertificationTime(DateFormat.format(Calendear.getTime()));
-            this.userEmailService.InsertCertification(userEmail);
-            ////////////////////////////////////////////////////
+            PrintWriter out = response.getWriter();
+            
+            if ("duplicate".equals(result)) {
+                out.println("<script>alert('이미 등록된 이메일 입니다.' );</script>");
          } else {
+                out.println("<script>alert('성공적으로 이메일 발송이 완료되었습니다.' );</script>");
+            }
+            out.flush();
+            return this.constantDoEmail.getAuthUrl();
+        }
+        
+        // 이메일이 비어있는 경우
+        if (userEmail.isEmpty()) {
+            return this.constantDoEmail.getAuthUrl();
+        }
+        
+        // 인증번호 확인
+        if (request.getParameter(this.constantDoEmail.getEV()) != null
+                && !request.getParameter(this.constantDoEmail.getAuthNum()).isEmpty()) {
+            boolean checker = userEmailService.verifyCertification(request.getParameter(this.constantDoEmail.getAuthNum()));
+            
             response.setContentType("text/html; charset=UTF-8");
-            PrintWriter Out = response.getWriter();
-            Out.println("<script>alert('이미 등록된 이메일 입니다.' );</script>");
-            Out.flush();
-         }
-         return constantDoEmail.getAuthUrl();
-      } else if (UserEmail.equals("")) {
-         // 이메일을 입력해주세요
-      } else if (request.getParameter(constantDoEmail.getEV()) != null
-            && request.getParameter(constantDoEmail.getAuthNum()) != "") {
-         boolean Checker = userEmailService
-               .SelectForCheckCertification(request.getParameter(constantDoEmail.getAuthNum()));
-         if (Checker) {
-            response.setContentType("text/html; charset=UTF-8");
-            PrintWriter Out = response.getWriter();
-            Out.println("<script>alert('인증에 성공하셨습니다.' );</script>");
-            Out.flush();
-            EmailChecker = true;
+            PrintWriter out = response.getWriter();
+            
+            if (checker) {
+                out.println("<script>alert('인증에 성공하셨습니다.' );</script>");
+                out.flush();
+                session.setAttribute("emailChecker", true);
+                session.setAttribute("userEmail", userEmail); // 인증된 이메일 세션에 저장
          } else {
-            response.setContentType("text/html; charset=UTF-8");
-            PrintWriter Out = response.getWriter();
-            Out.println("<script>alert('일치하지 않는 인증번호입니다. 다시한번 확인해주세요' );</script>");
-            Out.flush();
-            EmailChecker = false;
-            return constantDoEmail.getAuthUrl();
-         }
-      }
+                out.println("<script>alert('일치하지 않는 인증번호입니다. 다시한번 확인해주세요' );</script>");
+                out.flush();
+                session.setAttribute("emailChecker", false);
+                return this.constantDoEmail.getAuthUrl();
+            }
+        }
 
-      if (request.getParameter(constantDoEmail.getBA()) != null && EmailChecker) {
-         return constantDoEmail.getAgreeUrl();
-      } else {
-         return constantDoEmail.getAuthUrl();
-      }
+        // 동의 버튼 클릭
+        Boolean emailChecker = (Boolean) session.getAttribute("emailChecker");
+        if (request.getParameter(this.constantDoEmail.getBA()) != null && Boolean.TRUE.equals(emailChecker)) {
+            session.removeAttribute("emailChecker");
+            return this.constantDoEmail.getAgreeUrl();
+        }
+        
+        return this.constantDoEmail.getAuthUrl();
    }
 
    // 학생 회원가입
-   @RequestMapping(value = "/signupStudent.do", method = RequestMethod.POST)
-   public String DoSignUp(User user, Student student, RedirectAttributes redirectAttributes, Model model,
-         HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-      ConstantDoSignUp constantDoSignUp = (ConstantDoSignUp) ctx.getBean("DoSignUp");
+    @PostMapping("/signupStudent.do")
+    public String doSignUpStudent(User user, Student student, RedirectAttributes redirectAttributes, Model model,
+                                  HttpServletRequest request, HttpServletResponse response, HttpSession session) throws IOException {
+        // 파라미터 추출
+        String userLoginID = request.getParameter("UserLoginID");
+        String studentGender = request.getParameter("StudentGender");
+        String studentGradeForSignUp = request.getParameter("StudentGrade");
+        String studentColleges = request.getParameter("StudentColleges");
+        String studentMajor = request.getParameter("StudentMajor");
+        String studentDoubleMajor = request.getParameter("StudentDoubleMajor");
 
-      UserLoginID = (String) request.getParameter("UserLoginID");
-      StudentGender = (String) request.getParameter("StudentGender");
-      StudentGradeForSignUp = (String) request.getParameter("StudentGrade");
-      StudentColleges = (String) request.getParameter("StudentColleges");
-      StudentMajor = (String) request.getParameter("StudentMajor");
-      StudentDoubleMajor = (String) request.getParameter("StudentDoubleMajor");
+        // 입력값 유지를 위한 모델 추가
+        addStudentAttributesToModel(model, request, userLoginID, studentGender, studentGradeForSignUp, 
+                                   studentColleges, studentMajor, studentDoubleMajor);
 
-      if ((String) request.getParameter("UserLoginID") != null) {
-         model.addAttribute("UserLoginID", UserLoginID);
-      }
-      if ((String) request.getParameter(constantDoSignUp.getPwd()) != null) {
-         model.addAttribute(constantDoSignUp.getPwd(), (String) request.getParameter(constantDoSignUp.getPwd()));
-      }
-      if ((String) request.getParameter(constantDoSignUp.getSName()) != null) {
-         model.addAttribute(constantDoSignUp.getSName(), (String) request.getParameter(constantDoSignUp.getSName()));
-      }
-      if ((String) request.getParameter("StudentGender") != null) {
-         model.addAttribute("StudentGender", StudentGender);
-      }
-      if ((String) request.getParameter("UserPhoneNum") != null) {
-         model.addAttribute(constantDoSignUp.getPhoneNum(),
-               (String) request.getParameter(constantDoSignUp.getPhoneNum()));
-      }
-      if ((String) request.getParameter(constantDoSignUp.getSNum()) != null) {
-         model.addAttribute(constantDoSignUp.getSNum(), request.getParameter(constantDoSignUp.getSNum()));
-      }
-      if ((String) request.getParameter("StudentGrade") != null) {
-         model.addAttribute("StudentGrade", StudentGradeForSignUp);
-      }
-      if ((String) request.getParameter("UserColleges") != null) {
-         model.addAttribute("UserColleges", StudentColleges);
-      }
-      if ((String) request.getParameter("UserMajor") != null) {
-         model.addAttribute("UserMajor", StudentMajor);
-      }
-      if ((String) request.getParameter("StudentDoubleMajor") != null) {
-         model.addAttribute("StudentDoubleMajor", StudentDoubleMajor);
-      }
-
-      if (request.getParameter("IdCheck") != null) {
-         // name을 통해서 jsp에서 값을 받아온다.
-         String UserLoginID = (String) request.getParameter("UserLoginID");
-
-         if (UserLoginID.equals("")) {
-            response.setContentType("text/html; charset=UTF-8");
-            PrintWriter Out = response.getWriter();
-            Out.println("<script>alert('계정을 입력하지 않으셨습니다. 입력해주세요' );</script>");
-            Out.flush();
-            return constantDoSignUp.getSSUrl();
-         } else if (UserLoginID.length() != 8) {
-            response.setContentType("text/html; charset=UTF-8");
-            PrintWriter Out = response.getWriter();
-            Out.println("<script>alert('학번(8자리)을 입력해주세요. ' );</script>");
-            Out.flush();
-            return constantDoSignUp.getSSUrl();
-         } else {
-            user.setUserLoginID(UserLoginID);
-            boolean Checker = this.userService.SelctForIDConfirm(user);
-            if (Checker) {
-               UserLoginID = "";
-               model.addAttribute("check", UserLoginID);
-               Checker = false;
-               response.setContentType("text/html; charset=UTF-8");
-               PrintWriter Out = response.getWriter();
-               Out.println("<script>alert('이미 등록된 계정 입니다.' );</script>");
-               Out.flush();
-               IDChecker = false;
-               return constantDoSignUp.getSSUrl();
-            } else {
-               response.setContentType("text/html; charset=UTF-8");
-               PrintWriter Out = response.getWriter();
-               Checker = true;
-               Out.println("<script>alert('등록 가능한 계정 입니다.');</script>");
-               Out.flush();
-               IDChecker = true;
-               return constantDoSignUp.getSSUrl();
+        // ID 중복 체크
+        if (request.getParameter("IdCheck") != null) {
+            return handleIdCheck(request, response, session, user, this.constantDoSignUp.getSSUrl());
+        }
+        
+        // 회원가입 제출
+        Boolean idChecker = (Boolean) session.getAttribute("idChecker");
+        if (request.getParameter("submitName") != null && Boolean.TRUE.equals(idChecker)) {
+            // 입력값 검증
+            String validationError = userService.validateStudentSignUp(studentColleges, studentMajor);
+            if (validationError != null) {
+                showAlert(response, validationError);
+                return this.constantDoSignUp.getSSUrl();
             }
-         }
-      } else if (request.getParameter("submitName") != null && IDChecker) {
-         if (StudentColleges.equals("")) {
-            response.setContentType("text/html; charset=UTF-8");
-            PrintWriter Out = response.getWriter();
-            Out.println("<script>alert('단과대학을 입력해주세요.');</script>");
-            Out.flush();
-            return constantDoSignUp.getSSUrl();
-         } else if (StudentMajor.equals("-선택-")) {
-            response.setContentType("text/html; charset=UTF-8");
-            PrintWriter Out = response.getWriter();
-            Out.println("<script>alert('전공을 입력해주세요.');</script>");
-            Out.flush();
-            return constantDoSignUp.getSSUrl();
-
-         } else {
-            String HashedPw = BCrypt.hashpw(user.getUserLoginPwd(), BCrypt.gensalt());
-            user.setUserLoginPwd(HashedPw);
-            user.setUserRole(constantDoSignUp.getSRole()); // user role = 학생
-            user.setUserEmail(UserEmail);
-            this.userService.InsertForSignUp(user); // insert into user table
-            user.setUserID(this.userService.SelectUserID(student)); // db의 userID(foreign key)를 user클래스 userID에 set
-            student.setStudentColleges(StudentColleges);
-            student.setStudentMajor(StudentMajor);
-            student.setUserID(user.getUserID());
-            if (!((String) request.getParameter("member")).equals("Y")) {
-               student.setStudentDoubleMajor("없음");
-            } else {
-               student.setStudentDoubleMajor(student.getStudentDoubleMajor());
-            }
-            this.studentService.InsertInformation(student); // insert into student table
+            
+            // 세션에서 저장된 이메일 가져오기
+            String userEmail = (String) session.getAttribute("userEmail");
+            user.setUserRole(this.constantDoSignUp.getSRole());
+            
+            // 회원가입 처리
+            boolean isDoubleMajor = "Y".equals(request.getParameter("member"));
+            userService.registerStudent(user, student, studentColleges, studentMajor, 
+                                       studentDoubleMajor, userEmail, isDoubleMajor);
+            
+            clearSignUpSession(session);
 
             redirectAttributes.addFlashAttribute("msg", "signupERED");
-            response.setContentType("text/html; charset=UTF-8");
-            PrintWriter Out = response.getWriter();
-            Out.println("<script>alert('회원가입이 완료 되었습니다.');</script>");
-            Out.flush();
-            return constantDoSignUp.getSLUrl();
-         }
-      } else {
-         return constantDoSignUp.getSSUrl();
-      }
+            showAlert(response, "회원가입이 완료 되었습니다.");
+            return this.constantDoSignUp.getSLUrl();
+        }
+        
+        return this.constantDoSignUp.getSSUrl();
    }
 
    // 교수 회원가입
-   @RequestMapping(value = "/signupProfessor.do", method = RequestMethod.POST)
-   public String dosignup(User user, Professor professor, RedirectAttributes redirectAttributes, Model model,
-         HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-      ConstantDoSignUp constantDoSignUp = (ConstantDoSignUp) ctx.getBean("DoSignUp");
+    @PostMapping("/signupProfessor.do")
+    public String doSignUpProfessor(User user, Professor professor, RedirectAttributes redirectAttributes, Model model,
+                                    HttpServletRequest request, HttpServletResponse response, HttpSession session) throws ServletException, IOException {
+        // 파라미터 추출
+        String userLoginID = request.getParameter("UserLoginID");
+        String professorColleges = request.getParameter("ProfessorColleges");
+        String professorMajor = request.getParameter("ProfessorMajor");
+        String professorRoom = request.getParameter("ProfessorRoom");
+        String professorRoomNum = request.getParameter("ProfessorRoomNum");
 
-      UserLoginID = (String) request.getParameter("UserLoginID");
+        // 입력값 유지를 위한 모델 추가
+        addProfessorAttributesToModel(model, request, userLoginID, professorColleges, professorMajor, professorRoom, professorRoomNum);
 
-      ProfessorColleges = (String) request.getParameter("ProfessorColleges");
-      ProfessorMajor = (String) request.getParameter("ProfessorMajor");
-      ProfessorRoom = (String) request.getParameter("ProfessorRoom");
-      ProfessorRoomNum = (String) request.getParameter("ProfessorRoomNum");
-
-      if ((String) request.getParameter("UserLoginID") != null) {
-         model.addAttribute("UserLoginID", UserLoginID);
-      }
-      if ((String) request.getParameter(constantDoSignUp.getPwd()) != null) {
-         model.addAttribute(constantDoSignUp.getPwd(), (String) request.getParameter(constantDoSignUp.getPwd()));
-      }
-      if ((String) request.getParameter(constantDoSignUp.getPName()) != null) {
-         model.addAttribute(constantDoSignUp.getPName(), (String) request.getParameter(constantDoSignUp.getPName()));
-      }
-      if ((String) request.getParameter("UserPhoneNum") != null) {
-         model.addAttribute(constantDoSignUp.getPhoneNum(),
-               (String) request.getParameter(constantDoSignUp.getPhoneNum()));
-      }
-      if ((String) request.getParameter(constantDoSignUp.getPNum()) != null) {
-         model.addAttribute(constantDoSignUp.getPNum(), request.getParameter(constantDoSignUp.getPNum()));
-      }
-      if ((String) request.getParameter("UserColleges") != null) {
-         model.addAttribute("UserColleges", ProfessorColleges);
-      }
-      if ((String) request.getParameter("UserMajor") != null) {
-         model.addAttribute("UserMajor", ProfessorMajor);
-      }
-      if ((String) request.getParameter("ProfessorRoom") != null) {
-         model.addAttribute("ProfessorRoom", ProfessorRoom);
-      }
-      if ((String) request.getParameter("ProfessorRoomNum") != null) {
-         model.addAttribute("ProfessorRoomNum", ProfessorRoomNum);
-      }
-
-      if (request.getParameter("IdCheck") != null) {
-         // name을 통해서 jsp에서 값을 받아온다.
-         String UserLoginID = (String) request.getParameter("UserLoginID");
-
-         if (UserLoginID.equals("")) {
-            response.setContentType("text/html; charset=UTF-8");
-            PrintWriter Out = response.getWriter();
-            Out.println("<script>alert('계정을 입력하지 않으셨습니다. 입력해주세요' );</script>");
-            Out.flush();
-            return "/signup/signupProfessor";
-         } else if (UserLoginID.length() != 8) {
-            response.setContentType("text/html; charset=UTF-8");
-            PrintWriter Out = response.getWriter();
-            Out.println("<script>alert('교번(8자리)을 입력해주세요. ' );</script>");
-            Out.flush();
-            return "/signup/signupProfessor";
-         } else {
-            user.setUserLoginID(UserLoginID);
-            boolean Checker = this.userService.SelctForIDConfirm(user);
-            if (Checker) {
-               UserLoginID = "";
-               model.addAttribute("check", UserLoginID);
-               Checker = false;
-               response.setContentType("text/html; charset=UTF-8");
-               PrintWriter Out = response.getWriter();
-               Out.println("<script>alert('이미 등록된 계정 입니다.' );</script>");
-               Out.flush();
-               IDChecker = false;
-               return "/signup/signupProfessor";
-            } else {
-               response.setContentType("text/html; charset=UTF-8");
-               PrintWriter Out = response.getWriter();
-               Checker = true;
-               Out.println("<script>alert('등록 가능한 계정 입니다.');</script>");
-               Out.flush();
-               IDChecker = true;
+        // ID 중복 체크
+        if (request.getParameter("IdCheck") != null) {
+            return handleIdCheck(request, response, session, user, "/signup/signupProfessor");
+        }
+        
+        // 회원가입 제출
+        Boolean idChecker = (Boolean) session.getAttribute("idChecker");
+        if (request.getParameter("submitName") != null && Boolean.TRUE.equals(idChecker)) {
+            // 입력값 검증
+            String validationError = userService.validateProfessorSignUp(professorColleges, professorMajor);
+            if (validationError != null) {
+                showAlert(response, validationError);
                return "/signup/signupProfessor";
             }
-         }
-      } else if (request.getParameter("submitName") != null && IDChecker) {
-
-         if (ProfessorColleges.equals("")) {
-            response.setContentType("text/html; charset=UTF-8");
-            PrintWriter Out = response.getWriter();
-            Out.println("<script>alert('단과대학을 입력해주세요.');</script>");
-            Out.flush();
-            return "/signup/signupProfessor";
-         } else if (ProfessorMajor.equals("-선택-")) {
-            response.setContentType("text/html; charset=UTF-8");
-            PrintWriter Out = response.getWriter();
-            Out.println("<script>alert('전공을 입력해주세요.');</script>");
-            Out.flush();
-            return "/signup/signupProfessor";
-         } else {
-            String HashedPw = BCrypt.hashpw(user.getUserLoginPwd(), BCrypt.gensalt());
-            user.setUserLoginPwd(HashedPw);
-
-            user.setUserRole(constantDoSignUp.getPRole()); // user role = 교수
-            user.setUserEmail(UserEmail);
-
-            this.userService.InsertForSignUp(user); // insert into user table
-            user.setUserID(this.userService.SelectUserID(professor)); // db의 userID(foreign key)를 user클래스 userID에
-                                                         // set
-            professor.setProfessorColleges(ProfessorColleges);
-            professor.setProfessorMajor(ProfessorMajor);
-            professor.setProfessorRoom(ProfessorRoom);
-            professor.setProfessorRoomNum(ProfessorRoomNum);
-            professor.setUserID(user.getUserID());
-
-            this.professorService.insertInformation(professor); // insert into student table
+            
+            // 세션에서 저장된 이메일 가져오기
+            String userEmail = (String) session.getAttribute("userEmail");
+            user.setUserRole(this.constantDoSignUp.getPRole());
+            
+            // 회원가입 처리
+            userService.registerProfessor(user, professor, professorColleges, professorMajor,
+                                        professorRoom, professorRoomNum, userEmail);
+            
+            clearSignUpSession(session);
 
             redirectAttributes.addFlashAttribute("msg", "signupERED");
-            response.setContentType("text/html; charset=UTF-8");
-            PrintWriter Out = response.getWriter();
-            Out.println("<script>alert('회원가입이 완료 되었습니다.');</script>");
-            Out.flush();
+            showAlert(response, "회원가입이 완료 되었습니다.");
             return "/signin/login";
          }
-      } else {
+        
          return "/signup/signupProfessor";
-      }
    }
 
    // 비밀번호 찾기 findPassword.do여기서부터하기
-   @RequestMapping(value = "/findPassword.do", method = RequestMethod.POST)
+    @PostMapping("/findPassword.do")
    public String findPassword(User user, RedirectAttributes redirectAttributes, Model model,
-         HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-      // xml값가져오기
-      ConstantDoFindPassword constantDoFindPassword = (ConstantDoFindPassword) ctx.getBean("DoFindPassword");
+                               HttpServletRequest request, HttpServletResponse response, HttpSession session) throws ServletException, IOException {
+        String userLoginID = request.getParameter("UserLoginID");
+        String userEmail = request.getParameter("UserEmail");
 
-      UserLoginID = (String) request.getParameter("UserLoginID");
-      UserEmail = (String) request.getParameter("UserEmail");
+        // ID 확인
       if (request.getParameter("IdCheck") != null) {
-         user.setUserLoginID(UserLoginID);
-         user.setUserName((String) request.getParameter(constantDoFindPassword.getUName()));
-         if (UserLoginID.equals("")) {
-            response.setContentType("text/html; charset=UTF-8");
-            PrintWriter Out = response.getWriter();
-            Out.println("<script>alert('계정을 입력하지 않으셨습니다.');</script>");
-            Out.flush();
-         } else if (((String) request.getParameter(constantDoFindPassword.getUName())).equals("")) {
-            model.addAttribute("UserLoginID", UserLoginID);
-            response.setContentType("text/html; charset=UTF-8");
-            PrintWriter Out = response.getWriter();
-            Out.println("<script>alert('이름을 입력하지 않으셨습니다.');</script>");
-            Out.flush();
-         }
-         boolean IDChecker = this.userService.SelectPwdForConfirmToFindPwd(user);
-         if (IDChecker) {
-            model.addAttribute("UserLoginID", UserLoginID);
-            model.addAttribute(constantDoFindPassword.getUName(),
-                  (String) request.getParameter(constantDoFindPassword.getUName()));
-            response.setContentType("text/html; charset=UTF-8");
-            PrintWriter Out = response.getWriter();
-            Out.println("<script>alert('계정이 확인되었습니다.');</script>");
-            Out.flush();
-            this.IDChecker = true;
-            return constantDoFindPassword.getFPUrl();
-         } else {
-            model.addAttribute("UserLoginID", UserLoginID);
-            model.addAttribute(constantDoFindPassword.getUName(),
-                  (String) request.getParameter(constantDoFindPassword.getUName()));
-            response.setContentType("text/html; charset=UTF-8");
-            PrintWriter Out = response.getWriter();
-            Out.println("<script>alert('등록된 사용자가 아닙니다.');</script>");
-            Out.flush();
-            this.IDChecker = false;
-            return constantDoFindPassword.getFPUrl();
-         }
-      } else if (request.getParameter("EmailCheck") != null) {
-         if (UserEmail.equals("")) {
-            model.addAttribute("UserLoginID", UserLoginID);
-            model.addAttribute(constantDoFindPassword.getUName(),
-                  (String) request.getParameter(constantDoFindPassword.getUName()));
-            response.setContentType("text/html; charset=UTF-8");
-            PrintWriter Out = response.getWriter();
-            Out.println("<script>alert('이메일을 입력하지 않으셨습니다.');</script>");
-            Out.flush();
-         } else {
-            model.addAttribute("UserLoginID", UserLoginID);
-            model.addAttribute(constantDoFindPassword.getUName(),
-                  (String) request.getParameter(constantDoFindPassword.getUName()));
-            model.addAttribute("UserEmail", UserEmail);
-            UserEmail = UserEmail + "@mju.ac.kr";
-            user.setUserEmail(UserEmail);
-            // 이메일 중복검사
-            EmailCheck = emailService.SelectForEmailDuplicateCheck(user);
-            if (EmailCheck) {
-               emailService.sendEmail(user);
-               response.setContentType("text/html; charset=UTF-8");
-               PrintWriter Out = response.getWriter();
-               Out.println("<script>alert('성공적으로 이메일 발송이 완료되었습니다.');</script>");
-               Out.flush();
-            } else {
-               response.setContentType("text/html; charset=UTF-8");
-               PrintWriter Out = response.getWriter();
-               Out.println("<script>alert('등록되지 않은 이메일입니다.');</script>");
-               Out.flush();
+            user.setUserLoginID(userLoginID);
+            user.setUserName(request.getParameter(this.constantDoFindPassword.getUName()));
+            
+            if (userLoginID.isEmpty()) {
+                showAlert(response, "계정을 입력하지 않으셨습니다.");
+                return this.constantDoFindPassword.getFPUrl();
             }
-            return constantDoFindPassword.getFPUrl();
-         }
-
-      } else if (request.getParameter("EmailValid") != null) {
-         model.addAttribute("UserLoginID", UserLoginID);
-         model.addAttribute(constantDoFindPassword.getUName(),
-               (String) request.getParameter(constantDoFindPassword.getUName()));
-         model.addAttribute("UserEmail", UserEmail);
-         NameChecker = emailService.AuthNum((String) request.getParameter(constantDoFindPassword.getAuthNum()));
-         if (NameChecker) {
-            model.addAttribute(constantDoFindPassword.getAuthNum(),
-                  (String) request.getParameter(constantDoFindPassword.getAuthNum()));
-            response.setContentType("text/html; charset=UTF-8");
-            PrintWriter out = response.getWriter();
-            out.println("<script>alert('인증번호가 일치합니다.');</script>");
-            out.flush();
+            
+            if (request.getParameter(this.constantDoFindPassword.getUName()).isEmpty()) {
+                model.addAttribute("UserLoginID", userLoginID);
+                showAlert(response, "이름을 입력하지 않으셨습니다.");
+                return this.constantDoFindPassword.getFPUrl();
+            }
+            
+            boolean localIdChecker = this.userService.verifyUserForPasswordReset(user);
+            
+            model.addAttribute("UserLoginID", userLoginID);
+            model.addAttribute(this.constantDoFindPassword.getUName(),
+                    request.getParameter(this.constantDoFindPassword.getUName()));
+            
+            if (localIdChecker) {
+                showAlert(response, "계정이 확인되었습니다.");
+                session.setAttribute("findPwdIdChecker", true);
          } else {
-            response.setContentType("text/html; charset=UTF-8");
-            PrintWriter out = response.getWriter();
-            out.println("<script>alert('인증번호가 일치하지 않습니다.');</script>");
-            out.flush();
+                showAlert(response, "등록된 사용자가 아닙니다.");
+                session.setAttribute("findPwdIdChecker", false);
+            }
+            return this.constantDoFindPassword.getFPUrl();
+        }
+        
+        // 이메일 체크
+        if (request.getParameter("EmailCheck") != null) {
+            model.addAttribute("UserLoginID", userLoginID);
+            model.addAttribute(this.constantDoFindPassword.getUName(),
+                    request.getParameter(this.constantDoFindPassword.getUName()));
+            
+            if (userEmail.isEmpty()) {
+                showAlert(response, "이메일을 입력하지 않으셨습니다.");
+                return this.constantDoFindPassword.getFPUrl();
+            }
+            
+            model.addAttribute("UserEmail", userEmail);
+            String fullEmail = userEmail + "@mju.ac.kr";
+            
+            // 이메일 발송 처리
+            String emailResult = emailService.sendEmailForPasswordReset(fullEmail);
+            showAlert(response, emailResult);
+            
+            return this.constantDoFindPassword.getFPUrl();
+        }
+        
+        // 인증번호 확인
+        if (request.getParameter("EmailValid") != null) {
+            model.addAttribute("UserLoginID", userLoginID);
+            model.addAttribute(this.constantDoFindPassword.getUName(),
+                    request.getParameter(this.constantDoFindPassword.getUName()));
+            model.addAttribute("UserEmail", userEmail);
+            
+            boolean localNameChecker = emailService.AuthNum(request.getParameter(this.constantDoFindPassword.getAuthNum()));
+            
+            if (localNameChecker) {
+                model.addAttribute(this.constantDoFindPassword.getAuthNum(),
+                        request.getParameter(this.constantDoFindPassword.getAuthNum()));
+                showAlert(response, "인증번호가 일치합니다.");
+                session.setAttribute("findPwdNameChecker", true);
+            } else {
+                showAlert(response, "인증번호가 일치하지 않습니다.");
+                session.setAttribute("findPwdNameChecker", false);
+            }
+            return this.constantDoFindPassword.getFPUrl();
+        }
+        
+        // 최종 제출 (임시 비밀번호 생성)
+        Boolean idChecker = (Boolean) session.getAttribute("findPwdIdChecker");
+        Boolean nameChecker = (Boolean) session.getAttribute("findPwdNameChecker");
+        
+        if (request.getParameter("SubmitName") != null && Boolean.TRUE.equals(nameChecker) && Boolean.TRUE.equals(idChecker)) {
+            user.setUserLoginID(userLoginID);
+            user.setUserName(request.getParameter(this.constantDoFindPassword.getUName()));
+            
+            // 임시 비밀번호 생성 및 업데이트
+            String newPwd = userService.generateAndUpdateTemporaryPassword(user);
+            model.addAttribute("UserLoginPwd", newPwd);
+            
+            session.removeAttribute("findPwdIdChecker");
+            session.removeAttribute("findPwdNameChecker");
 
-         }
-         return constantDoFindPassword.getFPUrl();
-      } else if (request.getParameter("SubmitName") != null && NameChecker && IDChecker) {
-         user.setUserLoginID(UserLoginID);
-         user.setUserName((String) request.getParameter(constantDoFindPassword.getUName()));
-         String NewPwd = userService.SelectForShowPassword(user);
-         String HashedPw = BCrypt.hashpw(NewPwd, BCrypt.gensalt());// 바꿀 비밀번호 암호화
-         user.setUserLoginPwd(HashedPw);
-         model.addAttribute("UserLoginPwd", NewPwd);
-         userService.UpdateTemporaryPwd(user);
-
-         return constantDoFindPassword.getSSPUrl();
-      }
-      return constantDoFindPassword.getFPUrl();
+            return this.constantDoFindPassword.getSSPUrl();
+        }
+        
+        return this.constantDoFindPassword.getFPUrl();
    }
 
    /* 수정하기 전 비밀번호 확인 */
-   @RequestMapping(value = "/checkPassword.do", method = RequestMethod.POST)
-   public String checkPassword(HttpServletResponse response, HttpServletRequest request, Principal Principal)
+    @PostMapping("/checkPassword.do")
+    public String checkPassword(HttpServletResponse response, HttpServletRequest request, Principal principal)
          throws IOException {
-      ConstantDoFindPassword constantDoFindPassword = (ConstantDoFindPassword) ctx.getBean("DoFindPassword");
-
-      String UserLoginID = Principal.getName();
-      boolean Checker = userService.SelectForPwdCheckBeforeModify(UserLoginID,
-            (String) request.getParameter(constantDoFindPassword.getPwd()));
-      String MysqlRole = userService.SelectUserRole(UserLoginID);
-      if (Checker == true) {
-         if (MysqlRole.equals(constantDoFindPassword.getSRole())) {
-            return constantDoFindPassword.getRMS();
-         } else if (MysqlRole.equals(constantDoFindPassword.getPRole())) {
-            return constantDoFindPassword.getRMP();
-         }
-      } else {
-         response.setContentType("text/html; charset=UTF-8");
-         PrintWriter Out = response.getWriter();
-         Out.println("<script>alert('비밀번호를 다시 입력해주세요.' );</script>");
-         Out.flush();
-         return constantDoFindPassword.getCPUrl();
-      }
-      return "/";
+        String userLoginID = principal.getName();
+        boolean checker = userService.SelectForPwdCheckBeforeModify(userLoginID,
+                request.getParameter(this.constantDoFindPassword.getPwd()));
+        
+        if (!checker) {
+            showAlert(response, "비밀번호를 다시 입력해주세요.");
+            return this.constantDoFindPassword.getCPUrl();
+        }
+        
+        // 역할에 따른 리다이렉트 URL 반환
+        return userService.getRedirectUrlByRole(userLoginID, 
+                this.constantDoFindPassword.getSRole(), 
+                this.constantDoFindPassword.getPRole(),
+                this.constantDoFindPassword.getRMS(),
+                this.constantDoFindPassword.getRMP());
    }
 
    // 비밀번호 변경할 때 현재 비번 체크
-   @RequestMapping(value = "/checkPassword3", method = RequestMethod.GET)
+    @GetMapping("/checkPassword3")
    public String checkPassword3() {
-      ConstantDoFindPassword constantDoFindPassword = (ConstantDoFindPassword) ctx.getBean("DoFindPassword");
-
-      return constantDoFindPassword.getCPUrl3();
+        return this.constantDoFindPassword.getCPUrl3();
    }
 
-   @RequestMapping(value = "/checkPassword3.do", method = RequestMethod.POST)
-   public String checkPassword3(HttpServletResponse response, HttpServletRequest request, Principal Principal)
+    @PostMapping("/checkPassword3.do")
+    public String checkPassword3(HttpServletResponse response, HttpServletRequest request, Principal principal)
          throws IOException {
-      ConstantDoFindPassword constantDoFindPassword = (ConstantDoFindPassword) ctx.getBean("DoFindPassword");
-
-      String UserID = Principal.getName();
-      boolean Checker = userService.SelectForPwdCheckBeforeModify(UserID,
-            (String) request.getParameter(constantDoFindPassword.getULPWD()));
-      if (Checker == true) {
-         return constantDoFindPassword.getRMPWD();
-      } else {
-         response.setContentType("text/html; charset=UTF-8");
-         PrintWriter Out = response.getWriter();
-         Out.println("<script>alert('비밀번호를 다시 입력해주세요.' );</script>");
-         Out.flush();
-         return constantDoFindPassword.getCPUrl3();
-      }
+        String userID = principal.getName();
+        boolean checker = userService.SelectForPwdCheckBeforeModify(userID,
+                request.getParameter(this.constantDoFindPassword.getULPWD()));
+        
+        if (!checker) {
+            showAlert(response, "비밀번호를 다시 입력해주세요.");
+            return this.constantDoFindPassword.getCPUrl3();
+        }
+        
+        return this.constantDoFindPassword.getRMPWD();
    }
 
    // 비밀번호 수정
-   @RequestMapping(value = "/modifyPassword.do", method = RequestMethod.POST)
-   public String modifyPassword(HttpServletResponse response, HttpServletRequest request, User user,
-         Principal Principal) throws IOException {
-      ConstantDoFindPassword constantDoFindPassword = (ConstantDoFindPassword) ctx.getBean("DoFindPassword");
-      String UserLoginID = Principal.getName();
-      String HashedPwd = BCrypt.hashpw((String) request.getParameter(constantDoFindPassword.getUNPWD()),
-            BCrypt.gensalt());
-      user.setUserModifiedPW(HashedPwd);
+    @PostMapping("/modifyPassword.do")
+    public String modifyPassword(HttpServletResponse response, HttpServletRequest request,
+                                 Principal principal) throws IOException {
+        String userLoginID = principal.getName();
+        String newPassword = request.getParameter(this.constantDoFindPassword.getUNPWD());
+        String confirmPassword = request.getParameter(this.constantDoFindPassword.getUNPWDC());
+        
       // 새로입력한 비밀번호와 확인 비밀번호가 일치하면
-      if ((request.getParameter(constantDoFindPassword.getUNPWD())
-            .equals((String) request.getParameter(constantDoFindPassword.getUNPWDC())))) {
-         String UserLoginPwd = userService.SelectCurrentPwd(UserLoginID);
-         user.setUserLoginPwd(UserLoginPwd);
-         userService.UpdatePwd(user);
+        if (newPassword.equals(confirmPassword)) {
+            userService.updatePassword(userLoginID, newPassword);
+        }
 
-         return constantDoFindPassword.getMPUrl();
-      }
-      return constantDoFindPassword.getMPUrl();
+        return this.constantDoFindPassword.getMPUrl();
    }
 
-   // 이메일 로그인 화면
-   @RequestMapping(value = "/email/emailLogin", method = RequestMethod.GET)
-   public String emailLogin() {
-      ConstantEmail constantEmail = (ConstantEmail) ctx.getBean("Email");
-      return constantEmail.getEMURL();
+    // 이메일 로그인 화면
+    @GetMapping("/email/emailLogin")
+    public String emailLogin() {
+        return this.constantEmail.getEMURL();
    }
 
-   @RequestMapping(value = "/email/emailList", method = RequestMethod.POST)
-   public String DoEmailLogin(HttpServletRequest request, Model model, Principal principal, User user,
+   @PostMapping("/email/emailList")
+    public String doEmailLogin(HttpServletRequest request, Model model, Principal principal, User user,
          RedirectAttributes rttr) {
       // 유저 정보
-      GetUserInformation(principal, user, model);
-      // 여기서 아이디 비밀번호 확인후에 띄울지 말지
-      // 여기 바꾸기
-      ConstantDoEmail constantDoEmail = (ConstantDoEmail) ctx.getBean("DoEmail");
+        getUserInformation(principal, user, model);
 
-      String ID = request.getParameter("EmailLoginID") + constantDoEmail.getEmailAdress();
+        // 이메일 로그인 확인
+        String id = request.getParameter("EmailLoginID") + this.constantDoEmail.getEmailAdress();
+        boolean checkId = emailService.CheckEmailLogin(id, request.getParameter(this.constantDoEmail.getEPwd()));
 
-      boolean CheckID = emailService.CheckEmailLogin(ID, request.getParameter(constantDoEmail.getEPwd()));
-      if (CheckID) {
-         return constantDoEmail.getREURL();
-      } else {
+        if (!checkId) {
          rttr.addFlashAttribute("Checker", "LoginFail");
-         return constantDoEmail.getRELURL();
+            return this.constantDoEmail.getRELURL();
       }
+        
+        return this.constantDoEmail.getREURL();
    }
 
-   // 이메일 리스트 화면
-   @RequestMapping(value = "/email/emailList", method = RequestMethod.GET)
-   public String emailList(HttpServletRequest request, Model model, Principal principal, User user) {
+    // 이메일 리스트 화면
+    @GetMapping("/email/emailList")
+    public String emailList(HttpServletRequest request, Model model, Principal principal, User user) {
       // 유저 정보
-      ConstantDoEmail constantDoEmail = (ConstantDoEmail) ctx.getBean("DoEmail");
-
-      GetUserInformation(principal, user, model);
-      List<UserEmail> EmailList = emailService.PrintEmailList();// 번호 + 보낸이 + 제목
-      if (EmailList.isEmpty()) {
-         return constantDoEmail.getEURL();
-      } else {
-         model.addAttribute("EmailList", EmailList);
-         return constantDoEmail.getEURL();
-      }
+        getUserInformation(principal, user, model);
+        
+        // 이메일 리스트 조회
+        List<UserEmail> emailList = emailService.PrintEmailList();
+        
+        if (!emailList.isEmpty()) {
+            model.addAttribute("EmailList", emailList);
+        }
+        
+        return this.constantDoEmail.getEURL();
    }
 
-   // 이메일 리스트에서 제목 클릭 시 해당 이메일 내용 출력
-   // 이메일 내용 화면
-   @RequestMapping(value = "/email/emailContent", method = RequestMethod.GET)
-   public String emailContent(HttpServletRequest request, Model model, Principal principal, User user) {
-      ConstantDoEmail constantDoEmail = (ConstantDoEmail) ctx.getBean("DoEmail");
+    // 이메일 리스트에서 제목 클릭 시 해당 이메일 내용 출력
+    // 이메일 내용 화면
+    @GetMapping("/email/emailContent")
+    public String emailContent(HttpServletRequest request, Model model, Principal principal, User user) {
+        getUserInformation(principal, user, model);
 
-      GetUserInformation(principal, user, model);
+        // 이메일 번호 파라미터 처리
+        String num = request.getParameter("no");
+        int intNum = Integer.parseInt(num) - 1;
+        
+        // 이메일 내용 조회
+        UserEmail emailContent = emailService.getEmailContentByIndex(intNum);
+        
+        if (emailContent != null) {
+            model.addAttribute("EmailSender", emailContent.getFrom());
+            model.addAttribute("EmailTitle", emailContent.getTitle());
+            model.addAttribute("EmailDate", emailContent.getDate());
+            model.addAttribute("EmailContent", emailContent.getContent());
+        }
+        
+        return this.constantDoEmail.getECURL();
+    }
 
-      // 가지고오게 할꺼임
-      String Num = request.getParameter("no");
-      int IntNum = Integer.parseInt(Num) - 1;
-      List<UserEmail> EmailList = emailService.GetEmailList();
-      if (EmailList.isEmpty()) {
+    private void getUserInformation(Principal principal, User user, Model model) {
+        String loginID = principal.getName();// 로그인 한 아이디
+        ArrayList<String> selectUserProfileInfo = userService.selectUserProfileInfo(loginID);
+        user.setUserLoginID(loginID);
 
-      } else {
-         model.addAttribute("EmailSender", EmailList.get(IntNum).getFrom());
-         model.addAttribute("EmailTitle", EmailList.get(IntNum).getTitle());
-         model.addAttribute("EmailDate", EmailList.get(IntNum).getDate());
-         model.addAttribute("EmailContent", EmailList.get(IntNum).getContent());
-      }
-      return constantDoEmail.getECURL();
-   }
-
-   private void GetUserInformation(Principal principal, User user, Model model) {
-      this.ConstantHome = (ConstantHome) ctx.getBean("Home");
-
-      String LoginID = principal.getName();// 로그인 한 아이디
-      ArrayList<String> selectUserProfileInfo = new ArrayList<String>();
-      selectUserProfileInfo = userService.selectUserProfileInfo(LoginID);
-      user.setUserLoginID(LoginID);
-
-      if (selectUserProfileInfo.get(2).equals(this.ConstantHome.getSRole())) {
-         ArrayList<String> studentInfo = new ArrayList<String>();
-         studentInfo = studentService.selectStudentProfileInfo(selectUserProfileInfo.get(1));
+        if (selectUserProfileInfo.get(2).equals(this.constantHome.getSRole())) {
+            ArrayList<String> studentInfo = studentService.selectStudentProfileInfo(selectUserProfileInfo.get(1));
          userInfoMethod.studentInfo(model, selectUserProfileInfo, studentInfo);
-      } else if (selectUserProfileInfo.get(2).equals(this.ConstantHome.getPRole())) {
-         ArrayList<String> professorInfo = new ArrayList<String>();
-         professorInfo = professorService.selectProfessorProfileInfo(selectUserProfileInfo.get(1));
+        } else if (selectUserProfileInfo.get(2).equals(this.constantHome.getPRole())) {
+            ArrayList<String> professorInfo = professorService.selectProfessorProfileInfo(selectUserProfileInfo.get(1));
          userInfoMethod.professorInfo(model, selectUserProfileInfo, professorInfo);
-      } else if (selectUserProfileInfo.get(2).equals(this.ConstantHome.getARole())) {
+        } else if (selectUserProfileInfo.get(2).equals(this.constantHome.getARole())) {
          userInfoMethod.administratorInfo(model, selectUserProfileInfo);
+      }
+   }
+
+    // 헬퍼 메서드: 알럿 메시지 출력
+    private void showAlert(HttpServletResponse response, String message) throws IOException {
+        response.setContentType("text/html; charset=UTF-8");
+        PrintWriter out = response.getWriter();
+        out.println("<script>alert('" + message + "');</script>");
+        out.flush();
+    }
+
+    // 헬퍼 메서드: ID 중복 체크 처리
+    private String handleIdCheck(HttpServletRequest request, HttpServletResponse response, 
+                                 HttpSession session, User user, String returnUrl) throws IOException {
+        String localUserLoginID = request.getParameter("UserLoginID");
+        String validationMessage = userService.validateUserLoginID(localUserLoginID, user);
+        
+        showAlert(response, validationMessage);
+        
+        boolean isValid = "등록 가능한 계정 입니다.".equals(validationMessage);
+        session.setAttribute("idChecker", isValid);
+        
+        return returnUrl;
+    }
+
+    // 헬퍼 메서드: 회원가입 세션 정리
+    private void clearSignUpSession(HttpSession session) {
+        session.removeAttribute("idChecker");
+        session.removeAttribute("userEmail");
+    }
+
+    // 헬퍼 메서드: 학생 회원가입 모델 속성 추가
+    private void addStudentAttributesToModel(Model model, HttpServletRequest request,
+                                            String userLoginID, String studentGender, 
+                                            String studentGrade, String studentColleges,
+                                            String studentMajor, String studentDoubleMajor) {
+        if (request.getParameter("UserLoginID") != null) {
+            model.addAttribute("UserLoginID", userLoginID);
+        }
+        if (request.getParameter(this.constantDoSignUp.getPwd()) != null) {
+            model.addAttribute(this.constantDoSignUp.getPwd(), request.getParameter(this.constantDoSignUp.getPwd()));
+        }
+        if (request.getParameter(this.constantDoSignUp.getSName()) != null) {
+            model.addAttribute(this.constantDoSignUp.getSName(), request.getParameter(this.constantDoSignUp.getSName()));
+        }
+        if (request.getParameter("StudentGender") != null) {
+            model.addAttribute("StudentGender", studentGender);
+        }
+        if (request.getParameter("UserPhoneNum") != null) {
+            model.addAttribute(this.constantDoSignUp.getPhoneNum(),
+                    request.getParameter(this.constantDoSignUp.getPhoneNum()));
+        }
+        if (request.getParameter(this.constantDoSignUp.getSNum()) != null) {
+            model.addAttribute(this.constantDoSignUp.getSNum(), request.getParameter(this.constantDoSignUp.getSNum()));
+        }
+        if (request.getParameter("StudentGrade") != null) {
+            model.addAttribute("StudentGrade", studentGrade);
+        }
+        if (request.getParameter("UserColleges") != null) {
+            model.addAttribute("UserColleges", studentColleges);
+        }
+        if (request.getParameter("UserMajor") != null) {
+            model.addAttribute("UserMajor", studentMajor);
+        }
+        if (request.getParameter("StudentDoubleMajor") != null) {
+            model.addAttribute("StudentDoubleMajor", studentDoubleMajor);
+        }
+    }
+
+    // 헬퍼 메서드: 교수 회원가입 모델 속성 추가
+    private void addProfessorAttributesToModel(Model model, HttpServletRequest request, 
+                                              String userLoginID, String professorColleges, 
+                                              String professorMajor, String professorRoom, 
+                                              String professorRoomNum) {
+        if (request.getParameter("UserLoginID") != null) {
+            model.addAttribute("UserLoginID", userLoginID);
+        }
+        if (request.getParameter(this.constantDoSignUp.getPwd()) != null) {
+            model.addAttribute(this.constantDoSignUp.getPwd(), request.getParameter(this.constantDoSignUp.getPwd()));
+        }
+        if (request.getParameter(this.constantDoSignUp.getPName()) != null) {
+            model.addAttribute(this.constantDoSignUp.getPName(), request.getParameter(this.constantDoSignUp.getPName()));
+        }
+        if (request.getParameter("UserPhoneNum") != null) {
+            model.addAttribute(this.constantDoSignUp.getPhoneNum(),
+                    request.getParameter(this.constantDoSignUp.getPhoneNum()));
+        }
+        if (request.getParameter(this.constantDoSignUp.getPNum()) != null) {
+            model.addAttribute(this.constantDoSignUp.getPNum(), request.getParameter(this.constantDoSignUp.getPNum()));
+        }
+        if (request.getParameter("UserColleges") != null) {
+            model.addAttribute("UserColleges", professorColleges);
+        }
+        if (request.getParameter("UserMajor") != null) {
+            model.addAttribute("UserMajor", professorMajor);
+        }
+        if (request.getParameter("ProfessorRoom") != null) {
+            model.addAttribute("ProfessorRoom", professorRoom);
+        }
+        if (request.getParameter("ProfessorRoomNum") != null) {
+            model.addAttribute("ProfessorRoomNum", professorRoomNum);
       }
    }
 

@@ -20,4 +20,8 @@ public interface EmailService {
     boolean CheckEmailLogin(String id, String pw);
 
     List<UserEmail> GetEmailList();
+
+    String sendEmailForPasswordReset(String userEmail);
+
+    UserEmail getEmailContentByIndex(int index);
 }

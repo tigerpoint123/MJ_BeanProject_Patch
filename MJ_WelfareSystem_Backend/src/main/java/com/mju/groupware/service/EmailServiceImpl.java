@@ -70,4 +70,32 @@ public class EmailServiceImpl implements EmailService {
 	public List<UserEmail> GetEmailList() {
 		return email.GetEmailList();
 	}
+
+	@Override
+	public String sendEmailForPasswordReset(String userEmail) {
+		User user = new User();
+		user.setUserEmail(userEmail);
+		
+		// 이메일 중복검사 (등록된 이메일인지 확인)
+		boolean emailCheck = emailDao.SelectForEmailDuplicateCheck(user);
+		
+		if (!emailCheck) {
+			return "등록되지 않은 이메일입니다.";
+		}
+		
+		// 이메일 발송
+		sendEmail(user);
+		return "성공적으로 이메일 발송이 완료되었습니다.";
+	}
+
+	@Override
+	public UserEmail getEmailContentByIndex(int index) {
+		List<UserEmail> emailList = email.GetEmailList();
+		
+		if (emailList.isEmpty() || index < 0 || index >= emailList.size()) {
+			return null;
+		}
+		
+		return emailList.get(index);
+	}
 }
