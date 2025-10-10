@@ -1,6 +1,6 @@
 package com.mju.groupware.controller;
 
-import com.mju.groupware.constant.ConstantAdminProfessorController;
+import global.properties.ProfessorProperties;
 import com.mju.groupware.dto.Professor;
 import com.mju.groupware.dto.User;
 import com.mju.groupware.service.ProfessorService;
@@ -13,8 +13,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.context.annotation.ComponentScan;
-import org.springframework.context.annotation.FilterType;
 import org.springframework.context.annotation.Import;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.web.servlet.MockMvc;
@@ -28,13 +26,21 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@WebMvcTest(controllers = ProfessorController.class,
-        excludeFilters = @ComponentScan.Filter(type = FilterType.ASSIGNABLE_TYPE, classes = GlobalUserModelAdvice.class))
+@WebMvcTest(controllers = ProfessorController.class)
 @AutoConfigureMockMvc(addFilters = false)
 @TestPropertySource(properties = {
-        "spring.main.allow-bean-definition-overriding=true"
+        "spring.main.allow-bean-definition-overriding=true",
+        "app.professor.params.user-name=UserName",
+        "app.professor.params.user-login-id=UserLoginID",
+        "app.professor.params.user-phone-num=UserPhoneNum",
+        "app.professor.params.user-phone=UserPhone",
+        "app.professor.params.user-email=UserEmail",
+        "app.professor.params.email=Email",
+        "app.professor.urls.signup=/signup/signupProfessor",
+        "app.professor.urls.mypage=/mypage/myPageProfessor",
+        "app.professor.urls.modify=/mypage/modifyProfessor"
 })
-@Import(TestMvcSharedConfig.class)
+@Import({TestMvcSharedConfig.class, ProfessorProperties.class})
 class ProfessorControllerWebMvcTest {
 
     @Autowired
@@ -43,7 +49,7 @@ class ProfessorControllerWebMvcTest {
     @MockBean private UserService userService;
     @MockBean private ProfessorService professorService;
     @MockBean private StudentService studentService;
-    @MockBean private ConstantAdminProfessorController constant;
+    @Autowired private ProfessorProperties professorProps;
 
     @BeforeEach
     void setupCommon() {
@@ -55,7 +61,6 @@ class ProfessorControllerWebMvcTest {
     @Test
     @DisplayName("GET /signupProfessor returns 200")
     void signupProfessorReturnsOk() throws Exception {
-        given(constant.getRSignupProfessor()).willReturn("professor/signupProfessor");
         mockMvc.perform(get("/signupProfessor"))
                 .andExpect(status().isOk());
     }
@@ -82,15 +87,8 @@ class ProfessorControllerWebMvcTest {
                 "ROOM11", // 11: ProfessorRoom
                 "02-000-0000" // 12: ProfessorRoomNum
         ));
-        given(userService.SelectMyPageUserInfo("testUser")).willReturn(myPage);
-        given(userService.SelectOpenInfo("testUser")).willReturn("OPEN");
-
-        // 상수 키들
-        given(constant.getUserLoginID()).willReturn("UserLoginID");
-        given(constant.getUserName()).willReturn("UserName");
-        given(constant.getUserPhoneNum()).willReturn("UserPhoneNum");
-        given(constant.getUserEmail()).willReturn("UserEmail");
-        given(constant.getRMyPageProfessor()).willReturn("professor/myPageProfessor");
+        given(userService.selectMyPageUserInfo("testUser")).willReturn(myPage);
+        given(userService.selectOpenInfo("testUser")).willReturn("OPEN");
 
         mockMvc.perform(get("/myPageProfessor").principal(principal))
                 .andExpect(status().isOk());
@@ -105,17 +103,13 @@ class ProfessorControllerWebMvcTest {
         user.setUserLoginID("testUser");
         user.setUserName("Name");
         user.setUserEmail("email@example.com");
-        given(userService.SelectModifyUserInfo("testUser")).willReturn(user);
+        given(userService.selectModifyUserInfo("testUser")).willReturn(user);
 
         Professor professor = new Professor();
         professor.setUserPhoneNum("010-0000-0000");
         professor.setProfessorColleges("COLL");
         professor.setProfessorMajor("MAJOR");
         given(professorService.selectModifyProfessorInfo(1)).willReturn(professor);
-
-        given(constant.getEmail()).willReturn("Email");
-        given(constant.getUserPhoneNum()).willReturn("UserPhoneNum");
-        given(constant.getRModifyProfessor()).willReturn("professor/modifyProfessor");
 
         mockMvc.perform(get("/modifyProfessor").principal(principal))
                 .andExpect(status().isOk());
@@ -125,12 +119,8 @@ class ProfessorControllerWebMvcTest {
     @DisplayName("POST /modifyProfessor.do returns 200")
     void modifyProfessorPostReturnsOk() throws Exception {
         Principal principal = () -> "testUser";
-        given(userService.SelectUserInformation("testUser"))
+        given(userService.selectUserInformation("testUser"))
                 .willReturn(new ArrayList<>(Arrays.asList("1", "testUser")));
-
-        given(constant.getUserPhoneNum()).willReturn("UserPhoneNum");
-        given(constant.getUserPhone()).willReturn("UserPhone");
-        given(constant.getRModifyProfessor()).willReturn("professor/modifyProfessor");
 
         mockMvc.perform(post("/modifyProfessor.do")
                         .principal(principal)

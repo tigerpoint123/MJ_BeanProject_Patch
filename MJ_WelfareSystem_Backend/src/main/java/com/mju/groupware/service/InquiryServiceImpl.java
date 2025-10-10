@@ -1,6 +1,6 @@
 package com.mju.groupware.service;
 
-import com.mju.groupware.constant.ConstantAdminBoardController;
+import global.properties.BoardProperties;
 import com.mju.groupware.dao.InquiryDao;
 import com.mju.groupware.dao.UserDao;
 import com.mju.groupware.dto.Inquiry;
@@ -20,7 +20,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class InquiryServiceImpl implements InquiryService { //TODO : 예외처리 추가. 로깅 추가. Transactional 추가. 입력 검증 부재. 보얀 취약점 확인
     private final InquiryDao inquiryDao;
-    private final ConstantAdminBoardController constantAdminBoardController; // TODO : inquiry constant 클래스로 수정 필요
+    private final BoardProperties boardProps;
     private final UserDao userDao;
 
     @Override
@@ -72,26 +72,26 @@ public class InquiryServiceImpl implements InquiryService { //TODO : 예외처�
         String IBoardID = request.getParameter("no");
         Inquiry inquiry = inquiryDao.SelectOneInquiryContent(IBoardID); // 선택한 게시글 ID가 들어감.
 
-        model.addAttribute(this.constantAdminBoardController.getInquiryTitle(), inquiry.getIBoardSubject());
-        model.addAttribute(this.constantAdminBoardController.getInquiryWriter(), inquiry.getIBoardWriter());
-        model.addAttribute(this.constantAdminBoardController.getIBoardDate(), inquiry.getIBoardDate());
-        model.addAttribute(this.constantAdminBoardController.getInquiryContent(), inquiry.getIBoardContent());
-        model.addAttribute(this.constantAdminBoardController.getBoardID(), IBoardID);
-        model.addAttribute(this.constantAdminBoardController.getInquiryAnswer(), inquiry.getIBoardAnswer());
-        model.addAttribute(this.constantAdminBoardController.getUserID(), UserID);
-        model.addAttribute(this.constantAdminBoardController.getUserIDFromWriter(), inquiry.getUserID());
+        model.addAttribute(boardProps.getParams().getInquiry().getTitle(), inquiry.getIBoardSubject());
+        model.addAttribute(boardProps.getParams().getInquiry().getWriter(), inquiry.getIBoardWriter());
+        model.addAttribute(boardProps.getParams().getInquiry().getDate(), inquiry.getIBoardDate());
+        model.addAttribute(boardProps.getParams().getInquiry().getContent(), inquiry.getIBoardContent());
+        model.addAttribute(boardProps.getParams().getBoard().getId(), IBoardID);
+        model.addAttribute(boardProps.getParams().getInquiry().getAnswer(), inquiry.getIBoardAnswer());
+        model.addAttribute(boardProps.getParams().getUser().getId(), UserID);
+        model.addAttribute(boardProps.getParams().getUser().getIdFromWriter(), inquiry.getUserID());
     }
 
     @Override
     public void getInquiryWrite(Principal principal, Model model) {
         String UserLoginID = principal.getName();
-        String UserName = userDao.SelectUserName(UserLoginID);
-        String UserEmail = userDao.SelectEmailForInquiry(UserLoginID);
-        String UserPhoneNum = userDao.SelectPhoneNumForInquiry(UserLoginID);
+        String UserName = userDao.selectUserName(UserLoginID);
+        String UserEmail = userDao.selectEmailForInquiry(UserLoginID);
+        String UserPhoneNum = userDao.selectPhoneNumForInquiry(UserLoginID);
 
-        model.addAttribute(this.constantAdminBoardController.getInquiryWriter(), UserName);
-        model.addAttribute(this.constantAdminBoardController.getInquiryEmail(), UserEmail);
-        model.addAttribute(this.constantAdminBoardController.getInquiryPhoneNum(), UserPhoneNum);
+        model.addAttribute(boardProps.getParams().getInquiry().getWriter(), UserName);
+        model.addAttribute(boardProps.getParams().getInquiry().getEmail(), UserEmail);
+        model.addAttribute(boardProps.getParams().getInquiry().getPhoneNum(), UserPhoneNum);
 
         List<Inquiry> InquiryList = inquiryDao.SelectInquiryList();
     }
@@ -107,10 +107,10 @@ public class InquiryServiceImpl implements InquiryService { //TODO : 예외처�
             String InquiryType = request.getParameter("InquiryType");
             SimpleDateFormat Date = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
             String UserLoginID = principal.getName();
-            int UserID = userDao.SelectUserIDFromBoardController(UserLoginID);
-            String UserName = userDao.SelectUserName(UserLoginID);
-            String UserEmail = userDao.SelectEmailForInquiry(UserLoginID);
-            String UserPhoneNum = userDao.SelectPhoneNumForInquiry(UserLoginID);
+            int UserID = userDao.selectUserIDFromBoardController(UserLoginID);
+            String UserName = userDao.selectUserName(UserLoginID);
+            String UserEmail = userDao.selectEmailForInquiry(UserLoginID);
+            String UserPhoneNum = userDao.selectPhoneNumForInquiry(UserLoginID);
 
             if (Title.isEmpty()) {
                 response.setContentType("text/html; charset=UTF-8");
@@ -118,14 +118,14 @@ public class InquiryServiceImpl implements InquiryService { //TODO : 예외처�
                 Out.println("<script>alert('제목을 입력해주세요. ');</script>");
                 Out.flush();
 
-                return this.constantAdminBoardController.getRInquiryWrite();
+                return boardProps.getUrls().getInquiry().getWrite();
             } else if (Content.isEmpty()) {
                 response.setContentType("text/html; charset=UTF-8");
                 PrintWriter Out = response.getWriter();
                 Out.println("<script>alert('내용을 입력해주세요. ');</script>");
                 Out.flush();
 
-                return this.constantAdminBoardController.getRInquiryWrite();
+                return boardProps.getUrls().getInquiry().getWrite();
             } else {
                 inquiry.setIBoardSubject(Title);
                 inquiry.setIBoardContent(Content);
@@ -138,7 +138,7 @@ public class InquiryServiceImpl implements InquiryService { //TODO : 예외처�
                 inquiry.setUserPhoneNum(UserPhoneNum);
 
                 InsertInquiry(inquiry, request);
-                return this.constantAdminBoardController.getRRInquiryList();
+                return boardProps.getRedirects().getInquiryList();
             }
 
         } catch (Exception e) {

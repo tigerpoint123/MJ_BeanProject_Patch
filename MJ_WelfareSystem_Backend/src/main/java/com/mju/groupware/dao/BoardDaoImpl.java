@@ -1,62 +1,56 @@
 package com.mju.groupware.dao;
 
-import java.util.List;
-import java.util.Map;
-
+import com.mju.groupware.dto.Board;
+import com.mju.groupware.dto.TeamBoard;
+import lombok.RequiredArgsConstructor;
 import org.mybatis.spring.SqlSessionTemplate;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 import org.springframework.stereotype.Service;
 
-import com.mju.groupware.dto.Board;
-import com.mju.groupware.dto.TeamBoard;
+import java.util.List;
+import java.util.Map;
 
 @Service
 @Repository
+@RequiredArgsConstructor
 public class BoardDaoImpl implements BoardDao {
-	@Autowired
-	private SqlSessionTemplate sqlSession;
+	private final SqlSessionTemplate sqlSession;
 
 	@Override
-	public void InsertBoardInfo(Board board) {
+	public void insertBoardInfo(Board board) {
 		sqlSession.insert("InsertBoard", board);
 	}
 
 	@Override
-	public void InsertFile(Map<String, Object> map) {
-		sqlSession.insert("InsertFile", map);
-	}
-
-	@Override
-	public void InsertTeamFile(Map<String, Object> map) {
+	public void insertTeamFile(Map<String, Object> map) {
 		sqlSession.insert("InsertTeamFile", map);
 	}
 
 	@Override
-	public void InsertTeamFileInfo(Map<String, Object> map) {
+	public void insertTeamFileInfo(Map<String, Object> map) {
 		sqlSession.insert("InsertTeamFileInfo", map);
 	}
 
 	@Override
-	public List<Board> SelectCommunityBoardList() {
+	public List<Board> selectCommunityBoardList() {
 		List<Board> CommunityOutput = sqlSession.selectList("SelectCommunityBoardList");
 		return CommunityOutput;
 	}
 
 	@Override
-	public List<TeamBoard> SelectTeamBoardList() {
+	public List<TeamBoard> selectTeamBoardList() {
 		List<TeamBoard> TeamBoardOutput = sqlSession.selectList("SelectTeamBoardList");
 		return TeamBoardOutput;
 	}
 
 	@Override
-	public List<Board> SelectNoticeBoardList() {
+	public List<Board> selectNoticeBoardList() {
 		List<Board> NoticeOutput = sqlSession.selectList("SelectNoticeBoardList");
 		return NoticeOutput;
 	}
 
 	@Override
-	public void UpdateHitCount(String boardID) {
+	public void updateHitCount(String boardID) {
 		sqlSession.update("UpdateHitCount", boardID);
 	}
 
@@ -72,7 +66,7 @@ public class BoardDaoImpl implements BoardDao {
 	}
 
 	@Override
-	public Board SelectOneCommunityContent(String boardID) {
+	public Board selectOneCommunityContent(String boardID) {
 		return sqlSession.selectOne("SelectOneCommunityContent", boardID);
 	}
 
@@ -82,72 +76,72 @@ public class BoardDaoImpl implements BoardDao {
 	}
 
 	@Override
-	public String SelectLoginUserID(String loginID) {
+	public String selectLoginUserID(String loginID) {
 		return sqlSession.selectOne("SelectLoginUserID", loginID);
 	}
 
 	@Override
-	public void UpdateModifiedContent(Board board) {
+	public void updateModifiedContent(Board board) {
 		sqlSession.update("UpdateModifiedContent", board);
 	}
 
 	@Override
-	public void UpdateTeamBoardModifiedContent(TeamBoard teamBoard) {
+	public void updateTeamBoardModifiedContent(TeamBoard teamBoard) {
 		sqlSession.update("UpdateTeamBoardModifiedContent", teamBoard);
 	}
 
 	@Override
-	public void DeleteCommunity(int boardID) {
+	public void deleteCommunity(int boardID) {
 		sqlSession.delete("DeleteCommunity", boardID);
 	}
 
 	@Override
-	public void DeleteNotice(int boardID) {
+	public void deleteNotice(int boardID) {
 		sqlSession.delete("DeleteNotice", boardID);
 	}
 
-	public List<Map<String, Object>> SelectCommunityFileList(int BNo) {
+	public List<Map<String, Object>> selectCommunityFileList(int BNo) {
 		List<Map<String, Object>> SelectCommunityFileList = sqlSession.selectList("SelectCommunityFileList", BNo);
 		return SelectCommunityFileList;
 	}
 
 	@Override
-	public Map<String, Object> SelectCommunityFileInfo(Map<String, Object> map) {
+	public Map<String, Object> selectCommunityFileInfo(Map<String, Object> map) {
 		Map<String, Object> SelectCommunityFileInfo = sqlSession.selectOne("SelectCommunityFileInfo", map);
 		return SelectCommunityFileInfo;
 	}
 
-	public List<Map<String, Object>> SelectNoticeFileList(int BNo) {
+	public List<Map<String, Object>> selectNoticeFileList(int BNo) {
 		List<Map<String, Object>> SelectNoticeFileList = sqlSession.selectList("SelectNoticeFileList", BNo);
 
 		return SelectNoticeFileList;
 	}
 
 	@Override
-	public Map<String, Object> SelectNoticeFileInfo(Map<String, Object> map) {
+	public Map<String, Object> selectNoticeFileInfo(Map<String, Object> map) {
 		Map<String, Object> SelectNoticeFileInfo = sqlSession.selectOne("SelectNoticeFileInfo", map);
 		return SelectNoticeFileInfo;
 	}
 
 	@Override
-	public void UpdateFile(Map<String, Object> map) {
+	public void updateFile(Map<String, Object> map) {
 		// 파일 삭제버튼을 누르면 작동하게된다.
 		sqlSession.update("UpdateFile", map);
 	}
 
 	@Override
-	public void UpdateTeamFile(Map<String, Object> map) {
+	public void updateTeamFile(Map<String, Object> map) {
 		// 파일 삭제버튼을 누르면 작동하게된다.
 		sqlSession.update("UpdateTeamFile", map);
 	}
 
 	@Override
-	public void UpdateBoardDelete(int boardID) {
+	public void updateBoardDelete(int boardID) {
 		sqlSession.update("UpdateBoardDelete", boardID);
 	}
 
 	@Override
-	public void InsertTeamDocument(TeamBoard teamBoard) {
+	public void insertTeamDocument(TeamBoard teamBoard) {
 		sqlSession.insert("InsertTeamDocument", teamBoard);
 	}
 
@@ -158,34 +152,34 @@ public class BoardDaoImpl implements BoardDao {
 	}
 
 	@Override
-	public TeamBoard SelectTeamBoardContent(String tBoardID) {
+	public TeamBoard selectTeamBoardContent(String tBoardID) {
 		return sqlSession.selectOne("SelectTeamBoardContent", tBoardID);
 	}
 
 	@Override
-	public List<Map<String, Object>> SelectTeamBoardFileList(int bNo) {
+	public List<Map<String, Object>> selectTeamBoardFileList(int bNo) {
 		List<Map<String, Object>> SelectTeamBoardFileList = sqlSession.selectList("SelectTeamBoardFileList", bNo);
 		return SelectTeamBoardFileList;
 	}
 
 	@Override
-	public void UpdateTBoardDelete(int tBoardID) {
+	public void updateTBoardDelete(int tBoardID) {
 		sqlSession.update("UpdateTBoardDelete", tBoardID);
 	}
 
 	@Override
-	public String SelectWriterID(TeamBoard teamBoard) {
+	public String selectWriterID(TeamBoard teamBoard) {
 		return sqlSession.selectOne("SelectWriterID", teamBoard);
 	}
 
 	@Override
-	public Map<String, Object> SelectTeamBoardFileInfo(Map<String, Object> map) {
+	public Map<String, Object> selectTeamBoardFileInfo(Map<String, Object> map) {
 		Map<String, Object> SelectCommunityFileInfo = sqlSession.selectOne("SelectTeamBoardFileInfo", map);
 		return SelectCommunityFileInfo;
 	}
 
 	@Override
-	public List<Board> SelectMyBoardList(String login) {
+	public List<Board> selectMyBoardList(String login) {
 		return sqlSession.selectList("SelectMyBoardList", login);
 	}
 

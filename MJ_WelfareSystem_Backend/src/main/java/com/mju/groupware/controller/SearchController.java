@@ -1,6 +1,6 @@
 package com.mju.groupware.controller;
 
-import com.mju.groupware.constant.ConstantSearchController;
+import global.properties.SearchProperties;
 import com.mju.groupware.dto.User;
 import com.mju.groupware.dto.SearchKeyWord;
 import com.mju.groupware.dto.UserReview;
@@ -23,7 +23,7 @@ import java.util.List;
 @Controller
 @RequiredArgsConstructor
 public class SearchController {
-    private final ConstantSearchController constant;
+    private final SearchProperties searchProps;
 	private final UserInfoMethod userInfoMethod;
 	private final SearchService searchService;
 
@@ -31,8 +31,11 @@ public class SearchController {
 	@RequestMapping(value = "/search/searchUser", method = RequestMethod.GET)
 	public String searchUser(Principal principal, Model model, User user) {
 		// 유저 정보
-		userInfoMethod.getUserInformation(principal, user, model, this.constant.getSRole(), this.constant.getPRole(), this.constant.getARole());
-		return this.constant.getRSearchUser();
+		userInfoMethod.getUserInformation(principal, user, model, 
+			searchProps.getRoles().getStudent(), 
+			searchProps.getRoles().getProfessor(), 
+			searchProps.getRoles().getAdministrator());
+		return searchProps.getUrls().getSearchUser();
 	}
 
 	@ResponseBody
@@ -41,11 +44,11 @@ public class SearchController {
 			@RequestBody SearchKeyWord searchKeyWord) {
 		return searchService.searchUserInfoList(
 			searchKeyWord, 
-			constant.getSRole(), 
-			constant.getPRole(),
-			constant.getUName(),
-			constant.getUserEmail(),
-			constant.getPhoneNum()
+			searchProps.getRoles().getStudent(), 
+			searchProps.getRoles().getProfessor(),
+			searchProps.getParams().getUserName(),
+			searchProps.getParams().getUserEmail(),
+			searchProps.getParams().getPhoneNum()
 		);
 	}
 
@@ -53,18 +56,21 @@ public class SearchController {
 	@RequestMapping(value = "/search/reviewList", method = RequestMethod.GET)
 	public String reviewList(Principal principal, Model model, User user, HttpServletRequest request, RedirectAttributes rttr) {
 		// 유저 정보
-		userInfoMethod.getUserInformation(principal, user, model, this.constant.getSRole(), this.constant.getPRole(), this.constant.getARole());
+		userInfoMethod.getUserInformation(principal, user, model, 
+			searchProps.getRoles().getStudent(), 
+			searchProps.getRoles().getProfessor(), 
+			searchProps.getRoles().getAdministrator());
 		
 		String userEmail = request.getParameter("no");
 		List<UserReview> reviewList = searchService.getUserReviewListByEmail(userEmail);
 		
 		if (reviewList == null) {
 			rttr.addFlashAttribute("checker", "NoReiveiwList");
-			return this.constant.getRRSearchUser();
+			return searchProps.getRedirects().getSearchUser();
 		}
 		
 		model.addAttribute("list", reviewList);
-		return this.constant.getRReviewList();
+		return searchProps.getUrls().getReviewList();
 	}
 
 }

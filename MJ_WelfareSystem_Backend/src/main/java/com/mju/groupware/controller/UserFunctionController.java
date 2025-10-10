@@ -1,6 +1,6 @@
 package com.mju.groupware.controller;
 
-import com.mju.groupware.constant.*;
+import global.properties.UserFunctionProperties;
 import com.mju.groupware.dto.*;
 import com.mju.groupware.service.*;
 import com.mju.groupware.util.UserInfoMethod;
@@ -31,26 +31,17 @@ public class UserFunctionController {
    private final UserEmailService userEmailService;
    private final UserInfoMethod userInfoMethod;
 
-    private final ConstantWithdrawal constantWithdrawal;
-    private final ConstantFindPassword constantFindPassword;
-    private final ConstantHome constantHome;
-    private final ConstantMyPostList constantMyPostList;
-    private final ConstantMyInquiryList constantMyInquiryList;
-    private final ConstantUserFunctionURL constantUserFunctionURL;
-    private final ConstantDoEmail constantDoEmail;
-    private final ConstantDoSignUp constantDoSignUp;
-    private final ConstantDoFindPassword constantDoFindPassword;
-    private final ConstantEmail constantEmail;
+    private final UserFunctionProperties userProps;
 
    @GetMapping("/findPassword")
    public String findPassword() {
-        return this.constantFindPassword.getFPUrl();
+        return userProps.getUrls().getSignin().getFindPassword();
    }
 
    /* 이메일 인증 후 비밀번호 보여주기 */
     @GetMapping("/showPassword")
     public String showPassword() {
-        return this.constantFindPassword.getSPUrl();
+        return userProps.getUrls().getSignin().getShowPassword();
    }
 
    // home 로그인 완료 화면 + 날짜 업데이트
@@ -59,23 +50,23 @@ public class UserFunctionController {
       if (principal != null) { // 지우면 오류(로그인 안해서 principal 못가져오는)납니다
              // 유저 정보 조회 및 모델 설정
              userInfoMethod.getUserInformation(principal, user, model, 
-                 this.constantHome.getSRole(), 
-                 this.constantHome.getPRole(), 
-                 this.constantHome.getARole());
+                 userProps.getRoles().getStudent(), 
+                 userProps.getRoles().getProfessor(), 
+                 userProps.getRoles().getAdministrator());
 
              // 로그인 날짜 업데이트 및 휴먼계정 복구
-             userService.processLoginDateUpdate(principal.getName(), this.constantHome.getDFormat());
+             userService.processLoginDateUpdate(principal.getName(), userProps.getFormats().getDate());
       }
 
       // 공지사항 리스트 띄우기
          List<Board> noticeList = userService.getNoticeBoardList();
-         model.addAttribute(this.constantHome.getNL(), noticeList);
+         model.addAttribute(userProps.getAttributes().getNoticeList(), noticeList);
 
       // 커뮤니티 리스트 띄우기
          List<Board> communityList = userService.getCommunityBoardList();
-         model.addAttribute(this.constantHome.getCL(), communityList);
+         model.addAttribute(userProps.getAttributes().getCommunityList(), communityList);
 
-         return this.constantHome.getHUrl();
+         return userProps.getUrls().getHome();
      }
 
     @GetMapping("/")
@@ -83,12 +74,12 @@ public class UserFunctionController {
       if (principal != null) {
             // 유저 정보 조회 및 모델 설정
             userInfoMethod.getUserInformation(principal, user, model, 
-                this.constantHome.getSRole(), 
-                this.constantHome.getPRole(), 
-                this.constantHome.getARole());
+                userProps.getRoles().getStudent(), 
+                userProps.getRoles().getProfessor(), 
+                userProps.getRoles().getAdministrator());
 
             // 로그인 날짜 업데이트 및 휴먼계정 복구
-            userService.processLoginDateUpdate(principal.getName(), this.constantHome.getDFormat());
+            userService.processLoginDateUpdate(principal.getName(), userProps.getFormats().getDate());
       }
 
       // 공지사항 리스트 띄우기
@@ -97,9 +88,9 @@ public class UserFunctionController {
 
       // 커뮤니티 리스트 띄우기
         List<Board> communityList = userService.getCommunityBoardList();
-        model.addAttribute(this.constantHome.getCL(), communityList);
+        model.addAttribute(userProps.getAttributes().getCommunityList(), communityList);
 
-        return this.constantHome.getHUrl();
+        return userProps.getUrls().getHome();
    }
 
    // home에서 마이페이지 클릭 시 회원 role에 따라 페이지 리턴
@@ -107,16 +98,16 @@ public class UserFunctionController {
    public String myPageByRole(HttpServletRequest request, Model model) throws IOException {
         String mysqlRole = request.getParameter("R");
 
-        if (mysqlRole.equals(this.constantHome.getSRole()))
-            return this.constantHome.getMPSUrl();
+        if (mysqlRole.equals(userProps.getRoles().getStudent()))
+            return userProps.getRedirects().getMypageStudent();
 
-        if (mysqlRole.equals(this.constantHome.getPRole()))
-            return this.constantHome.getMPPUrl();
+        if (mysqlRole.equals(userProps.getRoles().getProfessor()))
+            return userProps.getRedirects().getMypageProfessor();
 
-        if (mysqlRole.equals(this.constantHome.getARole()))
-            return this.constantHome.getRUrl();
+        if (mysqlRole.equals(userProps.getRoles().getAdministrator()))
+            return userProps.getRedirects().getHome();
 
-        return this.constantHome.getRUrl();
+        return userProps.getRedirects().getHome();
    }
 
    // 마이페이지 - 내 게시글 조회
@@ -128,9 +119,9 @@ public class UserFunctionController {
         // 내 게시글 리스트 조회
         String loginID = principal.getName();
         List<Board> myBoardList = userService.getMyBoardList(loginID);
-        model.addAttribute(this.constantMyPostList.getMBList(), myBoardList);
+        model.addAttribute(userProps.getAttributes().getMyBoardList(), myBoardList);
 
-        return this.constantMyPostList.getMBUrl();
+        return userProps.getUrls().getMypage().getPostList();
    }
 
    // 마이페이지 - 내 문의 조회
@@ -143,9 +134,9 @@ public class UserFunctionController {
         String loginID = principal.getName();
         List<Inquiry> myInquiryList = userService.getMyInquiryList(loginID);
         if (!myInquiryList.isEmpty()) {
-            model.addAttribute(this.constantMyInquiryList.getMIList(), myInquiryList);
+            model.addAttribute(userProps.getAttributes().getMyInquiryList(), myInquiryList);
         }
-        return this.constantMyInquiryList.getMIUrl();
+        return userProps.getUrls().getMypage().getInquiryList();
    }
 
    /* 마이페이지 - 내 팀 조회 */
@@ -154,42 +145,42 @@ public class UserFunctionController {
       // 유저 정보
         getUserInformation(principal, user, model);
       //
-        return this.constantUserFunctionURL.getCMTUrl();
+        return userProps.getUrls().getMypage().getCheckMyTeam();
    }
 
    /* 정보 수정 버튼 클릭 시 비밀번호 확인 */
     @GetMapping("/checkPassword")
    public String checkPassword() {
-        return this.constantUserFunctionURL.getCPUrl();
+        return userProps.getUrls().getMypage().getCheckPassword();
    }
 
    /* 비밀번호 변경 화면 */
    @GetMapping("/modifyPassword")
    public String modifyPassword() {
-        return this.constantUserFunctionURL.getMPUrl();
+        return userProps.getUrls().getMypage().getModifyPassword();
    }
 
    // 탈퇴 매뉴얼
    @GetMapping("/withdrawal")
    public String withdrawal() {
-        return this.constantWithdrawal.getUrl();
+        return userProps.getUrls().getWithdrawal();
     }
 
     @PostMapping("/withdrawal")
     public String doWithdrawal(HttpServletRequest request, Principal principal) {
-        if (request.getParameter(this.constantWithdrawal.getParameter1()) == null) {
-            return this.constantWithdrawal.getUrl();
+        if (request.getParameter(userProps.getParams().getWithdrawal().getParameter1()) == null) {
+            return userProps.getUrls().getWithdrawal();
         }
         
         String userLoginID = principal.getName();
-        userService.processWithdrawal(userLoginID, this.constantWithdrawal.getParameter2());
-        return this.constantWithdrawal.getUrl();
+        userService.processWithdrawal(userLoginID, userProps.getParams().getWithdrawal().getParameter2());
+        return userProps.getUrls().getWithdrawal();
    }
 
    // 이거는 탈퇴 전에 비밀번호를 확인하기 위함. 수정하기 눌렀을때의 화면, 로직 다 똑같음.
     @GetMapping("/checkPassword2")
    public String checkPassword2() {
-        return this.constantUserFunctionURL.getCPWUrl();
+        return userProps.getUrls().getMypage().getCheckPassword2();
    }
 
     @PostMapping("/checkPassword2.do")
@@ -197,46 +188,46 @@ public class UserFunctionController {
          throws IOException {
         String userID = principal.getName();
 
-        boolean checker = userService.SelectForPwdCheckBeforeModify(userID,
-                request.getParameter(this.constantUserFunctionURL.getULPWD()));
+        boolean checker = userService.selectForPwdCheckBeforeModify(userID,
+                request.getParameter(userProps.getParams().getUserLoginPwd()));
         if (checker) {
-            return this.constantUserFunctionURL.getRWUrl();
+            return userProps.getRedirects().getWithdrawal();
       } else {
          response.setContentType("text/html; charset=UTF-8");
             PrintWriter out = response.getWriter();
             out.println("<script>alert('비밀번호를 다시 입력해주세요.' );</script>");
             out.flush();
-            return this.constantUserFunctionURL.getCPWUrl();
+            return userProps.getUrls().getMypage().getCheckPassword2();
       }
    }
 
     @GetMapping("/emailAuthentication")
    public String emailAuthentication() {
-        return this.constantUserFunctionURL.getEAUrl();
+        return userProps.getUrls().getEmail().getAuthentication();
    }
 
    // 이메일 중복확인, 이메일 발송
    @PostMapping("/email.do")
     public String doEmail(RedirectAttributes redirectAttributes, Model model,
                           HttpServletRequest request, HttpServletResponse response, HttpSession session) throws IOException {
-        String userEmail = request.getParameter(this.constantDoEmail.getEM());
+        String userEmail = request.getParameter(userProps.getParams().getEmail());
 
         // 이메일 값이 있으면 모델에 추가
-        if (request.getParameter(this.constantDoEmail.getEM()) != null) {
-            model.addAttribute(this.constantDoEmail.getEM(), userEmail);
-            String address = this.constantDoEmail.getEmailAdress();
+        if (request.getParameter(userProps.getParams().getEmail()) != null) {
+            model.addAttribute(userProps.getParams().getEmail(), userEmail);
+            String address = userProps.getEmail().getDomain();
             userEmail = userEmail + address;
         }
         
         // 인증번호 값이 있으면 모델에 추가
-        if (request.getParameter(this.constantDoEmail.getAuthNum()) != null) {
-            model.addAttribute(this.constantDoEmail.getAuthNum(),
-                    request.getParameter(this.constantDoEmail.getAuthNum()));
+        if (request.getParameter(userProps.getParams().getAuthNum()) != null) {
+            model.addAttribute(userProps.getParams().getAuthNum(),
+                    request.getParameter(userProps.getParams().getAuthNum()));
         }
 
         // 이메일 체크 (이메일 발송)
-        if (request.getParameter(this.constantDoEmail.getEC()) != null && !userEmail.isEmpty()) {
-            String result = userEmailService.processEmailCertification(userEmail, this.constantDoEmail.getDateFormat());
+        if (request.getParameter(userProps.getParams().getEmailCheck()) != null && !userEmail.isEmpty()) {
+            String result = userEmailService.processEmailCertification(userEmail, userProps.getFormats().getDatetime());
             
             response.setContentType("text/html; charset=UTF-8");
             PrintWriter out = response.getWriter();
@@ -247,18 +238,18 @@ public class UserFunctionController {
                 out.println("<script>alert('성공적으로 이메일 발송이 완료되었습니다.' );</script>");
             }
             out.flush();
-            return this.constantDoEmail.getAuthUrl();
+            return userProps.getUrls().getEmail().getAuthentication();
         }
         
         // 이메일이 비어있는 경우
         if (userEmail.isEmpty()) {
-            return this.constantDoEmail.getAuthUrl();
+            return userProps.getUrls().getEmail().getAuthentication();
         }
         
         // 인증번호 확인
-        if (request.getParameter(this.constantDoEmail.getEV()) != null
-                && !request.getParameter(this.constantDoEmail.getAuthNum()).isEmpty()) {
-            boolean checker = userEmailService.verifyCertification(request.getParameter(this.constantDoEmail.getAuthNum()));
+        if (request.getParameter(userProps.getParams().getEmailValid()) != null
+                && !request.getParameter(userProps.getParams().getAuthNum()).isEmpty()) {
+            boolean checker = userEmailService.verifyCertification(request.getParameter(userProps.getParams().getAuthNum()));
             
             response.setContentType("text/html; charset=UTF-8");
             PrintWriter out = response.getWriter();
@@ -272,18 +263,18 @@ public class UserFunctionController {
                 out.println("<script>alert('일치하지 않는 인증번호입니다. 다시한번 확인해주세요' );</script>");
                 out.flush();
                 session.setAttribute("emailChecker", false);
-                return this.constantDoEmail.getAuthUrl();
+                return userProps.getUrls().getEmail().getAuthentication();
             }
         }
 
         // 동의 버튼 클릭
         Boolean emailChecker = (Boolean) session.getAttribute("emailChecker");
-        if (request.getParameter(this.constantDoEmail.getBA()) != null && Boolean.TRUE.equals(emailChecker)) {
+        if (request.getParameter(userProps.getParams().getBtnAgree()) != null && Boolean.TRUE.equals(emailChecker)) {
             session.removeAttribute("emailChecker");
-            return this.constantDoEmail.getAgreeUrl();
+            return userProps.getUrls().getSignup().getSelect();
         }
         
-        return this.constantDoEmail.getAuthUrl();
+        return userProps.getUrls().getEmail().getAuthentication();
    }
 
    // 학생 회원가입
@@ -304,7 +295,7 @@ public class UserFunctionController {
 
         // ID 중복 체크
         if (request.getParameter("IdCheck") != null) {
-            return handleIdCheck(request, response, session, user, this.constantDoSignUp.getSSUrl());
+            return handleIdCheck(request, response, session, user, userProps.getUrls().getSignup().getStudent());
         }
         
         // 회원가입 제출
@@ -314,12 +305,12 @@ public class UserFunctionController {
             String validationError = userService.validateStudentSignUp(studentColleges, studentMajor);
             if (validationError != null) {
                 showAlert(response, validationError);
-                return this.constantDoSignUp.getSSUrl();
+                return userProps.getUrls().getSignup().getStudent();
             }
             
             // 세션에서 저장된 이메일 가져오기
             String userEmail = (String) session.getAttribute("userEmail");
-            user.setUserRole(this.constantDoSignUp.getSRole());
+            user.setUserRole(userProps.getRoles().getStudent());
             
             // 회원가입 처리
             boolean isDoubleMajor = "Y".equals(request.getParameter("member"));
@@ -330,10 +321,10 @@ public class UserFunctionController {
 
             redirectAttributes.addFlashAttribute("msg", "signupERED");
             showAlert(response, "회원가입이 완료 되었습니다.");
-            return this.constantDoSignUp.getSLUrl();
+            return userProps.getUrls().getSignin().getLogin();
         }
         
-        return this.constantDoSignUp.getSSUrl();
+        return userProps.getUrls().getSignup().getStudent();
    }
 
    // 교수 회원가입
@@ -352,7 +343,7 @@ public class UserFunctionController {
 
         // ID 중복 체크
         if (request.getParameter("IdCheck") != null) {
-            return handleIdCheck(request, response, session, user, "/signup/signupProfessor");
+            return handleIdCheck(request, response, session, user, userProps.getUrls().getSignup().getProfessor());
         }
         
         // 회원가입 제출
@@ -362,12 +353,12 @@ public class UserFunctionController {
             String validationError = userService.validateProfessorSignUp(professorColleges, professorMajor);
             if (validationError != null) {
                 showAlert(response, validationError);
-               return "/signup/signupProfessor";
+               return userProps.getUrls().getSignup().getProfessor();
             }
             
             // 세션에서 저장된 이메일 가져오기
             String userEmail = (String) session.getAttribute("userEmail");
-            user.setUserRole(this.constantDoSignUp.getPRole());
+            user.setUserRole(userProps.getRoles().getProfessor());
             
             // 회원가입 처리
             userService.registerProfessor(user, professor, professorColleges, professorMajor,
@@ -377,10 +368,10 @@ public class UserFunctionController {
 
             redirectAttributes.addFlashAttribute("msg", "signupERED");
             showAlert(response, "회원가입이 완료 되었습니다.");
-            return "/signin/login";
+            return userProps.getUrls().getSignin().getLogin();
          }
         
-         return "/signup/signupProfessor";
+         return userProps.getUrls().getSignup().getProfessor();
    }
 
    // 비밀번호 찾기 findPassword.do여기서부터하기
@@ -393,24 +384,24 @@ public class UserFunctionController {
         // ID 확인
       if (request.getParameter("IdCheck") != null) {
             user.setUserLoginID(userLoginID);
-            user.setUserName(request.getParameter(this.constantDoFindPassword.getUName()));
+            user.setUserName(request.getParameter(userProps.getParams().getUserName()));
             
             if (userLoginID.isEmpty()) {
                 showAlert(response, "계정을 입력하지 않으셨습니다.");
-                return this.constantDoFindPassword.getFPUrl();
+                return userProps.getUrls().getSignin().getFindPassword();
             }
             
-            if (request.getParameter(this.constantDoFindPassword.getUName()).isEmpty()) {
+            if (request.getParameter(userProps.getParams().getUserName()).isEmpty()) {
                 model.addAttribute("UserLoginID", userLoginID);
                 showAlert(response, "이름을 입력하지 않으셨습니다.");
-                return this.constantDoFindPassword.getFPUrl();
+                return userProps.getUrls().getSignin().getFindPassword();
             }
             
             boolean localIdChecker = this.userService.verifyUserForPasswordReset(user);
             
             model.addAttribute("UserLoginID", userLoginID);
-            model.addAttribute(this.constantDoFindPassword.getUName(),
-                    request.getParameter(this.constantDoFindPassword.getUName()));
+            model.addAttribute(userProps.getParams().getUserName(),
+                    request.getParameter(userProps.getParams().getUserName()));
             
             if (localIdChecker) {
                 showAlert(response, "계정이 확인되었습니다.");
@@ -419,18 +410,18 @@ public class UserFunctionController {
                 showAlert(response, "등록된 사용자가 아닙니다.");
                 session.setAttribute("findPwdIdChecker", false);
             }
-            return this.constantDoFindPassword.getFPUrl();
+            return userProps.getUrls().getSignin().getFindPassword();
         }
         
         // 이메일 체크
         if (request.getParameter("EmailCheck") != null) {
             model.addAttribute("UserLoginID", userLoginID);
-            model.addAttribute(this.constantDoFindPassword.getUName(),
-                    request.getParameter(this.constantDoFindPassword.getUName()));
+            model.addAttribute(userProps.getParams().getUserName(),
+                    request.getParameter(userProps.getParams().getUserName()));
             
             if (userEmail.isEmpty()) {
                 showAlert(response, "이메일을 입력하지 않으셨습니다.");
-                return this.constantDoFindPassword.getFPUrl();
+                return userProps.getUrls().getSignin().getFindPassword();
             }
             
             model.addAttribute("UserEmail", userEmail);
@@ -440,28 +431,28 @@ public class UserFunctionController {
             String emailResult = emailService.sendEmailForPasswordReset(fullEmail);
             showAlert(response, emailResult);
             
-            return this.constantDoFindPassword.getFPUrl();
+            return userProps.getUrls().getSignin().getFindPassword();
         }
         
         // 인증번호 확인
         if (request.getParameter("EmailValid") != null) {
             model.addAttribute("UserLoginID", userLoginID);
-            model.addAttribute(this.constantDoFindPassword.getUName(),
-                    request.getParameter(this.constantDoFindPassword.getUName()));
+            model.addAttribute(userProps.getParams().getUserName(),
+                    request.getParameter(userProps.getParams().getUserName()));
             model.addAttribute("UserEmail", userEmail);
             
-            boolean localNameChecker = emailService.AuthNum(request.getParameter(this.constantDoFindPassword.getAuthNum()));
+            boolean localNameChecker = emailService.AuthNum(request.getParameter(userProps.getParams().getAuthNum()));
             
             if (localNameChecker) {
-                model.addAttribute(this.constantDoFindPassword.getAuthNum(),
-                        request.getParameter(this.constantDoFindPassword.getAuthNum()));
+                model.addAttribute(userProps.getParams().getAuthNum(),
+                        request.getParameter(userProps.getParams().getAuthNum()));
                 showAlert(response, "인증번호가 일치합니다.");
                 session.setAttribute("findPwdNameChecker", true);
             } else {
                 showAlert(response, "인증번호가 일치하지 않습니다.");
                 session.setAttribute("findPwdNameChecker", false);
             }
-            return this.constantDoFindPassword.getFPUrl();
+            return userProps.getUrls().getSignin().getFindPassword();
         }
         
         // 최종 제출 (임시 비밀번호 생성)
@@ -470,7 +461,7 @@ public class UserFunctionController {
         
         if (request.getParameter("SubmitName") != null && Boolean.TRUE.equals(nameChecker) && Boolean.TRUE.equals(idChecker)) {
             user.setUserLoginID(userLoginID);
-            user.setUserName(request.getParameter(this.constantDoFindPassword.getUName()));
+            user.setUserName(request.getParameter(userProps.getParams().getUserName()));
             
             // 임시 비밀번호 생성 및 업데이트
             String newPwd = userService.generateAndUpdateTemporaryPassword(user);
@@ -479,10 +470,10 @@ public class UserFunctionController {
             session.removeAttribute("findPwdIdChecker");
             session.removeAttribute("findPwdNameChecker");
 
-            return this.constantDoFindPassword.getSSPUrl();
+            return userProps.getUrls().getSignin().getShowPassword();
         }
         
-        return this.constantDoFindPassword.getFPUrl();
+        return userProps.getUrls().getSignin().getFindPassword();
    }
 
    /* 수정하기 전 비밀번호 확인 */
@@ -490,41 +481,41 @@ public class UserFunctionController {
     public String checkPassword(HttpServletResponse response, HttpServletRequest request, Principal principal)
          throws IOException {
         String userLoginID = principal.getName();
-        boolean checker = userService.SelectForPwdCheckBeforeModify(userLoginID,
-                request.getParameter(this.constantDoFindPassword.getPwd()));
+        boolean checker = userService.selectForPwdCheckBeforeModify(userLoginID,
+                request.getParameter(userProps.getParams().getUserLoginPwd()));
         
         if (!checker) {
             showAlert(response, "비밀번호를 다시 입력해주세요.");
-            return this.constantDoFindPassword.getCPUrl();
+            return userProps.getUrls().getMypage().getCheckPassword();
         }
         
         // 역할에 따른 리다이렉트 URL 반환
         return userService.getRedirectUrlByRole(userLoginID, 
-                this.constantDoFindPassword.getSRole(), 
-                this.constantDoFindPassword.getPRole(),
-                this.constantDoFindPassword.getRMS(),
-                this.constantDoFindPassword.getRMP());
+                userProps.getRoles().getStudent(), 
+                userProps.getRoles().getProfessor(),
+                userProps.getRedirects().getMypageStudent(),
+                userProps.getRedirects().getMypageProfessor());
    }
 
    // 비밀번호 변경할 때 현재 비번 체크
     @GetMapping("/checkPassword3")
    public String checkPassword3() {
-        return this.constantDoFindPassword.getCPUrl3();
+        return userProps.getUrls().getMypage().getCheckPassword3();
    }
 
     @PostMapping("/checkPassword3.do")
     public String checkPassword3(HttpServletResponse response, HttpServletRequest request, Principal principal)
          throws IOException {
         String userID = principal.getName();
-        boolean checker = userService.SelectForPwdCheckBeforeModify(userID,
-                request.getParameter(this.constantDoFindPassword.getULPWD()));
+        boolean checker = userService.selectForPwdCheckBeforeModify(userID,
+                request.getParameter(userProps.getParams().getUserLoginPwd()));
         
         if (!checker) {
             showAlert(response, "비밀번호를 다시 입력해주세요.");
-            return this.constantDoFindPassword.getCPUrl3();
+            return userProps.getUrls().getMypage().getCheckPassword3();
         }
         
-        return this.constantDoFindPassword.getRMPWD();
+        return userProps.getRedirects().getModifyPassword();
    }
 
    // 비밀번호 수정
@@ -532,21 +523,21 @@ public class UserFunctionController {
     public String modifyPassword(HttpServletResponse response, HttpServletRequest request,
                                  Principal principal) throws IOException {
         String userLoginID = principal.getName();
-        String newPassword = request.getParameter(this.constantDoFindPassword.getUNPWD());
-        String confirmPassword = request.getParameter(this.constantDoFindPassword.getUNPWDC());
+        String newPassword = request.getParameter(userProps.getParams().getUserNewPwd());
+        String confirmPassword = request.getParameter(userProps.getParams().getUserNewPwdCheck());
         
       // 새로입력한 비밀번호와 확인 비밀번호가 일치하면
         if (newPassword.equals(confirmPassword)) {
             userService.updatePassword(userLoginID, newPassword);
         }
 
-        return this.constantDoFindPassword.getMPUrl();
+        return userProps.getUrls().getMypage().getModifyPassword();
    }
 
     // 이메일 로그인 화면
     @GetMapping("/email/emailLogin")
     public String emailLogin() {
-        return this.constantEmail.getEMURL();
+        return userProps.getUrls().getEmail().getList();
    }
 
    @PostMapping("/email/emailList")
@@ -556,15 +547,15 @@ public class UserFunctionController {
         getUserInformation(principal, user, model);
 
         // 이메일 로그인 확인
-        String id = request.getParameter("EmailLoginID") + this.constantDoEmail.getEmailAdress();
-        boolean checkId = emailService.CheckEmailLogin(id, request.getParameter(this.constantDoEmail.getEPwd()));
+        String id = request.getParameter("EmailLoginID") + userProps.getEmail().getDomain();
+        boolean checkId = emailService.CheckEmailLogin(id, request.getParameter(userProps.getParams().getEmailLoginPwd()));
 
         if (!checkId) {
          rttr.addFlashAttribute("Checker", "LoginFail");
-            return this.constantDoEmail.getRELURL();
+            return userProps.getRedirects().getEmailLogin();
       }
         
-        return this.constantDoEmail.getREURL();
+        return userProps.getRedirects().getEmailList();
    }
 
     // 이메일 리스트 화면
@@ -580,7 +571,7 @@ public class UserFunctionController {
             model.addAttribute("EmailList", emailList);
         }
         
-        return this.constantDoEmail.getEURL();
+        return userProps.getUrls().getEmail().getList();
    }
 
     // 이메일 리스트에서 제목 클릭 시 해당 이메일 내용 출력
@@ -603,7 +594,7 @@ public class UserFunctionController {
             model.addAttribute("EmailContent", emailContent.getContent());
         }
         
-        return this.constantDoEmail.getECURL();
+        return userProps.getUrls().getEmail().getContent();
     }
 
     private void getUserInformation(Principal principal, User user, Model model) {
@@ -611,13 +602,13 @@ public class UserFunctionController {
         ArrayList<String> selectUserProfileInfo = userService.selectUserProfileInfo(loginID);
         user.setUserLoginID(loginID);
 
-        if (selectUserProfileInfo.get(2).equals(this.constantHome.getSRole())) {
+        if (selectUserProfileInfo.get(2).equals(userProps.getRoles().getStudent())) {
             ArrayList<String> studentInfo = studentService.selectStudentProfileInfo(selectUserProfileInfo.get(1));
          userInfoMethod.studentInfo(model, selectUserProfileInfo, studentInfo);
-        } else if (selectUserProfileInfo.get(2).equals(this.constantHome.getPRole())) {
+        } else if (selectUserProfileInfo.get(2).equals(userProps.getRoles().getProfessor())) {
             ArrayList<String> professorInfo = professorService.selectProfessorProfileInfo(selectUserProfileInfo.get(1));
          userInfoMethod.professorInfo(model, selectUserProfileInfo, professorInfo);
-        } else if (selectUserProfileInfo.get(2).equals(this.constantHome.getARole())) {
+        } else if (selectUserProfileInfo.get(2).equals(userProps.getRoles().getAdministrator())) {
          userInfoMethod.administratorInfo(model, selectUserProfileInfo);
       }
    }
@@ -658,21 +649,21 @@ public class UserFunctionController {
         if (request.getParameter("UserLoginID") != null) {
             model.addAttribute("UserLoginID", userLoginID);
         }
-        if (request.getParameter(this.constantDoSignUp.getPwd()) != null) {
-            model.addAttribute(this.constantDoSignUp.getPwd(), request.getParameter(this.constantDoSignUp.getPwd()));
+        if (request.getParameter(userProps.getParams().getUserLoginPwd()) != null) {
+            model.addAttribute(userProps.getParams().getUserLoginPwd(), request.getParameter(userProps.getParams().getUserLoginPwd()));
         }
-        if (request.getParameter(this.constantDoSignUp.getSName()) != null) {
-            model.addAttribute(this.constantDoSignUp.getSName(), request.getParameter(this.constantDoSignUp.getSName()));
+        if (request.getParameter(userProps.getParams().getStudentName()) != null) {
+            model.addAttribute(userProps.getParams().getStudentName(), request.getParameter(userProps.getParams().getStudentName()));
         }
         if (request.getParameter("StudentGender") != null) {
             model.addAttribute("StudentGender", studentGender);
         }
         if (request.getParameter("UserPhoneNum") != null) {
-            model.addAttribute(this.constantDoSignUp.getPhoneNum(),
-                    request.getParameter(this.constantDoSignUp.getPhoneNum()));
+            model.addAttribute(userProps.getParams().getUserPhoneNum(),
+                    request.getParameter(userProps.getParams().getUserPhoneNum()));
         }
-        if (request.getParameter(this.constantDoSignUp.getSNum()) != null) {
-            model.addAttribute(this.constantDoSignUp.getSNum(), request.getParameter(this.constantDoSignUp.getSNum()));
+        if (request.getParameter(userProps.getParams().getStudentNum()) != null) {
+            model.addAttribute(userProps.getParams().getStudentNum(), request.getParameter(userProps.getParams().getStudentNum()));
         }
         if (request.getParameter("StudentGrade") != null) {
             model.addAttribute("StudentGrade", studentGrade);
@@ -696,18 +687,18 @@ public class UserFunctionController {
         if (request.getParameter("UserLoginID") != null) {
             model.addAttribute("UserLoginID", userLoginID);
         }
-        if (request.getParameter(this.constantDoSignUp.getPwd()) != null) {
-            model.addAttribute(this.constantDoSignUp.getPwd(), request.getParameter(this.constantDoSignUp.getPwd()));
+        if (request.getParameter(userProps.getParams().getUserLoginPwd()) != null) {
+            model.addAttribute(userProps.getParams().getUserLoginPwd(), request.getParameter(userProps.getParams().getUserLoginPwd()));
         }
-        if (request.getParameter(this.constantDoSignUp.getPName()) != null) {
-            model.addAttribute(this.constantDoSignUp.getPName(), request.getParameter(this.constantDoSignUp.getPName()));
+        if (request.getParameter(userProps.getParams().getProfessorName()) != null) {
+            model.addAttribute(userProps.getParams().getProfessorName(), request.getParameter(userProps.getParams().getProfessorName()));
         }
         if (request.getParameter("UserPhoneNum") != null) {
-            model.addAttribute(this.constantDoSignUp.getPhoneNum(),
-                    request.getParameter(this.constantDoSignUp.getPhoneNum()));
+            model.addAttribute(userProps.getParams().getUserPhoneNum(),
+                    request.getParameter(userProps.getParams().getUserPhoneNum()));
         }
-        if (request.getParameter(this.constantDoSignUp.getPNum()) != null) {
-            model.addAttribute(this.constantDoSignUp.getPNum(), request.getParameter(this.constantDoSignUp.getPNum()));
+        if (request.getParameter(userProps.getParams().getProfessorNum()) != null) {
+            model.addAttribute(userProps.getParams().getProfessorNum(), request.getParameter(userProps.getParams().getProfessorNum()));
         }
         if (request.getParameter("UserColleges") != null) {
             model.addAttribute("UserColleges", professorColleges);

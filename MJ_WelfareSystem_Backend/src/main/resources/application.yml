@@ -1,0 +1,26 @@
+spring:
+  profiles:
+    include:
+      # Controller Constants
+      - constants-user
+      - constants-home
+      - constants-board
+      - constants-team
+      - constants-admin
+      - constants-student
+      - constants-professor
+      - constants-lecture-room
+      - constants-schedule
+      - constants-search
+      - constants-email
+      # DAO Constants
+      - constants-calendar-dao
+      - constants-open-info-dao
+      - constants-user-dao
+      - constants-user-email-dao
+      - constants-user-list-dao
+      - constants-student-dao
+      - constants-professor-dao
+      - constants-team-dao
+    active: local
+

@@ -1,0 +1,19 @@
+app:
+  search:
+    roles:
+      student: STUDENT
+      professor: PROFESSOR
+      administrator: ADMINISTRATOR
+    
+    params:
+      user-name: UserName
+      user-email: UserEmail
+      phone-num: PhoneNum
+    
+    urls:
+      search-user: /search/searchUser
+      review-list: /search/reviewList
+    
+    redirects:
+      search-user: redirect:/search/searchUser
+

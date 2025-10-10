@@ -30,25 +30,8 @@ public class UserServiceImpl implements UserService {
 	private final InquiryDao inquiryDao;
 
 	@Override
-	public void InsertForSignUp(User user) {
-		userDao.InsertForSignUp(user);
-	}
-
-	@Override
-	public boolean SelctForIDConfirm(User user) {
-		boolean Checker = userDao.SelctForIDConfirm(user);
-		return Checker;
-	}
-
-	@Override
-	public boolean SelectPwdForConfirmToFindPwd(User user) {
-		boolean PwdChecker = userDao.SelectPwdForConfirmToFindPwd(user);
-		return PwdChecker;
-	}
-
-	@Override
-	public String SelectForShowPassword(User user) {// 임시 비밀번호 생성
-		boolean Checker = userDao.SelectForShowPassword(user);
+	public String selectForShowPassword(User user) {// 임시 비밀번호 생성
+		boolean Checker = userDao.selectForShowPassword(user);
 		Random RandomNum = new Random();
 		String Result = "";
 		if (Checker) {
@@ -63,31 +46,6 @@ public class UserServiceImpl implements UserService {
 	}
 
 	@Override
-	public int SelectUserID(Student student) {
-		return userDao.SelectUserID(student);
-	}
-
-	@Override
-	public int SelectUserID(Professor professor) {
-		return userDao.SelectUserID(professor);
-	}
-
-	@Override
-	public void UpdateLoginDate(User user) {
-		userDao.UpdateLoginDate(user);
-	}
-
-	@Override
-	public String SelectCurrentPwd(String id) {
-		return userDao.SelectCurrentPwd(id);
-	}
-
-	@Override
-	public void UpdatePwd(User user) {
-		userDao.UpdatePwd(user);
-	}
-
-	@Override
 	public ArrayList<String> selectUserProfileInfo(String id) {
 		return userDao.selectUserProfileInfo(id);
 	}
@@ -98,57 +56,26 @@ public class UserServiceImpl implements UserService {
 	}
 
 	@Override
-	public void UpdateUserMajor(User user) {
-		userDao.updateUserMajor(user);
-	}
-
-	@Override
-	public void UpdateUserColleges(User user) {
-		userDao.updateUserColleges(user);
-	}
-
-	@Override
-	public ArrayList<String> SelectUserInformation(String userId) {
+	public ArrayList<String> selectUserInformation(String userId) {
 		ArrayList<String> UserInfo = new ArrayList<String>();
-		UserInfo = userDao.SelectUserInformation(userId);
+		UserInfo = userDao.selectUserInformation(userId);
 		return UserInfo;
 	}
 
 	@Override
-	public boolean SelectForPwdCheckBeforeModify(String id, String pw) {
-		return userDao.SelectForPwdCheckBeforeModify(id, pw);
+	public boolean selectForPwdCheckBeforeModify(String id, String pw) {
+		return userDao.selectForPwdCheckBeforeModify(id, pw);
 	}
 
 	@Override
-	public void UpdateTemporaryPwd(User user) {
-		userDao.UpdateTemporaryPwd(user);
-
+	public void updateDoWithdrawalRecoveryByAdmin(String ajaxMsg) {
+		userDao.updateDoWithdrawalRecoveryByAdmin(ajaxMsg);
 	}
 
 	@Override
-	public void UpdateDoWithdrawalRecoveryByAdmin(String ajaxMsg) {
-		userDao.UpdateDoWithdrawalRecoveryByAdmin(ajaxMsg);
-	}
-
-	@Override
-	public void UpdateDormantOneToZero(String id) {
-		userDao.UpdateDormantOneToZero(id);
-	}
-
-	@Override
-	public void UpdateUserRole(String id, String optionValue) {
-		userDao.UpdateUserRole(id, optionValue);
-	}
-
-	@Override
-	public void UpdateAdminRole(String id, String optionValue) {
-		userDao.UpdateAdminRole(id, optionValue);
-	}
-
-	@Override
-	public ArrayList<String> SelectMyPageUserInfo(String userId) {
+	public ArrayList<String> selectMyPageUserInfo(String userId) {
 		ArrayList<String> Info = new ArrayList<>();
-		ArrayList<String> UserInfo = userDao.SelectMyPageUserInfo(userId);
+		ArrayList<String> UserInfo = userDao.selectMyPageUserInfo(userId);
 		ArrayList<String> StudentInfo = studentDao.SelectMyPageUserInfo(UserInfo.get(0));
 		ArrayList<String> ProfessorInfo = professorDao.SelectMyPageUserInfo(UserInfo.get(0));
 		UserInfo.remove(0);
@@ -166,9 +93,9 @@ public class UserServiceImpl implements UserService {
 	}
 
 	@Override
-	public ArrayList<String> SelectUserProfileInfoByID(String mysqlID) {
+	public ArrayList<String> selectUserProfileInfoByID(String mysqlID) {
 		ArrayList<String> Info = new ArrayList<>();
-		ArrayList<String> UserInfo = userDao.SelectMyPageUserInfoByID(mysqlID);
+		ArrayList<String> UserInfo = userDao.selectMyPageUserInfoByID(mysqlID);
 		ArrayList<String> StudentInfo = studentDao.SelectMyPageUserInfoByID(mysqlID);
 		ArrayList<String> ProfessorInfo = professorDao.SelectMyPageUserInfoByID(mysqlID);
 
@@ -185,28 +112,23 @@ public class UserServiceImpl implements UserService {
 	}
 
 	@Override
-	public void UpdateUserName(User user) {
-		userDao.UpdateUserName(user);
+	public void updateUserName(User user) {
+		userDao.updateUserName(user);
 	}
 
 	@Override
-	public void UpdateOpenPhoneNum(User user) {
-		userDao.UpdatePhoneNum(user);
+	public void updateOpenPhoneNum(User user) {
+		userDao.updatePhoneNum(user);
 	}
 
 	@Override
-	public void UpdateOpenGrade(User user) {
-		userDao.UpdateOpenGrade(user);
+	public void updateOpenGrade(User user) {
+		userDao.updateOpenGrade(user);
 	}
 
 	@Override
-	public User SelectUserInfo(String userLoginID) {
-		return userDao.SelectUserInfo(userLoginID);
-	}
-
-	@Override
-	public String SelectOpenInfo(String userID) {
-		List<UserInfoOpen> SelectOpenInfo = userDao.SelectOpenInfo(userID);
+	public String selectOpenInfo(String userID) {
+		List<UserInfoOpen> SelectOpenInfo = userDao.selectOpenInfo(userID);
 		String result = "Error";
 
 		result = SelectOpenInfo.get(0).getOpenGrade() + "," + SelectOpenInfo.get(0).getOpenPhoneNum();
@@ -226,101 +148,51 @@ public class UserServiceImpl implements UserService {
 	}
 
 	@Override
-	public int SelectUserIDFromBoardController(String userLoginID) {
-		return userDao.SelectUserIDFromBoardController(userLoginID);
+	public int selectUserIDFromBoardController(String userLoginID) {
+		return userDao.selectUserIDFromBoardController(userLoginID);
 	}
 
 	@Override
-	public String SelectUserRole(String userLoginID) {
-		return userDao.SelectUserRole(userLoginID);
+	public String selectUserName(String userLoginID) {
+		return userDao.selectUserName(userLoginID);
 	}
 
 	@Override
-	public String SelectUserName(String userLoginID) {
-		return userDao.SelectUserName(userLoginID);
+	public String selectWriter(String userLoginID) {
+        return userDao.selectWriter(userLoginID);
 	}
 
 	@Override
-	public void UpdateWithdrawal(User user) {
-		userDao.UpdateWithdrawalUser(user);
+	public String selectTWriterID(String tWriter) {
+		return userDao.selectTWriterID(tWriter);
 	}
 
 	@Override
-	public void UpdateRecoveryWithdrawal(User user) {
-		userDao.UpdateRecoveryWithdrawal(user);
+	public String selectEmailForInquiry(String userLoginID) {
+        return userDao.selectEmailForInquiry(userLoginID);
 	}
 
 	@Override
-	public void UpdateWithdrawalByDormant(String ajxMsg) {
-		userDao.UpdateWithdrawalByDormant(ajxMsg);
+	public String selectPhoneNumForInquiry(String userLoginID) {
+        return userDao.selectPhoneNumForInquiry(userLoginID);
 	}
 
 	@Override
-	public boolean SelectDormant(String loginID) {
-		boolean DormantCheck = userDao.SelectDormant(loginID);
-		return DormantCheck;
+	public String selectIDForReview(String userLoginID) {
+		return userDao.selectIDForReview(userLoginID);
 	}
 
 	@Override
-	public void UpdateRecoveryDormant(String loginID) {
-		userDao.UpdateRecoveryDormant(loginID);
-	}
-
-	@Override
-	public String SelectWriter(String userLoginID) {
-		String Output = userDao.SelectWriter(userLoginID);
-		return Output;
-	}
-
-	@Override
-	public String SelectUserIDForDocument(String userLoginID) {
-		String Output = userDao.SelectUserIDForDocument(userLoginID);
-		return Output;
-	}
-
-	@Override
-	public String SelectTWriterID(String tWriter) {
-		return userDao.SelectTWriterID(tWriter);
-	}
-
-	@Override
-	public String SelectUserIDForMyBoard(String loginID) {
-		return userDao.SelectUserIDForMyBoard(loginID);
-	}
-
-	@Override
-	public String SelectEmailForInquiry(String userLoginID) {
-		String EmailForInquiry = userDao.SelectEmailForInquiry(userLoginID);
-		return EmailForInquiry;
-	}
-
-	@Override
-	public String SelectPhoneNumForInquiry(String userLoginID) {
-		String PhoneNumForInquiry = userDao.SelectPhoneNumForInquiry(userLoginID);
-		return PhoneNumForInquiry;
-	}
-
-	@Override
-	public String SelectUserIDForDate(String loginID) {
-		return userDao.SelectUserIDForDate(loginID);
-	}
-
-	@Override
-	public String SelectIDForReview(String userLoginID) {
-		return userDao.SelectIDForReview(userLoginID);
-	}
-
-	@Override
-	public User SelectModifyUserInfo(String loginID) {
-		return userDao.SelectModifyUserInfo(loginID);
+	public User selectModifyUserInfo(String loginID) {
+		return userDao.selectModifyUserInfo(loginID);
 	}
 
 	@Override
 	public void processLoginDateUpdate(String loginID, String dateFormat) {
 		// 휴먼 계정 체크 및 복구
-		boolean dormantCheck = userDao.SelectDormant(loginID);
+		boolean dormantCheck = userDao.selectDormant(loginID);
 		if (dormantCheck) {
-			userDao.UpdateRecoveryDormant(loginID);
+			userDao.updateRecoveryDormant(loginID);
 		}
 
 		// 현재 날짜 생성
@@ -329,13 +201,13 @@ public class UserServiceImpl implements UserService {
 		String formattedDate = date.format(now);
 
 		// UserID 조회
-		int userID = Integer.parseInt(userDao.SelectUserIDForDate(loginID));
+		int userID = Integer.parseInt(userDao.selectUserIDForDate(loginID));
 
 		// User 로그인 날짜 업데이트
 		User user = new User();
 		user.setUserLoginID(loginID);
 		user.setDate(formattedDate);
-		userDao.UpdateLoginDate(user);
+		userDao.updateLoginDate(user);
 
 		// Student 로그인 날짜 업데이트
 		Student student = new Student();
@@ -352,30 +224,30 @@ public class UserServiceImpl implements UserService {
 
 	@Override
 	public List<Board> getNoticeBoardList() {
-		return boardDao.SelectNoticeBoardList();
+		return boardDao.selectNoticeBoardList();
 	}
 
 	@Override
 	public List<Board> getCommunityBoardList() {
-		return boardDao.SelectCommunityBoardList();
+		return boardDao.selectCommunityBoardList();
 	}
 
 	@Override
 	public List<Board> getMyBoardList(String loginID) {
-		String userID = userDao.SelectUserIDForMyBoard(loginID);
-		return boardDao.SelectMyBoardList(userID);
+		String userID = userDao.selectUserIDForMyBoard(loginID);
+		return boardDao.selectMyBoardList(userID);
 	}
 
 	@Override
 	public List<Inquiry> getMyInquiryList(String loginID) {
-		String userID = userDao.SelectUserIDForMyBoard(loginID);
+		String userID = userDao.selectUserIDForMyBoard(loginID);
 		return inquiryDao.SelectMyInquiryList(userID);
 	}
 
 	@Override
 	public void processWithdrawal(String userLoginID, String dateFormat) {
 		// user 정보 조회
-		User userInfo = userDao.SelectUserInfo(userLoginID);
+		User userInfo = userDao.selectUserInfo(userLoginID);
 		
 		// 탈퇴한 날짜 생성
 		Date now = new Date();
@@ -385,7 +257,7 @@ public class UserServiceImpl implements UserService {
 		User user = new User();
 		user.setUserLoginID(userInfo.getUserLoginID());
 		user.setDate(date.format(now));
-		userDao.UpdateWithdrawalUser(user);
+		userDao.updateWithdrawalUser(user);
 	}
 
 	@Override
@@ -398,10 +270,10 @@ public class UserServiceImpl implements UserService {
 		user.setUserEmail(userEmail);
 		
 		// User 테이블에 저장
-		userDao.InsertForSignUp(user);
+		userDao.insertForSignUp(user);
 		
 		// UserID 조회 및 설정
-		int userID = userDao.SelectUserID(student);
+		int userID = userDao.selectUserID(student);
 		user.setUserID(userID);
 		
 		// Student 정보 설정
@@ -430,10 +302,10 @@ public class UserServiceImpl implements UserService {
 		user.setUserEmail(userEmail);
 		
 		// User 테이블에 저장
-		userDao.InsertForSignUp(user);
+		userDao.insertForSignUp(user);
 		
 		// UserID 조회 및 설정
-		int userID = userDao.SelectUserID(professor);
+		int userID = userDao.selectUserID(professor);
 		user.setUserID(userID);
 		
 		// Professor 정보 설정
@@ -458,7 +330,7 @@ public class UserServiceImpl implements UserService {
 		}
 		
 		user.setUserLoginID(userLoginID);
-		boolean checker = userDao.SelctForIDConfirm(user);
+		boolean checker = userDao.selectForIDConfirm(user);
 		
 		if (checker) {
 			return "이미 등록된 계정 입니다.";
@@ -495,13 +367,13 @@ public class UserServiceImpl implements UserService {
 
 	@Override
 	public boolean verifyUserForPasswordReset(User user) {
-		return userDao.SelectPwdForConfirmToFindPwd(user);
+		return userDao.selectPwdForConfirmToFindPwd(user);
 	}
 
 	@Override
 	public String generateAndUpdateTemporaryPassword(User user) {
 		// 임시 비밀번호 생성
-		String newPwd = SelectForShowPassword(user);
+		String newPwd = selectForShowPassword(user);
 		
 		// 비밀번호 암호화
 		String hashedPw = org.springframework.security.crypto.bcrypt.BCrypt.hashpw(newPwd, 
@@ -509,7 +381,7 @@ public class UserServiceImpl implements UserService {
 		user.setUserLoginPwd(hashedPw);
 		
 		// 임시 비밀번호 업데이트
-		userDao.UpdateTemporaryPwd(user);
+		userDao.updateTemporaryPwd(user);
 		
 		return newPwd; // 암호화되지 않은 임시 비밀번호 반환 (화면에 표시용)
 	}
@@ -517,7 +389,7 @@ public class UserServiceImpl implements UserService {
 	@Override
 	public String getRedirectUrlByRole(String userLoginID, String sRole, String pRole, 
 	                                   String rmsUrl, String rmpUrl) {
-		String mysqlRole = userDao.SelectUserRole(userLoginID);
+		String mysqlRole = userDao.selectUserRole(userLoginID);
 		
 		if (mysqlRole.equals(sRole)) {
 			return rmsUrl;
@@ -537,12 +409,12 @@ public class UserServiceImpl implements UserService {
 			org.springframework.security.crypto.bcrypt.BCrypt.gensalt());
 		
 		// 현재 비밀번호 조회
-		String userLoginPwd = userDao.SelectCurrentPwd(userLoginID);
+		String userLoginPwd = userDao.selectCurrentPwd(userLoginID);
 		
 		// User 객체 생성 및 업데이트
 		User user = new User();
 		user.setUserModifiedPW(hashedPwd);
 		user.setUserLoginPwd(userLoginPwd);
-		userDao.UpdatePwd(user);
+		userDao.updatePwd(user);
 	}
 }

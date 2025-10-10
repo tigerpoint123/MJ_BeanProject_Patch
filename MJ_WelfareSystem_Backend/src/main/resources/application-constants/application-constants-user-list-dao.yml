@@ -1,0 +1,14 @@
+app:
+  dao:
+    user-list:
+      dao-id: UserListDaoID
+      
+      methods:
+        select-user-list: SelectUserList
+        select-dormant-list: SelectDormantList
+        select-withdrawal-list: SelectWithdrawalList
+        select-withdrawal-user-list-for-recovery: SelectWithdrawalUserListForRecovery
+        select-withdrawal-student-list-for-recovery: SelectWithdrawalStudentListForRecovery
+        insert-user-for-recovery: InsertUserForRecovery
+        insert-student-for-recovery: InsertStudentForRecovery
+

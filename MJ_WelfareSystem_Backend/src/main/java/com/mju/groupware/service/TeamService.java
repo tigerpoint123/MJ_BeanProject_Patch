@@ -2,75 +2,74 @@ package com.mju.groupware.service;
 
 import com.mju.groupware.dto.*;
 import com.mju.groupware.dto.Class;
+import jakarta.servlet.http.HttpServletRequest;
+import org.springframework.ui.Model;
 
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public interface TeamService {
 
-    void InsertTeamInfo(Team team);
+    void insertTeamInfo(Team team);
 
-    int SelectClassID(Class classInfo);
+    int selectClassId(Class classInfo);
 
-    int SelectUserIDForTeamUser(User user);
+    int selectUserIdForTeamUser(User user);
 
-    void InsertTeamUserInfo(TeamUser teamUser);
+    void insertTeamUserInfo(TeamUser teamUser);
 
-    List<Class> SelectLectureInfo(String lectureName);
+    List<Class> selectLectureInfo(String lectureName);
 
-    int SelectTeamLeaderUserID(String name);
+    int selectTeamLeaderUserId(String name);
 
-    List<Team> SelectTeamList();
+    List<Team> selectTeamList();
 
-    Class SelectClassList(int classID);
+    Class selectClassList(int classID);
 
-    int SelectClassIDForCheckTeam(int teamID);
+    int selectClassIdForCheckTeam(int teamID);
 
-    List<Class> SelectClassInfoForCheckTeam(int classID);
+    List<Class> selectClassInfoForCheckTeam(int classID);
 
-    String SelectTeamName(int teamID);
+    String selectTeamName(int teamID);
 
-    List<TeamUser> SelectTeamMemberInfo(int teamID);
+    List<TeamUser> selectTeamMemberInfo(int teamID);
 
-    String SelectLeaderName(int userID);
+    String selectLeaderName(int userID);
 
-    String SelectLeaderLoginID(int userID);
+    String selectLeaderLoginId(int userID);
 
-    List<TeamUser> SelectMyTeamList(String loginID);
+    List<TeamUser> selectMyTeamList(String loginID);
 
-    void DeleteTeamMemberInfo(int teamID);
+    void deleteTeamMemberInfo(int teamID);
 
-    List<Team> SelectMyTeamInfo(int teamID);
+    List<Team> selectMyTeamInfo(int teamID);
 
-    List<Class> SelectClassInfo(int classID);
+    List<Class> selectClassInfo(int classID);
 
-    List<TeamBoard> SelectTeamBoardListInfo(String teamID);
+    List<TeamBoard> selectTeamBoardListInfo(String teamID);
 
-    String SelectTeamIDForDocument(String userID);
+    List<Integer> selectTeamNameWithLoginUser(String name);
 
-    String SelectTeamIDForDelete(String tUserID);
+    Integer selectClassIdFromTeam(Integer teamID);
 
-    List<Integer> SelectTeamNameWithLoginUser(String name);
+    String selectTeamIdForReview(String string);
 
-    Integer SelectClassIDFromTeam(Integer teamID);
+    List<TeamUser> selectTeamMember(String teamID);
 
-    String SelectTeamIDForReview(String string);
+    String selectTeamUserId(String userLoginID);
 
-    List<TeamUser> SelectTeamMember(String teamID);
+    void insertUserReview(UserReview userReview);
 
-    String SelectTeamUserID(String userLoginID);
+    String selectTeamLeaderLoginId(String teamID);
 
-    void InsertUserReview(UserReview userReview);
+    void deleteTeam(String teamID);
 
-    String SelectTeamLeaderLoginID(String teamID);
+    String selectWriterUserId(String name);
 
-    void DeleteTeam(String teamID);
+    int selectColumnCount(UserReview userReview);
 
-    String SelectWriterUserID(String name);
-
-    int SelectColumnCount(UserReview userReview);
-
-    String SelectTeamNameWithTeamID(int teamID);
+    String selectTeamNameWithTeamId(int teamID);
 
     /**
      * 내 팀 리스트 조회
@@ -95,7 +94,7 @@ public interface TeamService {
      * @param teamID 팀 ID
      * @param model Spring MVC Model
      */
-    void setDocumentContentAttributes(String loginID, String tBoardID, String teamID, org.springframework.ui.Model model);
+    void setDocumentContentAttributes(String loginID, String tBoardID, String teamID, Model model);
 
     /**
      * 문서 작성 처리
@@ -105,7 +104,7 @@ public interface TeamService {
      * @param boardContent 게시글 내용
      * @param request HttpServletRequest (파일 업로드용)
      */
-    void postDocumentWrite(String loginID, String teamID, String boardSubject, String boardContent, jakarta.servlet.http.HttpServletRequest request);
+    void postDocumentWrite(String loginID, String teamID, String boardSubject, String boardContent, HttpServletRequest request);
 
     /**
      * 문서 수정 화면 데이터 조회
@@ -121,7 +120,7 @@ public interface TeamService {
      * @param teamID 팀 ID
      * @param model Spring MVC Model
      */
-    void setDocumentModifyAttributes(String tBoardID, String teamID, org.springframework.ui.Model model);
+    void setDocumentModifyAttributes(String tBoardID, String teamID, Model model);
 
     /**
      * 문서 수정 처리
@@ -134,7 +133,7 @@ public interface TeamService {
      * @param request HttpServletRequest (파일 업로드용)
      */
     void updateDocumentModify(String loginID, String tBoardID, String title, String content, 
-                             String[] fileDeleteList, String[] fileDeleteNameList, jakarta.servlet.http.HttpServletRequest request);
+                             String[] fileDeleteList, String[] fileDeleteNameList, HttpServletRequest request);
 
     /**
      * 파일 다운로드 데이터 조회
@@ -142,7 +141,7 @@ public interface TeamService {
      * @param filePath 파일 저장 경로
      * @return 파일 데이터 (fileBytes, originalFileName)
      */
-    HashMap<String, Object> getFileDownloadData(java.util.Map<String, Object> fileInfoMap, String filePath);
+    HashMap<String, Object> getFileDownloadData(Map<String, Object> fileInfoMap, String filePath);
 
     /**
      * 문서 삭제 처리
@@ -156,7 +155,7 @@ public interface TeamService {
      * @param lectureName 강의명
      * @param model Spring MVC Model
      */
-    void setSearchLectureAttributes(String lectureName, org.springframework.ui.Model model);
+    void setSearchLectureAttributes(String lectureName, Model model);
 
     /**
      * 팀 생성 화면 데이터 조회 및 설정
@@ -168,7 +167,7 @@ public interface TeamService {
      * @param administratorRole 관리자 역할 코드
      * @return 강의 정보 존재 여부 (true: 존재, false: 없음)
      */
-    boolean setCreateTeamAttributes(String loginID, String lectureName, org.springframework.ui.Model model,
+    boolean setCreateTeamAttributes(String loginID, String lectureName, Model model,
                                     String studentRole, String professorRole, String administratorRole);
 
     /**
@@ -190,7 +189,7 @@ public interface TeamService {
      * @param teamID 팀 ID
      * @param model Spring MVC Model
      */
-    void setCheckTeamAttributes(String loginID, int teamID, org.springframework.ui.Model model);
+    void setCheckTeamAttributes(String loginID, int teamID, Model model);
 
     /**
      * 팀 소속 여부 확인
@@ -210,14 +209,14 @@ public interface TeamService {
      * 전체 팀 리스트 데이터를 Model에 설정
      * @param model Spring MVC Model
      */
-    void setTeamListAttributes(org.springframework.ui.Model model);
+    void setTeamListAttributes(Model model);
 
     /**
      * 팀 수정 화면 데이터를 Model에 설정
      * @param teamID 팀 ID
      * @param model Spring MVC Model
      */
-    void setModifyTeamAttributes(int teamID, org.springframework.ui.Model model);
+    void setModifyTeamAttributes(int teamID, Model model);
 
     /**
      * 팀 멤버 수정 처리
@@ -232,7 +231,7 @@ public interface TeamService {
      * @param loginID 로그인 ID
      * @param model Spring MVC Model
      */
-    void setSearchMyTeamAttributes(String loginID, org.springframework.ui.Model model);
+    void setSearchMyTeamAttributes(String loginID, Model model);
 
     /**
      * 후기 작성 화면 데이터를 Model에 설정
@@ -240,7 +239,7 @@ public interface TeamService {
      * @param userName 현재 사용자 이름
      * @param model Spring MVC Model
      */
-    void setReviewWriteAttributes(String selectedTeam, String userName, org.springframework.ui.Model model);
+    void setReviewWriteAttributes(String selectedTeam, String userName, Model model);
 
     /**
      * 후기 작성 처리

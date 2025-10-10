@@ -11,68 +11,68 @@ import com.mju.groupware.dto.UserReview;
 
 public interface TeamDao {
 
-	public void InsertTeamInfo(Team team);
+	void insertTeamInfo(Team team);
 
-	public int SelectClassID(Class classInfo);
+	int selectClassId(Class classInfo);
 
-	public int SelectUserIDForTeamUser(User user);
+	int selectUserIdForTeamUser(User user);
 
-	public void InsertTeamUserInfo(TeamUser teamUser);
+	void insertTeamUserInfo(TeamUser teamUser);
 
-	public List<Class> SelectLectureInfo(String lectureName);
+	List<Class> selectLectureInfo(String lectureName);
 
-	public int SelectTeamLeaderUserID(String name);
+	int selectTeamLeaderUserId(String name);
 
-	public List<Team> SelectTeamList();
+	List<Team> selectTeamList();
 
-	public Class SelectClassList(int classID);
+	Class selectClassList(int classID);
 
-	public int SelectClassIDForCheckTeam(int teamID);
+	int selectClassIdForCheckTeam(int teamID);
 
-	public List<Class> SelectClassInfoForCheckTeam(int classID);
+	List<Class> selectClassInfoForCheckTeam(int classID);
 
-	public String SelectTeamName(int teamID);
+	String selectTeamName(int teamID);
 
-	public List<TeamUser> SelectTeamMemberInfo(int teamID);
+	List<TeamUser> selectTeamMemberInfo(int teamID);
 
-	public String SelectLeaderName(int userID);
+	String selectLeaderName(int userID);
 
-	public String SelectLeaderLoginID(int userID);
+	String selectLeaderLoginId(int userID);
 
-	public List<TeamUser> SelectMyTeamList(String loginID);
+	List<TeamUser> selectMyTeamList(String loginID);
 
-	public void DeleteTeamMemberInfo(int teamID);
+	void deleteTeamMemberInfo(int teamID);
 
-	public List<Team> SelectMyTeamInfo(int teamID);
+	List<Team> selectMyTeamInfo(int teamID);
 
-	public List<Class> SelectClassInfo(int classID);
+	List<Class> selectClassInfo(int classID);
 
-	public List<TeamBoard> SelectTeamBoardListInfo(String teamID);
+	List<TeamBoard> selectTeamBoardListInfo(String teamID);
 
-	public String SelectTeamIDForDocument(String userID);
+	String selectTeamIdForDocument(String userID);
 
-	public String SelectTeamIDForDelete(String tUserID);
+	String selectTeamIdForDelete(String tUserID);
 
-	public Integer SelectClassIDFromTeam(Integer teamID);
+	Integer selectClassIdFromTeam(Integer teamID);
 
-	public List<Integer> SelectTeamNameWithLoginUser(String name);
+	List<Integer> selectTeamNameWithLoginUser(String name);
 
-	public String SelectTeamIDForReview(String teamName);
+	String selectTeamIdForReview(String teamName);
 
-	public List<TeamUser> SelectTeamMember(String teamID);
+	List<TeamUser> selectTeamMember(String teamID);
 
-	public String SelectTeamUserID(String userLoginID);
+	String selectTeamUserId(String userLoginID);
 
-	public void InsertUserReview(UserReview userReview);
+	void insertUserReview(UserReview userReview);
 
-	public String SelectTeamLeaderLoginID(String teamID);
+	String selectTeamLeaderLoginId(String teamID);
 
-	public void DeleteTeam(String teamID);
+	void deleteTeam(String teamID);
 
-	public String SelectWriterUserID(String name);
+	String selectWriterUserId(String name);
 
-	public int SelectColumnCount(UserReview userReview);
+	int selectColumnCount(UserReview userReview);
 
-	public String SelectTeamNameWithTeamID(int teamID);
+	String selectTeamNameWithTeamId(int teamID);
 
 }

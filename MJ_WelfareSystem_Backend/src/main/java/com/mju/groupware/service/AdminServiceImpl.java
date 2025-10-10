@@ -1,6 +1,6 @@
 package com.mju.groupware.service;
 
-import com.mju.groupware.constant.ConstantAdmin;
+import global.properties.AdminProperties;
 import com.mju.groupware.dao.UserDao;
 import com.mju.groupware.dao.UserListDao;
 import com.mju.groupware.dto.Professor;
@@ -23,7 +23,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class AdminServiceImpl implements AdminService {
     private final UserListDao userListDao;
-    private final ConstantAdmin constantAdmin;
+    private final AdminProperties adminProps;
     private final UserService userService;
     private final UserDao userDao;
     private final StudentService studentService;
@@ -46,7 +46,7 @@ public class AdminServiceImpl implements AdminService {
 
     @Override
     public boolean detailStudent(Model model, String no) {
-        ArrayList<String> SelectUserProfileInfo = userService.SelectUserProfileInfoByID(no);
+        ArrayList<String> SelectUserProfileInfo = userService.selectUserProfileInfoByID(no);
 
         // 학번추가
         model.addAttribute("UserLoginID", SelectUserProfileInfo.get(0));
@@ -91,18 +91,18 @@ public class AdminServiceImpl implements AdminService {
             String OptionValue = request.getParameter("OptionValue");
             String[] AjaxMsg = request.getParameterValues("CheckArr");
 
-            if (OptionValue.equals(this.constantAdmin.getROLE_SUSER()))
+            if (OptionValue.equals(adminProps.getRoles().getRoleSuser()))
                 OptionValue = URole;
-            else if (OptionValue.equals(this.constantAdmin.getROLE_PUSER()))
+            else if (OptionValue.equals(adminProps.getRoles().getRolePuser()))
                 OptionValue = URole;
-            else if (OptionValue.equals(this.constantAdmin.getROLE_ADMIN()))
+            else if (OptionValue.equals(adminProps.getRoles().getRoleAdmin()))
                 OptionValue = ARole;
 
             for (String adminId : AjaxMsg) {
                 if (OptionValue.equals(ARole))
-                    userDao.UpdateAdminRole(adminId, OptionValue);
+                    userDao.updateAdminRole(adminId, OptionValue);
                 else if (OptionValue.equals(URole))
-                    userDao.UpdateUserRole(adminId, OptionValue);
+                    userDao.updateUserRole(adminId, OptionValue);
             }
             return true;
         } catch (Exception e) {
@@ -116,7 +116,7 @@ public class AdminServiceImpl implements AdminService {
         try {
             String[] AjaxMsg = request.getParameterValues("CheckArr");
             for (String userId : AjaxMsg) {
-                User userInfo = userDao.SelectUserInfo(userId);
+                User userInfo = userDao.selectUserInfo(userId);
 
                 if (userInfo != null) {
                     User userToUpdate = new User();
@@ -128,7 +128,7 @@ public class AdminServiceImpl implements AdminService {
                     SimpleDateFormat Date = new SimpleDateFormat("yyyy-MM-dd");
                     userToUpdate.setDate(Date.format(Now));
                     // 탈퇴 업데이트
-                    userDao.UpdateWithdrawalUser(userToUpdate);
+                    userDao.updateWithdrawalUser(userToUpdate);
                 }
             }
             return true;
@@ -144,14 +144,14 @@ public class AdminServiceImpl implements AdminService {
         String MysqlRole = request.getParameter("R");
         String UserAuthority = request.getParameter("A");
 
-        String UAuthority = this.constantAdmin.getROLE_USER();
-        String AAuthority = this.constantAdmin.getROLE_ADMIN();
+        String UAuthority = adminProps.getRoles().getRoleUser();
+        String AAuthority = adminProps.getRoles().getRoleAdmin();
 
-        String SRole = this.constantAdmin.getSRole();
-        String PRole = this.constantAdmin.getPRole();
+        String SRole = adminProps.getRoles().getStudent();
+        String PRole = adminProps.getRoles().getProfessor();
 
-        String ReSDetail = this.constantAdmin.getReSDetail();
-        String RePDetail = this.constantAdmin.getRePDetail();
+        String ReSDetail = adminProps.getRedirects().getStudentDetail();
+        String RePDetail = adminProps.getRedirects().getProfessorDetail();
 
         if (MysqlRole.equals(SRole) && UserAuthority.equals(UAuthority)) {
             rttr.addAttribute("no", userId);
@@ -161,21 +161,21 @@ public class AdminServiceImpl implements AdminService {
             return RePDetail;
         } else if (UserAuthority.equals(AAuthority)) {
             rttr.addFlashAttribute("DONT", "true");
-            return this.constantAdmin.getReList();
+            return adminProps.getRedirects().getList();
         } else {
-            return this.constantAdmin.getReList();
+            return adminProps.getRedirects().getList();
         }
     }
 
     @Override
     public boolean detailProfessor(Model model, String no) {
-        ArrayList<String> SelectUserProfileInfo = userService.SelectUserProfileInfoByID(no);
+        ArrayList<String> SelectUserProfileInfo = userService.selectUserProfileInfoByID(no);
         // 학번추가
         model.addAttribute("UserLoginID", SelectUserProfileInfo.get(0));
         // 이름
         model.addAttribute("PUserName", SelectUserProfileInfo.get(1));
         // 연락처
-        model.addAttribute(this.constantAdmin.getUserPhoneNum(), SelectUserProfileInfo.get(2));
+        model.addAttribute(adminProps.getParams().getUserPhoneNum(), SelectUserProfileInfo.get(2));
         // 단과대학
         model.addAttribute("ProfessorColleges", SelectUserProfileInfo.get(11));
         // 전공
@@ -183,9 +183,9 @@ public class AdminServiceImpl implements AdminService {
         // 교수실
         model.addAttribute("ProfessorRoom", SelectUserProfileInfo.get(13));
         // 교수실 전화번호
-        model.addAttribute(this.constantAdmin.getProfessorRoomNum(), SelectUserProfileInfo.get(14));
+        model.addAttribute(adminProps.getParams().getProfessorRoomNum(), SelectUserProfileInfo.get(14));
         // 이메일
-        model.addAttribute(this.constantAdmin.getUserEmail(), SelectUserProfileInfo.get(3));
+        model.addAttribute(adminProps.getParams().getUserEmail(), SelectUserProfileInfo.get(3));
 
         // 정보공개여부
         String Result = SelectUserProfileInfo.get(4);
@@ -208,12 +208,12 @@ public class AdminServiceImpl implements AdminService {
     public void modifyStudentList(HttpServletRequest request, Model model) {
         String LoginID = request.getParameter("no");
 
-        User user = userService.SelectModifyUserInfo(LoginID);
+        User user = userService.selectModifyUserInfo(LoginID);
         model.addAttribute("UserLoginID", LoginID);
         String UserEmail = user.getUserEmail();
         int Location = UserEmail.indexOf("@");
         UserEmail = UserEmail.substring(0, Location);
-        model.addAttribute(this.constantAdmin.getEmail(), UserEmail);
+        model.addAttribute(adminProps.getParams().getEmail(), UserEmail);
         // 연락처 공개
         model.addAttribute("OpenPhoneNum", user.getOpenPhoneNum());
         // 학년 공개
@@ -231,7 +231,7 @@ public class AdminServiceImpl implements AdminService {
             if (!request.getParameter("UserName").isEmpty()) {
                 // 이름바꾸기
                 user.setUserName(request.getParameter("UserName"));
-                userService.UpdateUserName(user);
+                userService.updateUserName(user);
             }
             if (!request.getParameter("StudentGender").equals(" ")) {
                 // 성별바꾸기
@@ -273,28 +273,28 @@ public class AdminServiceImpl implements AdminService {
             if (request.getParameter("UserPhone") != null) {
                 String OpenPhoneNum = "전화번호";
                 user.setOpenPhoneNum(OpenPhoneNum);
-                userService.UpdateOpenPhoneNum(user);
+                userService.updateOpenPhoneNum(user);
             } else if (request.getParameter("UserPhone") == null) {
                 String NotOpen = "비공개";
                 user.setOpenPhoneNum(NotOpen);
-                userService.UpdateOpenPhoneNum(user);
+                userService.updateOpenPhoneNum(user);
             }
 
             if (request.getParameter("UserGrade") != null) {
                 String OpenGrade = "학년";
                 user.setOpenGrade(OpenGrade);
-                userService.UpdateOpenGrade(user);
+                userService.updateOpenGrade(user);
             } else if (request.getParameter("UserGrade") == null) {
                 String NotOpen = "비공개";
                 user.setOpenGrade(NotOpen);
-                userService.UpdateOpenGrade(user);
+                userService.updateOpenGrade(user);
             }
         }
     }
 
     @Override
     public void modifyProfessorList(Model model, HttpServletRequest request, String loginID) {
-        User UserInfo = userService.SelectModifyUserInfo(loginID);
+        User UserInfo = userService.selectModifyUserInfo(loginID);
         model.addAttribute("UserLoginID", loginID);
         String UserEmail = UserInfo.getUserEmail();
         int Location = UserEmail.indexOf("@");
@@ -315,7 +315,7 @@ public class AdminServiceImpl implements AdminService {
             if (!request.getParameter("UserName").isEmpty()) {
                 // 이름바꾸기
                 user.setUserName(request.getParameter("UserName"));
-                userService.UpdateUserName(user);
+                userService.updateUserName(user);
             }
             if (!request.getParameter("UserPhoneNum").isEmpty()) {
                 // 전화번호바꾸기
@@ -345,11 +345,11 @@ public class AdminServiceImpl implements AdminService {
             if (request.getParameter("UserPhone") != null) {
                 String OpenPhoneNum = "전화번호";
                 user.setOpenPhoneNum(OpenPhoneNum);
-                userService.UpdateOpenPhoneNum(user);
+                userService.updateOpenPhoneNum(user);
             } else if (request.getParameter("UserPhone") == null) {
                 String NotOpen = "비공개";
                 user.setOpenPhoneNum(NotOpen);
-                userService.UpdateOpenPhoneNum(user);
+                userService.updateOpenPhoneNum(user);
             }
         }
     }
@@ -358,7 +358,7 @@ public class AdminServiceImpl implements AdminService {
     public void dormantUserDelete(HttpServletRequest request) {
         String[] AjaxMsg = request.getParameterValues("CheckArr");
         for (String msg : AjaxMsg) {
-            userDao.UpdateWithdrawalByDormant(msg);
+            userDao.updateWithdrawalByDormant(msg);
         }
     }
 
@@ -366,7 +366,7 @@ public class AdminServiceImpl implements AdminService {
     public void deleteUserRollback(HttpServletRequest request) {
         String[] AjaxMsg = request.getParameterValues("CheckArr");
         for (String msg : AjaxMsg) {
-            userService.UpdateDoWithdrawalRecoveryByAdmin(msg);
+            userService.updateDoWithdrawalRecoveryByAdmin(msg);
         }
     }
 
@@ -379,7 +379,7 @@ public class AdminServiceImpl implements AdminService {
     public void dormantUserRollback(HttpServletRequest request) {
         String[] AjaxMsg = request.getParameterValues("CheckArr");
         for (int i = 0; i < AjaxMsg.length; i++) {
-            userDao.UpdateDormantOneToZero(AjaxMsg[i]);
+            userDao.updateDormantOneToZero(AjaxMsg[i]);
         }
     }
 }

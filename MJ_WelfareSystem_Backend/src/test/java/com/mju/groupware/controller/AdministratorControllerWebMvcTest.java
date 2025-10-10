@@ -1,6 +1,6 @@
 package com.mju.groupware.controller;
 
-import com.mju.groupware.constant.ConstantAdmin;
+import global.properties.AdminProperties;
 import com.mju.groupware.service.AdminService;
 import com.mju.groupware.service.ProfessorService;
 import com.mju.groupware.service.StudentService;
@@ -14,8 +14,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.context.annotation.ComponentScan;
-import org.springframework.context.annotation.FilterType;
 import org.springframework.context.annotation.Import;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.web.servlet.MockMvc;
@@ -30,13 +28,29 @@ import static org.mockito.BDDMockito.willAnswer;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
-@WebMvcTest(controllers = AdministratorController.class,
-        excludeFilters = @ComponentScan.Filter(type = FilterType.ASSIGNABLE_TYPE, classes = GlobalUserModelAdvice.class))
+@WebMvcTest(controllers = AdministratorController.class)
 @AutoConfigureMockMvc(addFilters = false)
 @TestPropertySource(properties = {
-        "spring.main.allow-bean-definition-overriding=true"
+        "spring.main.allow-bean-definition-overriding=true",
+        "app.admin.roles.student=STUDENT",
+        "app.admin.roles.professor=PROFESSOR",
+        "app.admin.roles.administrator=ADMINISTRATOR",
+        "app.admin.roles.role-user=ROLE_USER",
+        "app.admin.urls.list=/admin/manageList",
+        "app.admin.urls.sleep-list=/admin/manageSleep",
+        "app.admin.urls.secession-list=/admin/manageSecession",
+        "app.admin.urls.student.detail=/admin/detailStudent",
+        "app.admin.urls.student.manage=/admin/manageStudent",
+        "app.admin.urls.student.manage-modify=/admin/manageModifyStudent",
+        "app.admin.urls.professor.detail=/admin/detailProfessor",
+        "app.admin.urls.professor.manage=/admin/manageProfessor",
+        "app.admin.urls.professor.manage-modify=/admin/manageModifyProfessor",
+        "app.admin.redirects.list=redirect:manageList",
+        "app.admin.redirects.student-detail=redirect:detailStudent",
+        "app.admin.redirects.professor-detail=redirect:detailProfessor",
+        "app.admin.params.email=Email"
 })
-@Import(TestMvcSharedConfig.class)
+@Import({TestMvcSharedConfig.class, AdminProperties.class})
 class AdministratorControllerWebMvcTest {
     @Autowired
     private MockMvc mockMvc;
@@ -50,28 +64,13 @@ class AdministratorControllerWebMvcTest {
     private ProfessorService professorService;
     @MockBean
     private UserInfoMethod userInfoMethod;
-    @MockBean
-    private ConstantAdmin constantAdmin;
+    @Autowired
+    private AdminProperties adminProps;
 
     @BeforeEach
     void setupConstants() {
-        // 기본 뷰 이름/리다이렉트 경로 스텁
-        // 뷰 이름과 상수 스텁
-        given(constantAdmin.getList()).willReturn("admin/list");
-        given(constantAdmin.getSleepList()).willReturn("admin/sleepList");
-        given(constantAdmin.getSecessionList()).willReturn("admin/secessionList");
-        given(constantAdmin.getSManage()).willReturn("admin/manageStudent");
-        given(constantAdmin.getPManage()).willReturn("admin/manageProfessor");
-        given(constantAdmin.getSManageModify()).willReturn("admin/manageModifyStudent");
-        given(constantAdmin.getPManageModify()).willReturn("admin/manageModifyProfessor");
-        given(constantAdmin.getReList()).willReturn("redirect:/admin/manageList");
-        given(constantAdmin.getSDetail()).willReturn("admin/sDetail");
-        given(constantAdmin.getEmail()).willReturn("Email");
-        given(constantAdmin.getSTUDENT()).willReturn("STUDENT");
-        given(constantAdmin.getPROFESSOR()).willReturn("PROFESSOR");
-        given(constantAdmin.getADMINISTRATOR()).willReturn("ADMINISTRATOR");
-        given(constantAdmin.getReSDetail()).willReturn("redirect:detailStudent");
-        given(constantAdmin.getRePDetail()).willReturn("redirect:detailProfessor");
+        // AdminProperties는 @TestPropertySource를 통해 자동으로 설정됨
+        // 추가 설정이 필요한 경우 여기에 작성
     }
 
     @Test
@@ -84,7 +83,7 @@ class AdministratorControllerWebMvcTest {
         // when/then
         mockMvc.perform(get("/admin/manageList").principal(principal))
                 .andExpect(status().isOk())
-                .andExpect(view().name(constantAdmin.getList()))
+                .andExpect(view().name(adminProps.getUrls().getList()))
                 .andExpect(model().attributeExists("list"));
     }
 
@@ -96,7 +95,7 @@ class AdministratorControllerWebMvcTest {
 
         mockMvc.perform(get("/admin/manageSleep").principal(principal))
                 .andExpect(status().isOk())
-                .andExpect(view().name(constantAdmin.getSleepList()))
+                .andExpect(view().name(adminProps.getUrls().getSleepList()))
                 .andExpect(model().attributeExists("DormantList"));
     }
 
@@ -108,7 +107,7 @@ class AdministratorControllerWebMvcTest {
 
         mockMvc.perform(get("/admin/manageSecession").principal(principal))
                 .andExpect(status().isOk())
-                .andExpect(view().name(constantAdmin.getSecessionList()))
+                .andExpect(view().name(adminProps.getUrls().getSecessionList()))
                 .andExpect(model().attributeExists("SelectWithdrawalUserList"));
     }
 
@@ -117,7 +116,7 @@ class AdministratorControllerWebMvcTest {
     void manageStudentReturnsOk() throws Exception {
         mockMvc.perform(get("/admin/manageStudent"))
                 .andExpect(status().isOk())
-                .andExpect(view().name(constantAdmin.getSManage()));
+                .andExpect(view().name(adminProps.getUrls().getStudent().getManage()));
     }
 
     @Test
@@ -125,7 +124,7 @@ class AdministratorControllerWebMvcTest {
     void manageProfessorReturnsOk() throws Exception {
         mockMvc.perform(get("/admin/manageProfessor"))
                 .andExpect(status().isOk())
-                .andExpect(view().name(constantAdmin.getPManage()));
+                .andExpect(view().name(adminProps.getUrls().getProfessor().getManage()));
     }
 
     @Test
@@ -144,7 +143,7 @@ class AdministratorControllerWebMvcTest {
         // when & then
         mockMvc.perform(get("/admin/manageModifyStudent").param("no", "U001"))
                 .andExpect(status().isOk())
-                .andExpect(view().name(constantAdmin.getSManageModify()))
+                .andExpect(view().name(adminProps.getUrls().getStudent().getManageModify()))
                 .andExpect(model().attributeExists("UserLoginID"))
                 .andExpect(model().attributeExists("Email"))
                 .andExpect(model().attributeExists("OpenPhoneNum"))
@@ -169,7 +168,7 @@ class AdministratorControllerWebMvcTest {
 
         mockMvc.perform(get("/admin/manageModifyProfessor").param("no", "P001"))
                 .andExpect(status().isOk())
-                .andExpect(view().name(constantAdmin.getPManageModify()))
+                .andExpect(view().name(adminProps.getUrls().getProfessor().getManageModify()))
                 .andExpect(model().attributeExists("UserLoginID"))
                 .andExpect(model().attributeExists("Email"))
                 .andExpect(model().attributeExists("OpenPhoneNum"));
@@ -192,7 +191,7 @@ class AdministratorControllerWebMvcTest {
     }
 
     @Test
-    @DisplayName("GET /admin/detailStudent returns 200 and sDetail view")
+    @DisplayName("GET /admin/detailStudent returns 200 and student detail view")
     void detailStudentReturnsOk() throws Exception {
         // given: AdminService.detailStudent가 호출될 때 모델에 속성들을 추가하도록 모킹
         willAnswer(invocation -> {
@@ -213,7 +212,7 @@ class AdministratorControllerWebMvcTest {
         // when/then
         mockMvc.perform(get("/admin/detailStudent").param("no", "U001"))
                 .andExpect(status().isOk())
-                .andExpect(view().name("admin/sDetail"))
+                .andExpect(view().name(adminProps.getUrls().getStudent().getDetail()))
                 .andExpect(model().attributeExists(
                         "UserLoginID",
                         "SUserName",

@@ -1,6 +1,6 @@
 package com.mju.groupware.controller;
 
-import com.mju.groupware.constant.ConstantAdminProfessorController;
+import global.properties.ProfessorProperties;
 import com.mju.groupware.service.ProfessorService;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
@@ -15,11 +15,11 @@ import java.security.Principal;
 @RequiredArgsConstructor
 public class ProfessorController {
 	private final ProfessorService professorService;
-	private final ConstantAdminProfessorController constant;
+	private final ProfessorProperties professorProps;
 
 	@GetMapping("/signupProfessor")
 	public String signupProfessor() {
-		return this.constant.getRSignupProfessor();
+		return professorProps.getUrls().getSignup();
 	}
 
 	/* 교수 마이페이지 */
@@ -30,7 +30,7 @@ public class ProfessorController {
 		// Service에서 모든 마이페이지 데이터를 Model에 설정
 		professorService.setProfessorMyPageAttributes(loginID, model);
 		
-		return constant.getRMyPageProfessor();
+		return professorProps.getUrls().getMypage();
 	}
 
 	/* 교수 정보 수정 화면 */
@@ -46,16 +46,16 @@ public class ProfessorController {
 	public String doModifyProfessor(HttpServletRequest request, Principal principal) {
 		// Controller에서 Request 파라미터 추출 (웹 계층 처리)
 		String loginID = principal.getName();
-		String phoneNum = request.getParameter(constant.getUserPhoneNum());
+		String phoneNum = request.getParameter(professorProps.getParams().getUserPhoneNum());
 		String professorRoom = request.getParameter("ProfessorRoom");
 		String professorRoomNum = request.getParameter("ProfessorRoomNum");
-		boolean isPhoneNumOpen = request.getParameter(constant.getUserPhone()) != null;
+		boolean isPhoneNumOpen = request.getParameter(professorProps.getParams().getUserPhone()) != null;
 		
 		// Service에 순수 데이터만 전달 (비즈니스 로직)
 		professorService.updateProfessorInfo(loginID, phoneNum, professorRoom, 
 											 professorRoomNum, isPhoneNumOpen);
 		
-		return constant.getRModifyProfessor();
+		return professorProps.getUrls().getModify();
 	}
 
 }

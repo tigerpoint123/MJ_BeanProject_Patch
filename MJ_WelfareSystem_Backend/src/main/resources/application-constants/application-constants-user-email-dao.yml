@@ -1,0 +1,8 @@
+app:
+  dao:
+    user-email:
+      methods:
+        insert-certification: InsertCertification
+        select-for-check-certification: SelectForCheckCertification
+        delete-certification: DeleteCertification
+

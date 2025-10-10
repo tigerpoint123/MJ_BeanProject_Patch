@@ -1,6 +1,6 @@
 package com.mju.groupware.controller;
 
-import com.mju.groupware.constant.ConstantAdminStudentController;
+import global.properties.StudentProperties;
 import com.mju.groupware.dto.User;
 import com.mju.groupware.service.StudentService;
 import jakarta.servlet.http.HttpServletRequest;
@@ -17,11 +17,11 @@ import java.security.Principal;
 public class StudentController {
 
 	private final StudentService studentService;
-	private final ConstantAdminStudentController constant;
+	private final StudentProperties studentProps;
 
 	@RequestMapping(value = "/signupStudent", method = RequestMethod.GET)
 	public String signupStudent() {
-		return this.constant.getRSignupStudent();
+		return studentProps.getUrls().getSignup();
 	}
 
 	/* 학생 마이페이지 */
@@ -34,14 +34,14 @@ public class StudentController {
 		studentService.setMyPageStudentAttributes(
 			loginID, 
 			model, 
-			this.constant.getGrade(),
-			this.constant.getUserLoginID(),
-			this.constant.getUserName(),
-			this.constant.getUserPhoneNum(),
-			this.constant.getUserEmail()
+			studentProps.getParams().getGrade(),
+			studentProps.getParams().getUserLoginId(),
+			studentProps.getParams().getUserName(),
+			studentProps.getParams().getUserPhoneNum(),
+			studentProps.getParams().getUserEmail()
 		);
 
-		return this.constant.getRMyPageStudent();
+		return studentProps.getUrls().getMypage();
 	}
 
 	/* 학생 정보 수정 화면 */
@@ -50,9 +50,9 @@ public class StudentController {
 		String loginID = principal.getName();
 		
 		// 서비스에서 수정 화면 데이터를 Model에 설정
-		studentService.setModifyStudentAttributes(loginID, model, this.constant.getEmail());
+		studentService.setModifyStudentAttributes(loginID, model, studentProps.getParams().getEmail());
 		
-		return this.constant.getRModifyStudent();
+		return studentProps.getUrls().getModify();
 	}
 
 	// 학생 정보 수정
@@ -61,15 +61,15 @@ public class StudentController {
 		String loginID = principal.getName();
 		
 		// 요청 파라미터 추출
-		String phoneNum = request.getParameter(this.constant.getUserPhoneNum());
+		String phoneNum = request.getParameter(studentProps.getParams().getUserPhoneNum());
 		String studentGrade = request.getParameter("StudentGrade");
-		boolean isPhoneOpen = request.getParameter(this.constant.getUserPhone()) != null;
-		boolean isGradeOpen = request.getParameter(this.constant.getUserGrade()) != null;
+		boolean isPhoneOpen = request.getParameter(studentProps.getParams().getUserPhone()) != null;
+		boolean isGradeOpen = request.getParameter(studentProps.getParams().getUserGrade()) != null;
 		
 		// 서비스에서 학생 정보 업데이트 처리
 		studentService.updateStudentInfo(loginID, phoneNum, studentGrade, isPhoneOpen, isGradeOpen);
 		
-		return this.constant.getRModifyStudent();
+		return studentProps.getUrls().getModify();
 	}
 
 }

@@ -1,0 +1,18 @@
+app:
+  dao:
+    professor:
+      methods:
+        insert-information: InsertInformation
+        update-user-id: UpdateUserID
+        update-professor-room: UpdateProfessorRoom
+        update-professor-room-num: UpdateProfessorRoomNum
+        select-professor-profile-info: SelectProfessorProfileInfo
+        select-my-page-professor-info: SelectMyPageProfessorInfo
+        select-my-page-professor-info-by-id: SelectMyPageProfessorInfoByID
+        update-professor-colleges: UpdateProfessorColleges
+        update-professor-major: UpdateProfessorMajor
+        select-professor-info: SelectProfessorInfo
+        insert-withdrawal-professor: InsertWithdrawalProfessor
+        delete-withdrawal-professor: DeleteWithdrawalProfessor
+        delete-withdrawal-professor-list: DeleteWithdrawalProfessorList
+

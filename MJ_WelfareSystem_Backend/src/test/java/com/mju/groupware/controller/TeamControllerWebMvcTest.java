@@ -25,7 +25,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-import com.mju.groupware.constant.ConstantTeamController;
+import global.properties.TeamProperties;
 import com.mju.groupware.dto.Class;
 import com.mju.groupware.dto.Team;
 import com.mju.groupware.dto.TeamBoard;
@@ -37,13 +37,36 @@ import com.mju.groupware.service.TeamService;
 import com.mju.groupware.service.UserService;
 import com.mju.groupware.util.UserInfoMethod;
 
-@WebMvcTest(controllers = TeamController.class,
-        excludeFilters = @ComponentScan.Filter(type = FilterType.ASSIGNABLE_TYPE, classes = GlobalUserModelAdvice.class))
+@WebMvcTest(controllers = TeamController.class)
 @AutoConfigureMockMvc(addFilters = false)
-@TestPropertySource(properties = {
-        "spring.main.allow-bean-definition-overriding=true"
-})
-@Import(TestMvcSharedConfig.class)
+@TestPropertySource(
+        properties = {
+                "spring.main.allow-bean-definition-overriding=true",
+                "app.team.roles.student=STUDENT",
+                "app.team.roles.professor=PROFESSOR",
+                "app.team.roles.administrator=ADMINISTRATOR",
+                "app.team.urls.my-team-list=/team/myTeamList",
+                "app.team.urls.document.list=/team/documentList",
+                "app.team.urls.document.content=/team/documentContent",
+                "app.team.urls.document.write=/team/documentWrite",
+                "app.team.urls.document.modify=/team/documentModify",
+                "app.team.urls.search.lecture=/team/searchLecture",
+                "app.team.urls.search.my-team=/team/searchMyTeam",
+                "app.team.urls.create-team=/team/createTeam",
+                "app.team.urls.team-list=/team/teamList",
+                "app.team.urls.check-team=/team/checkTeam",
+                "app.team.urls.modify-team=/team/modifyTeam",
+                "app.team.urls.review-write=/team/reviewWrite",
+                "app.team.redirects.home=redirect:/home",
+                "app.team.redirects.document-list=redirect:/team/documentList?no=",
+                "app.team.redirects.search-lecture=redirect:/team/searchLecture",
+                "app.team.redirects.team-list=redirect:teamList",
+                "app.team.redirects.team-team-list=redirect:/team/teamList",
+                "app.team.redirects.search-my-team=redirect:/team/searchMyTeam",
+                "app.team.file-path=C:\\\\mju\\\\"
+        }
+)
+@Import({TestMvcSharedConfig.class, TeamProperties.class})
 class TeamControllerWebMvcTest {
 
     @Autowired
@@ -55,7 +78,9 @@ class TeamControllerWebMvcTest {
     @MockBean private UserInfoMethod userInfoMethod;
     @MockBean private TeamService teamService;
     @MockBean private BoardService boardService;
-    @MockBean private ConstantTeamController constant;
+    
+    @Autowired
+    private TeamProperties teamProps;
 
     @BeforeEach
     void setupProfile() {
@@ -67,8 +92,7 @@ class TeamControllerWebMvcTest {
     @DisplayName("GET /team/documentList returns 200")
     void documentListReturnsOk() throws Exception {
         Principal principal = () -> "testUser";
-        given(constant.getRDocumentList()).willReturn("team/documentList");
-        given(teamService.SelectTeamBoardListInfo("10")).willReturn(Collections.<TeamBoard>emptyList());
+        given(teamService.selectTeamBoardListInfo("10")).willReturn(Collections.<TeamBoard>emptyList());
 
         mockMvc.perform(get("/team/documentList").param("no", "10").principal(principal))
                 .andExpect(status().isOk());
@@ -78,8 +102,7 @@ class TeamControllerWebMvcTest {
     @DisplayName("GET /team/documentWrite returns 200")
     void documentWriteReturnsOk() throws Exception {
         Principal principal = () -> "testUser";
-        given(constant.getRDocumentWrite()).willReturn("team/documentWrite");
-        given(userService.SelectUserName("testUser")).willReturn("Name");
+        given(userService.selectUserName("testUser")).willReturn("Name");
 
         mockMvc.perform(get("/team/documentWrite").param("TeamID", "10").principal(principal))
                 .andExpect(status().isOk());
@@ -89,8 +112,7 @@ class TeamControllerWebMvcTest {
     @DisplayName("POST /team/documentWrite redirects")
     void documentWritePostRedirects() throws Exception {
         Principal principal = () -> "testUser";
-        given(constant.getRRDocumentListNO()).willReturn("redirect:/team/documentList?no=");
-        given(userService.SelectWriter("testUser")).willReturn("writerId");
+        given(userService.selectWriter("testUser")).willReturn("writerId");
 
         mockMvc.perform(post("/team/documentWrite")
                         .principal(principal)
@@ -104,8 +126,7 @@ class TeamControllerWebMvcTest {
     @DisplayName("GET /team/teamList returns 200")
     void teamListReturnsOk() throws Exception {
         Principal principal = () -> "testUser";
-        given(constant.getRTeamList()).willReturn("team/teamList");
-        given(teamService.SelectTeamList()).willReturn(Collections.<Team>emptyList());
+        given(teamService.selectTeamList()).willReturn(Collections.<Team>emptyList());
 
         mockMvc.perform(get("/team/teamList").principal(principal))
                 .andExpect(status().isOk());
@@ -115,12 +136,11 @@ class TeamControllerWebMvcTest {
     @DisplayName("GET /team/modifyTeam returns 200")
     void modifyTeamReturnsOk() throws Exception {
         Principal principal = () -> "testUser";
-        given(constant.getRModifyTeam()).willReturn("team/modifyTeam");
-        given(teamService.SelectTeamMemberInfo(100)).willReturn(Collections.<TeamUser>emptyList());
-        given(teamService.SelectClassIDForCheckTeam(100)).willReturn(1);
+        given(teamService.selectTeamMemberInfo(100)).willReturn(Collections.<TeamUser>emptyList());
+        given(teamService.selectClassIdForCheckTeam(100)).willReturn(1);
         Class c = new Class(); c.setClassName("CN"); c.setClassProfessorName("PN");
-        given(teamService.SelectClassInfoForCheckTeam(1)).willReturn(new ArrayList<Class>() {{ add(c); }});
-        given(teamService.SelectTeamName(100)).willReturn("TName");
+        given(teamService.selectClassInfoForCheckTeam(1)).willReturn(new ArrayList<Class>() {{ add(c); }});
+        given(teamService.selectTeamName(100)).willReturn("TName");
 
         mockMvc.perform(get("/team/modifyTeam").param("no", "100").principal(principal))
                 .andExpect(status().isOk());

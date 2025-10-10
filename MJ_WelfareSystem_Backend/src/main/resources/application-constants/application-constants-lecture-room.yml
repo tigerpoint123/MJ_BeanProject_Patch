@@ -1,0 +1,22 @@
+app:
+  lecture-room:
+    time-slots:
+      nine: "09:00:00"
+      eleven: "11:00:00"
+      thirteen: "13:00:00"
+      fifteen: "15:00:00"
+      seventeen: "17:00:00"
+      nineteen: "19:00:00"
+    
+    urls:
+      list: /lectureRoom/lectureRoomList
+      reservation: /lectureRoom/reservation
+      reservation-confirm: /lectureRoom/reservationConfirm
+      reservation-modify: /lectureRoom/reservationModify
+      confirm-my-reservation: /mypage/confirmMyReservation
+    
+    redirects:
+      reservation: redirect:/lectureRoom/reservation
+      list: redirect:/lectureRoom/lectureRoomList
+      mypage-student: redirect:myPageStudent
+

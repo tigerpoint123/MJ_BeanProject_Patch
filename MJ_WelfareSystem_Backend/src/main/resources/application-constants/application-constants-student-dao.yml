@@ -1,0 +1,23 @@
+app:
+  dao:
+    student:
+      constants:
+        no-double-major: 없음
+      
+      methods:
+        insert-information: InsertInformation
+        update-user-id: UpdateUserID
+        get-grade: GetGrade
+        update-student-gender: UpdateStudentGender
+        update-student-grade: UpdateStudentGrade
+        update-student-double-major: UpdateStudentDoubleMajor
+        select-student-profile-info: SelectStudentProfileInfo
+        select-my-page-student-info: SelectMyPageStudentInfo
+        select-my-page-student-info-by-id: SelectMyPageStudentInfoByID
+        update-student-colleges: UpdateStudentColleges
+        update-student-major: UpdateStudentMajor
+        select-student-info: SelectStudentInfo
+        insert-withdrawal-student: InsertWithdrawalStudent
+        delete-withdrawal-student: DeleteWithdrawalStudent
+        delete-withdrawal-student-list: DeleteWithdrawalStudentList
+

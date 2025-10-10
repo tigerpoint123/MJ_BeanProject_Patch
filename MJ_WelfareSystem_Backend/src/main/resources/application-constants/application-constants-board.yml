@@ -1,0 +1,61 @@
+app:
+  board:
+    roles:
+      student: STUDENT
+      professor: PROFESSOR
+      administrator: ADMINISTRATOR
+    
+    urls:
+      inquiry:
+        list: /board/inquiryList
+        content: /board/inquiryContent
+        write: /board/inquiryWrite
+      notice:
+        list: /board/noticeList
+        write: /board/noticeWrite
+        modify: /board/noticeModify
+        content: /board/noticeContent
+      community:
+        list: /board/communityList
+        write: /board/communityWrite
+        modify: /board/communityModify
+        content: /board/communityContent
+    
+    redirects:
+      inquiry-list: redirect:/inquiryList
+      notice-list: redirect:/noticeList
+      community-list: redirect:/communityList
+    
+    params:
+      inquiry:
+        title: InquiryTitle
+        writer: InquiryWriter
+        date: IBoardDate
+        content: InquiryContent
+        email: InquiryEmail
+        phone-num: InquiryPhoneNum
+        list: InquiryList
+        type: InquiryType
+        answer: InquiryAnswer
+      notice:
+        title: NoticeTitle
+        writer: NoticeWriter
+        list: NoticeList
+        file: NoticeFile
+        content: NoticeContent
+      community:
+        title: CommunityTitle
+        writer: CommunityWriter
+        list: CommunityList
+        file: CommunityFile
+        content: CommunityContent
+      board:
+        id: BoardID
+        date: BoardDate
+        type: BoardType
+      user:
+        id: UserID
+        id-from-writer: UserIDFromWriter
+    
+    file-path: D:\\groupware\\
+

@@ -1,0 +1,46 @@
+app:
+  dao:
+    user:
+      roles:
+        role-user: ROLE_USER
+        role-admin: ROLE_ADMIN
+      
+      methods:
+        insert-user: InsertUser
+        select-by-login-id: SelectByLoginID
+        select-for-id-confirm: SelctForIDConfirm
+        select-pwd-for-confirm-to-find-pwd: SelectPwdForConfirmToFindPwd
+        select-user-id: SelectUserID
+        select-for-show-password: SelectForShowPassword
+        select-for-email-duplicate-check: SelectForEmailDuplicateCheck
+        update-login-date: UpdateLoginDate
+        select-current-pwd: SelectCurrentPwd
+        update-pwd: UpdatePwd
+        select-for-pwd-check-before-modify: SelectForPwdCheckBeforeModify
+        select-user-info: SelectUserInfo
+        update-user-phone-num: UpdateUserPhoneNum
+        update-user-major: UpdateUserMajor
+        update-user-colleges: UpdateUserColleges
+        select-user-information: SelectUserInformation
+        update-temporary-pwd: UpdateTemporaryPwd
+        update-withdrawal: UpdateWithdrawal
+        update-do-withdrawal-recovery-by-admin: UpdateDoWithdrawalRecoveryByAdmin
+        update-dormant-one-to-zero: UpdateDormantOneToZero
+        update-user-role: UpdateUserRole
+        update-admin-role: UpdateAdminRole
+        select-my-page-info: SelectMyPageInfo
+        select-my-page-info-by-id: SelectMyPageInfoByID
+        update-user-name: UpdateUserName
+        update-open-name: UpdateOpenName
+        update-open-email: UpdateOpenEmail
+        update-open-phone-num: UpdateOpenPhoneNum
+        update-open-major: UpdateOpenMajor
+        update-open-grade: UpdateOpenGrade
+        select-user-info-for-withdrawal: SelectUserInfoForWithdrawal
+        insert-withdrawal-user: InsertWithdrawalUser
+        delete-withdrawal-user: DeleteWithdrawalUser
+        delete-withdrawal-user-list: DeleteWithdrawalUserList
+        select-open-info: SelectOpenInfo
+        select-user-id-from-board-controller: SelectUserIDFromBoardController
+        select-user-role: SelectUserRole
+

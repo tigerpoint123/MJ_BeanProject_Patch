@@ -117,7 +117,7 @@ public class StudentServiceImpl implements StudentService {
 		result.put("UserRole", roleInfo.get(2));
 		
 		// 마이페이지 상세 정보 조회
-		ArrayList<String> detailInfo = userService.SelectMyPageUserInfo(loginID);
+		ArrayList<String> detailInfo = userService.selectMyPageUserInfo(loginID);
 		
 		// 상세 정보 설정
 		result.put("UserLoginID", detailInfo.get(0));
@@ -136,7 +136,7 @@ public class StudentServiceImpl implements StudentService {
 		result.put("UserEmail", email);
 		
 		// 정보공개여부
-		String openInfo = userService.SelectOpenInfo(loginID);
+		String openInfo = userService.selectOpenInfo(loginID);
 		if (!openInfo.equals("Error")) {
 			result.put("UserInfoOpen", openInfo);
 		}
@@ -149,7 +149,7 @@ public class StudentServiceImpl implements StudentService {
 		HashMap<String, Object> result = new HashMap<>();
 		
 		// 사용자 정보 조회
-		com.mju.groupware.dto.User userInfo = userService.SelectModifyUserInfo(loginID);
+		com.mju.groupware.dto.User userInfo = userService.selectModifyUserInfo(loginID);
 		
 		// 학생 정보 조회
 		Student studentInfo = SelectModifyStudentInfo(userInfo.getUserID());
@@ -235,7 +235,7 @@ public class StudentServiceImpl implements StudentService {
 	public void updateStudentInfo(String loginID, String phoneNum, String studentGrade, 
 	                              boolean isPhoneOpen, boolean isGradeOpen) {
 		// 사용자 정보 조회
-		ArrayList<String> userInfo = userService.SelectUserInformation(loginID);
+		ArrayList<String> userInfo = userService.selectUserInformation(loginID);
 		String userIdStr = userInfo.get(0); // 유저아이디
 		String userLoginID = userInfo.get(1); // 로그인아이디
 		
@@ -265,7 +265,7 @@ public class StudentServiceImpl implements StudentService {
 		} else {
 			user.setOpenPhoneNum("비공개");
 		}
-		userService.UpdateOpenPhoneNum(user);
+		userService.updateOpenPhoneNum(user);
 		
 		// 학년 공개 여부 업데이트
 		if (isGradeOpen) {
@@ -273,6 +273,6 @@ public class StudentServiceImpl implements StudentService {
 		} else {
 			user.setOpenGrade("비공개");
 		}
-		userService.UpdateOpenGrade(user);
+		userService.updateOpenGrade(user);
 	}
 }

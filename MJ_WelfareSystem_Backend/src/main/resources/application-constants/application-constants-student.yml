@@ -1,0 +1,19 @@
+app:
+  student:
+    params:
+      user-name: UserName
+      user-name-for-open: UserNameForOpen
+      user-login-id: UserLoginID
+      user-phone-num: UserPhoneNum
+      user-phone: UserPhone
+      user-email: UserEmail
+      user-major: UserMajor
+      user-grade: UserGrade
+      grade: Grade
+      email: Email
+    
+    urls:
+      signup: /signup/signupStudent
+      mypage: /mypage/myPageStudent
+      modify: /mypage/modifyStudent
+

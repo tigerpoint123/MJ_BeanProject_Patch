@@ -1,6 +1,6 @@
 package com.mju.groupware.service;
 
-import com.mju.groupware.constant.ConstantLectureRoomController;
+import com.mju.groupware.properties.LectureRoomProperties;
 import com.mju.groupware.dao.LectureRoomDao;
 import com.mju.groupware.dto.LectureRoom;
 import com.mju.groupware.dto.UserReservation;
@@ -14,7 +14,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class LectureRoomServiceImpl implements LectureRoomService {
 	private final LectureRoomDao lectureRoomDao;
-	private final ConstantLectureRoomController constantLecture;
+	private final LectureRoomProperties lectureRoomProps;
 
 	@Override
 	public List<LectureRoom> selectLectureRoomList() {
@@ -105,9 +105,9 @@ public class LectureRoomServiceImpl implements LectureRoomService {
 			List<UserReservation> startTime = lectureRoomDao.selectStartTime(lectureRoomNo);
 			model.addAttribute("StartTime", startTime);
 
-			return this.constantLecture.getRReservation();
+			return lectureRoomProps.getUrls().getReservation();
 		} else {
-			return this.constantLecture.getRReservation();
+			return lectureRoomProps.getUrls().getReservation();
 		}
 	}
 
@@ -131,21 +131,21 @@ public class LectureRoomServiceImpl implements LectureRoomService {
 		model.addAttribute("MaxNumOfPeople", maxNumOfPeople);
 		model.addAttribute("ReservationNumOfPeople", reservationNumOfPeople);
 
-		if (reservationStartTime.equals(this.constantLecture.getNine())) {
+		if (reservationStartTime.equals(lectureRoomProps.getTimeSlots().getNine())) {
 			model.addAttribute("ReservationStartTime", "09:00~11:00");
-		} else if (reservationStartTime.equals(this.constantLecture.getEleven())) {
+		} else if (reservationStartTime.equals(lectureRoomProps.getTimeSlots().getEleven())) {
 			model.addAttribute("ReservationStartTime", "11:00~13:00");
-		} else if (reservationStartTime.equals(this.constantLecture.getThirteen())) {
+		} else if (reservationStartTime.equals(lectureRoomProps.getTimeSlots().getThirteen())) {
 			model.addAttribute("ReservationStartTime", "13:00~15:00");
-		} else if (reservationStartTime.equals(this.constantLecture.getFifteen())) {
+		} else if (reservationStartTime.equals(lectureRoomProps.getTimeSlots().getFifteen())) {
 			model.addAttribute("ReservationStartTime", "15:00~17:00");
-		} else if (reservationStartTime.equals(this.constantLecture.getSeventeen())) {
+		} else if (reservationStartTime.equals(lectureRoomProps.getTimeSlots().getSeventeen())) {
 			model.addAttribute("ReservationStartTime", "17:00~19:00");
-		} else if (reservationStartTime.equals(this.constantLecture.getNineteen())) {
+		} else if (reservationStartTime.equals(lectureRoomProps.getTimeSlots().getNineteen())) {
 			model.addAttribute("ReservationStartTime", "19:00~21:00");
 		}
 
-		return this.constantLecture.getRReservationConfirm();
+		return lectureRoomProps.getUrls().getReservationConfirm();
 	}
 
 	@Override
@@ -163,20 +163,20 @@ public class LectureRoomServiceImpl implements LectureRoomService {
 		model.addAttribute("MaxNumOfPeople", maxNumOfPeople);
 		model.addAttribute("ReservationNumOfPeople", reservationNumOfPeople);
 
-		if (reservationStartTime.equals(this.constantLecture.getNine())) {
+		if (reservationStartTime.equals(lectureRoomProps.getTimeSlots().getNine())) {
 			model.addAttribute("ReservationStartTime", "09:00~11:00");
-		} else if (reservationStartTime.equals(this.constantLecture.getEleven())) {
+		} else if (reservationStartTime.equals(lectureRoomProps.getTimeSlots().getEleven())) {
 			model.addAttribute("ReservationStartTime", "11:00~13:00");
-		} else if (reservationStartTime.equals(this.constantLecture.getThirteen())) {
+		} else if (reservationStartTime.equals(lectureRoomProps.getTimeSlots().getThirteen())) {
 			model.addAttribute("ReservationStartTime", "13:00~15:00");
-		} else if (reservationStartTime.equals(this.constantLecture.getFifteen())) {
+		} else if (reservationStartTime.equals(lectureRoomProps.getTimeSlots().getFifteen())) {
 			model.addAttribute("ReservationStartTime", "15:00~17:00");
-		} else if (reservationStartTime.equals(this.constantLecture.getSeventeen())) {
+		} else if (reservationStartTime.equals(lectureRoomProps.getTimeSlots().getSeventeen())) {
 			model.addAttribute("ReservationStartTime", "17:00~19:00");
-		} else if (reservationStartTime.equals(this.constantLecture.getNineteen())) {
+		} else if (reservationStartTime.equals(lectureRoomProps.getTimeSlots().getNineteen())) {
 			model.addAttribute("ReservationStartTime", "19:00~21:00");
 		}
-		return this.constantLecture.getRConfirmMyReservation();
+		return lectureRoomProps.getUrls().getConfirmMyReservation();
 	}
 
 	@Override
@@ -230,7 +230,7 @@ public class LectureRoomServiceImpl implements LectureRoomService {
 		List<LectureRoom> list = lectureRoomDao.selectLectureRoomList();
 		model.addAttribute("list", list);
 
-		return this.constantLecture.getRLectureRoomList();
+		return lectureRoomProps.getUrls().getList();
 	}
 
 	@Override

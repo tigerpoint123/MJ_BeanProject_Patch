@@ -1,0 +1,32 @@
+app:
+  dao:
+    team:
+      methods:
+        insert-team-info: InsertTeamInfo
+        select-class-id: SelectClassID
+        select-user-id-for-team-user: SelectUserIDForTeamUser
+        insert-team-user-info: InsertTeamUserInfo
+        select-lecture-information: SelectLectureInformation
+        select-team-leader-user-id: SelectTeamLeaderUserID
+        select-team-list: SelectTeamList
+        select-class-list: SelectClassList
+        select-class-id-for-check-team: SelectClassIDForCheckTeam
+        select-class-info-for-check-team: SelectClassInfoForCheckTeam
+        select-team-name: SelectTeamName
+        select-team-member-info: SelectTeamMemberInfo
+        select-leader-name: SelectLeaderName
+        select-leader-login-id: SelectLeaderLoginID
+        select-my-team-list: SelectMyTeamList
+        delete-team-member-info: DeleteTeamMemberInfo
+        select-my-team-info: SelectMyTeamInfo
+        select-class-info: SelectClassInfo
+        select-team-board-list-info: SelectTeamBoardListInfo
+        select-team-id-for-document: SelectTeamIDForDocument
+        select-team-id-for-delete: SelectTeamIDForDelete
+        select-class-id-from-team: SelectClassIDFromTeam
+        select-team-name-with-login-user: SelectTeamNameWithLoginUser
+        select-team-id-for-review: SelectTeamIDForReview
+        select-team-member: SelectTeamMember
+        select-team-user-id: SelectTeamUserID
+        insert-user-review: InsertUserReview
+

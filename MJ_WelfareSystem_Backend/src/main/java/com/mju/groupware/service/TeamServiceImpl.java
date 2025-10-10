@@ -3,11 +3,18 @@ package com.mju.groupware.service;
 import com.mju.groupware.dao.TeamDao;
 import com.mju.groupware.dto.*;
 import com.mju.groupware.dto.Class;
+import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.ui.Model;
 
+import java.io.File;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Service
 public class TeamServiceImpl implements TeamService {
@@ -30,170 +37,159 @@ public class TeamServiceImpl implements TeamService {
 	com.mju.groupware.util.UserInfoMethod userInfoMethod;
 
 	@Override
-	public void InsertTeamInfo(Team team) {
-		teamDao.InsertTeamInfo(team);
+	public void insertTeamInfo(Team team) {
+		teamDao.insertTeamInfo(team);
 	}
 
 	@Override
-	public int SelectClassID(Class classInfo) {
-		return teamDao.SelectClassID(classInfo);
+	public int selectClassId(Class classInfo) {
+		return teamDao.selectClassId(classInfo);
 	}
 
 	@Override
-	public int SelectUserIDForTeamUser(User user) {
-		return teamDao.SelectUserIDForTeamUser(user);
+	public int selectUserIdForTeamUser(User user) {
+		return teamDao.selectUserIdForTeamUser(user);
 	}
 
 	@Override
-	public void InsertTeamUserInfo(TeamUser teamUser) {
-		teamDao.InsertTeamUserInfo(teamUser);
+	public void insertTeamUserInfo(TeamUser teamUser) {
+		teamDao.insertTeamUserInfo(teamUser);
 	}
 
 	@Override
-	public List<Class> SelectLectureInfo(String lectureName) {
-        return teamDao.SelectLectureInfo(lectureName);
+	public List<Class> selectLectureInfo(String lectureName) {
+        return teamDao.selectLectureInfo(lectureName);
 	}
 
 	@Override
-	public int SelectTeamLeaderUserID(String name) {
-		return teamDao.SelectTeamLeaderUserID(name);
+	public int selectTeamLeaderUserId(String name) {
+		return teamDao.selectTeamLeaderUserId(name);
 	}
 
 	@Override
-	public List<Team> SelectTeamList() {
-        return teamDao.SelectTeamList();
+	public List<Team> selectTeamList() {
+        return teamDao.selectTeamList();
 	}
 
 	@Override
-	public Class SelectClassList(int classID) {
-        return teamDao.SelectClassList(classID);
+	public Class selectClassList(int classID) {
+        return teamDao.selectClassList(classID);
 	}
 
 	@Override
-	public int SelectClassIDForCheckTeam(int teamID) {
-		return teamDao.SelectClassIDForCheckTeam(teamID);
+	public int selectClassIdForCheckTeam(int teamID) {
+		return teamDao.selectClassIdForCheckTeam(teamID);
 	}
 
 	@Override
-	public List<Class> SelectClassInfoForCheckTeam(int classID) {
-		return teamDao.SelectClassInfoForCheckTeam(classID);
+	public List<Class> selectClassInfoForCheckTeam(int classID) {
+		return teamDao.selectClassInfoForCheckTeam(classID);
 	}
 
 	@Override
-	public String SelectTeamName(int teamID) {
-		return teamDao.SelectTeamName(teamID);
+	public String selectTeamName(int teamID) {
+		return teamDao.selectTeamName(teamID);
 	}
 
 	@Override
-	public List<TeamUser> SelectTeamMemberInfo(int teamID) {
-		return teamDao.SelectTeamMemberInfo(teamID);
+	public List<TeamUser> selectTeamMemberInfo(int teamID) {
+		return teamDao.selectTeamMemberInfo(teamID);
 	}
 
 	@Override
-	public String SelectLeaderName(int userID) {
-		return teamDao.SelectLeaderName(userID);
+	public String selectLeaderName(int userID) {
+		return teamDao.selectLeaderName(userID);
 	}
 
 	@Override
-	public String SelectLeaderLoginID(int userID) {
-		return teamDao.SelectLeaderLoginID(userID);
+	public String selectLeaderLoginId(int userID) {
+		return teamDao.selectLeaderLoginId(userID);
 	}
 
 	@Override
-	public List<TeamUser> SelectMyTeamList(String loginID) {
-		return teamDao.SelectMyTeamList(loginID);
+	public List<TeamUser> selectMyTeamList(String loginID) {
+		return teamDao.selectMyTeamList(loginID);
 	}
 
 	@Override
-	public void DeleteTeamMemberInfo(int teamID) {
-		teamDao.DeleteTeamMemberInfo(teamID);
+	public void deleteTeamMemberInfo(int teamID) {
+		teamDao.deleteTeamMemberInfo(teamID);
 	}
 
 	@Override
-	public List<Team> SelectMyTeamInfo(int teamID) {
-		return teamDao.SelectMyTeamInfo(teamID);
+	public List<Team> selectMyTeamInfo(int teamID) {
+		return teamDao.selectMyTeamInfo(teamID);
 	}
 
 	@Override
-	public List<Class> SelectClassInfo(int classID) {
-		return teamDao.SelectClassInfo(classID);
+	public List<Class> selectClassInfo(int classID) {
+		return teamDao.selectClassInfo(classID);
 	}
 	
 	@Override
-	public List<TeamBoard> SelectTeamBoardListInfo(String teamID) {
-		return teamDao.SelectTeamBoardListInfo(teamID);
+	public List<TeamBoard> selectTeamBoardListInfo(String teamID) {
+		return teamDao.selectTeamBoardListInfo(teamID);
 	}
 
 	@Override
-	public String SelectTeamIDForDocument(String userID) {
-		return teamDao.SelectTeamIDForDocument(userID);
+	public Integer selectClassIdFromTeam(Integer teamID) {
+		return teamDao.selectClassIdFromTeam(teamID);
 	}
 
 	@Override
-	public String SelectTeamIDForDelete(String tUserID) {
-		return teamDao.SelectTeamIDForDelete(tUserID);
+	public List<Integer> selectTeamNameWithLoginUser(String name) {
+		return teamDao.selectTeamNameWithLoginUser(name);
 	}
 
 	@Override
-	public Integer SelectClassIDFromTeam(Integer teamID) {
-		return teamDao.SelectClassIDFromTeam(teamID);
+	public String selectTeamIdForReview(String teamName) {
+		return teamDao.selectTeamIdForReview(teamName);
 	}
 
 	@Override
-	public List<Integer> SelectTeamNameWithLoginUser(String name) {
-		return teamDao.SelectTeamNameWithLoginUser(name);
+	public List<TeamUser> selectTeamMember(String teamID) {
+		return teamDao.selectTeamMember(teamID);
 	}
 
 	@Override
-	public String SelectTeamIDForReview(String teamName) {
-		return teamDao.SelectTeamIDForReview(teamName);
+	public String selectTeamUserId(String userLoginID) {
+		return teamDao.selectTeamUserId(userLoginID);
 	}
 
 	@Override
-	public List<TeamUser> SelectTeamMember(String teamID) {
-		return teamDao.SelectTeamMember(teamID);
+	public void insertUserReview(UserReview userReview) {
+		teamDao.insertUserReview(userReview);
 	}
 
 	@Override
-	public String SelectTeamUserID(String userLoginID) {
-		return teamDao.SelectTeamUserID(userLoginID);
+	public String selectTeamLeaderLoginId(String teamID) {
+		return teamDao.selectTeamLeaderLoginId(teamID);
 	}
 
 	@Override
-	public void InsertUserReview(UserReview userReview) {
-		teamDao.InsertUserReview(userReview);
+	public void deleteTeam(String teamID) {
+		teamDao.deleteTeam(teamID);
 	}
 
 	@Override
-	public String SelectTeamLeaderLoginID(String teamID) {
-		return teamDao.SelectTeamLeaderLoginID(teamID);
+	public String selectWriterUserId(String name) {
+		return teamDao.selectWriterUserId(name);
 	}
 
 	@Override
-	public void DeleteTeam(String teamID) {
-		teamDao.DeleteTeam(teamID);
+	public int selectColumnCount(UserReview userReview) {
+		return teamDao.selectColumnCount(userReview);
 	}
 
 	@Override
-	public String SelectWriterUserID(String name) {
-		return teamDao.SelectWriterUserID(name);
-	}
-
-	@Override
-	public int SelectColumnCount(UserReview userReview) {
-		return teamDao.SelectColumnCount(userReview);
-	}
-
-	@Override
-	public String SelectTeamNameWithTeamID(int teamID) {
-		// TODO Auto-generated method stub
-		return teamDao.SelectTeamNameWithTeamID(teamID);
+	public String selectTeamNameWithTeamId(int teamID) {
+		return teamDao.selectTeamNameWithTeamId(teamID);
 	}
 
 	@Override
 	public List<MergeTeam> getMyTeamList(String loginID) {
 		// teamID를 통해 classID가져오기
-		List<TeamUser> teamUserListInfo = SelectMyTeamList(loginID);
+		List<TeamUser> teamUserListInfo = selectMyTeamList(loginID);
 		
 		// mysql team table에 정보를 받아온다.
 		// team table에 정보 중 가장 중요한 것은 teamID이다.
@@ -208,19 +204,19 @@ public class TeamServiceImpl implements TeamService {
 		
 		// ibatis에서는 reMapResult가 있었지만 mybatis에서는 해당 기능이 지원되지 않아 teamListInfo2에 초기화되는
 		// 정보를 저장시킨다.
-		List<Team> teamListInfo2 = new java.util.ArrayList<>();
+		List<Team> teamListInfo2 = new ArrayList<>();
 		for (int i = 0; i < teamUserListInfo.size(); i++) {
-			List<Team> teamListInfo = SelectMyTeamInfo(teamUserListInfo.get(i).getTeamID());
+			List<Team> teamListInfo = selectMyTeamInfo(teamUserListInfo.get(i).getTeamID());
 			teamListInfo2.add(teamListInfo.get(0));
 		}
 		
-		List<Class> classInfo2 = new java.util.ArrayList<>();
+		List<Class> classInfo2 = new ArrayList<>();
 		for (int i = 0; i < teamListInfo2.size(); i++) {
-			List<Class> classInfo = SelectClassInfo(teamListInfo2.get(i).getClassID());
+			List<Class> classInfo = selectClassInfo(teamListInfo2.get(i).getClassID());
 			classInfo2.add(classInfo.get(0));
 		}
 		
-		List<MergeTeam> mergeInfo = new java.util.ArrayList<>();
+		List<MergeTeam> mergeInfo = new ArrayList<>();
 		for (int i = 0; i < classInfo2.size(); i++) {
 			MergeTeam mergeTeam = new MergeTeam();
 			mergeTeam.setTeamID(Integer.toString(teamListInfo2.get(i).getTeamID()));
@@ -234,8 +230,8 @@ public class TeamServiceImpl implements TeamService {
 	}
 
 	@Override
-	public java.util.HashMap<String, Object> getDocumentContent(String loginID, String tBoardID, String teamID) {
-		java.util.HashMap<String, Object> result = new java.util.HashMap<>();
+	public HashMap<String, Object> getDocumentContent(String loginID, String tBoardID, String teamID) {
+		HashMap<String, Object> result = new HashMap<>();
 		
 		// TBoardID select
 		TeamBoard teamBoard = boardService.SelectTeamBoardContent(tBoardID);
@@ -256,13 +252,13 @@ public class TeamServiceImpl implements TeamService {
 		
 		// 작성자로그인아이디
 		String tWriter = boardService.SelectWriterID(teamBoard);
-		String tWriterID = userService.SelectTWriterID(tWriter);
+		String tWriterID = userService.selectTWriterID(tWriter);
 		
 		result.put("TUserID", tUserID);
 		result.put("TUserIDFromWriter", tWriterID);
 		
 		// 파일 리스트
-		java.util.List<java.util.Map<String, Object>> teamBoardFile = boardService.SelectTeamBoardFileList(Integer.parseInt(tBoardID));
+		List<Map<String, Object>> teamBoardFile = boardService.SelectTeamBoardFileList(Integer.parseInt(tBoardID));
 		result.put("TeamBoardFile", teamBoardFile);
 		result.put("TeamIDFinal", teamID);
 		
@@ -270,7 +266,7 @@ public class TeamServiceImpl implements TeamService {
 	}
 
 	@Override
-	public void setDocumentContentAttributes(String loginID, String tBoardID, String teamID, org.springframework.ui.Model model) {
+	public void setDocumentContentAttributes(String loginID, String tBoardID, String teamID, Model model) {
 		HashMap<String, Object> documentContent = getDocumentContent(loginID, tBoardID, teamID);
 		
 		// Model에 모든 데이터 설정
@@ -287,20 +283,20 @@ public class TeamServiceImpl implements TeamService {
 	}
 
 	@Override
-	public void postDocumentWrite(String loginID, String teamID, String boardSubject, String boardContent, jakarta.servlet.http.HttpServletRequest request) {
+	public void postDocumentWrite(String loginID, String teamID, String boardSubject, String boardContent, HttpServletRequest request) {
 		// DB에 정보저장하기
 		TeamBoard teamBoard = new TeamBoard();
 		
 		// 작성자 select
-		String documentWriter = userService.SelectWriter(loginID);
+		String documentWriter = userService.selectWriter(loginID);
 		teamBoard.setTBoardSubject(boardSubject);
 		teamBoard.setTBoardContent(boardContent);
 		teamBoard.setTBoardWriter(documentWriter);
 		teamBoard.setTUserLoginID(loginID);
 		teamBoard.setTeamID(teamID);
 		
-		java.util.Date now = new java.util.Date();
-		java.text.SimpleDateFormat dateFormat = new java.text.SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+		Date now = new Date();
+		SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 		teamBoard.setTBoardDate(dateFormat.format(now));
 		
 		boardService.InsertTeamDocument(teamBoard, request);
@@ -320,7 +316,7 @@ public class TeamServiceImpl implements TeamService {
 		result.put("TBoardID", tBoardID);
 		
 		// 수정된 file을 보여주는곳
-		List<java.util.Map<String, Object>> teamBoardFile = boardService.SelectTeamBoardFileList(Integer.parseInt(tBoardID));
+		List<Map<String, Object>> teamBoardFile = boardService.SelectTeamBoardFileList(Integer.parseInt(tBoardID));
 		result.put("TeamBoardFile", teamBoardFile);
 		result.put("TeamID", teamID);
 		
@@ -328,7 +324,7 @@ public class TeamServiceImpl implements TeamService {
 	}
 
 	@Override
-	public void setDocumentModifyAttributes(String tBoardID, String teamID, org.springframework.ui.Model model) {
+	public void setDocumentModifyAttributes(String tBoardID, String teamID, Model model) {
 		HashMap<String, Object> documentModify = getDocumentModify(tBoardID, teamID);
 		
 		// Model에 모든 데이터 설정
@@ -344,16 +340,16 @@ public class TeamServiceImpl implements TeamService {
 
 	@Override
 	public void updateDocumentModify(String loginID, String tBoardID, String title, String content, 
-	                                 String[] fileDeleteList, String[] fileDeleteNameList, jakarta.servlet.http.HttpServletRequest request) {
+	                                 String[] fileDeleteList, String[] fileDeleteNameList, HttpServletRequest request) {
 		TeamBoard teamBoard = new TeamBoard();
 		
-		java.util.Date now = new java.util.Date();
-		java.text.SimpleDateFormat dateFormat = new java.text.SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+		Date now = new Date();
+		SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 		int tBoardIDInt = Integer.parseInt(tBoardID);
 		
 		// 로그인 한 아이디
-		int userID = userService.SelectUserIDFromBoardController(loginID);
-		String userName = userService.SelectUserName(loginID);
+		int userID = userService.selectUserIDFromBoardController(loginID);
+		String userName = userService.selectUserName(loginID);
 		
 		// 수정할 내용 set
 		teamBoard.setTBno(tBoardIDInt);
@@ -369,17 +365,17 @@ public class TeamServiceImpl implements TeamService {
 	}
 
 	@Override
-	public HashMap<String, Object> getFileDownloadData(java.util.Map<String, Object> fileInfoMap, String filePath) {
+	public HashMap<String, Object> getFileDownloadData(Map<String, Object> fileInfoMap, String filePath) {
 		HashMap<String, Object> result = new HashMap<>();
 		
-		java.util.Map<String, Object> resultMap = boardService.SelectTeamBoardFileInfo(fileInfoMap);
+		Map<String, Object> resultMap = boardService.SelectTeamBoardFileInfo(fileInfoMap);
 		String storedFileName = (String) resultMap.get("TStoredFileName");
 		String originalFileName = (String) resultMap.get("TOriginalFileName");
 		
 		try {
 			// 파일을 저장했던 위치에서 첨부파일을 읽어 byte[]형식으로 변환한다.
 			byte[] fileBytes = org.apache.commons.io.FileUtils
-					.readFileToByteArray(new java.io.File(filePath + storedFileName));
+					.readFileToByteArray(new File(filePath + storedFileName));
 			
 			result.put("fileBytes", fileBytes);
 			result.put("originalFileName", originalFileName);
@@ -397,26 +393,26 @@ public class TeamServiceImpl implements TeamService {
 	}
 
 	@Override
-	public void setSearchLectureAttributes(String lectureName, org.springframework.ui.Model model) {
+	public void setSearchLectureAttributes(String lectureName, Model model) {
 		// 유저 정보
 		model.addAttribute("LectureName", lectureName);
 	}
 
 	@Override
-	public boolean setCreateTeamAttributes(String loginID, String lectureName, org.springframework.ui.Model model,
+	public boolean setCreateTeamAttributes(String loginID, String lectureName, Model model,
 	                                       String studentRole, String professorRole, String administratorRole) {
 		// 유저 정보
 		// 로그인 한 아이디
-		java.util.ArrayList<String> selectUserProfileInfo = new java.util.ArrayList<>();
+		ArrayList<String> selectUserProfileInfo = new ArrayList<>();
 		selectUserProfileInfo = userService.selectUserProfileInfo(loginID);
 		
 		if (selectUserProfileInfo.get(2).equals(studentRole)) {
-			java.util.ArrayList<String> studentInfo = new java.util.ArrayList<>();
+			ArrayList<String> studentInfo = new ArrayList<>();
 			studentInfo = studentService.selectStudentProfileInfo(selectUserProfileInfo.get(1));
 			
 			userInfoMethod.studentInfo(model, selectUserProfileInfo, studentInfo);
 		} else if (selectUserProfileInfo.get(2).equals(professorRole)) {
-			java.util.ArrayList<String> professorInfo = new java.util.ArrayList<>();
+			ArrayList<String> professorInfo = new ArrayList<>();
 			professorInfo = professorService.selectProfessorProfileInfo(selectUserProfileInfo.get(1));
 			
 			userInfoMethod.professorInfo(model, selectUserProfileInfo, professorInfo);
@@ -430,13 +426,13 @@ public class TeamServiceImpl implements TeamService {
 		model.addAttribute("TeamLeaderID", loginID);
 		model.addAttribute("TeamLeaderName", userName);
 		
-		List<com.mju.groupware.dto.Class> lectureInfo = SelectLectureInfo(lectureName);
+		List<Class> lectureInfo = selectLectureInfo(lectureName);
 		
 		if (lectureInfo.isEmpty()) {
 			return false;
 		}
 		
-		List<String> allInfo = new java.util.ArrayList<>();
+		List<String> allInfo = new ArrayList<>();
 		for (int i = 0; i < lectureInfo.size(); i++) {
 			String allInformation = lectureInfo.get(i).getClassName() + " "
 					+ lectureInfo.get(i).getClassProfessorName();
@@ -453,16 +449,16 @@ public class TeamServiceImpl implements TeamService {
 		// class 정보
 		String[] words = lectureWithProfessor.split("\\s");
 		// 팀원 정보
-		java.util.Date now = new java.util.Date();
-		java.text.SimpleDateFormat dateFormat = new java.text.SimpleDateFormat("yyyy-MM-dd");
+		Date now = new Date();
+		SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
 		
-		com.mju.groupware.dto.Class classInfo = new com.mju.groupware.dto.Class();
+		Class classInfo = new Class();
 		classInfo.setClassName(words[0]);
 		classInfo.setClassProfessorName(words[1]);
-		int classID = SelectClassID(classInfo);
-		int leaderUserID = SelectTeamLeaderUserID(loginID);
-		String leaderName = SelectLeaderName(leaderUserID);
-		String leaderLoginID = SelectLeaderLoginID(leaderUserID);
+		int classID = selectClassId(classInfo);
+		int leaderUserID = selectTeamLeaderUserId(loginID);
+		String leaderName = selectLeaderName(leaderUserID);
+		String leaderLoginID = selectLeaderLoginId(leaderUserID);
 		
 		Team team = new Team();
 		team.setTeamName(teamName);
@@ -477,61 +473,61 @@ public class TeamServiceImpl implements TeamService {
 			User user = new User();
 			user.setUserLoginID(studentIDs[i]);
 			user.setUserName(studentNames[i]);
-			int userID = SelectUserIDForTeamUser(user);
+			int userID = selectUserIdForTeamUser(user);
 			
 			if (userID == 0) {
 				return "UserNotFound";
 			}
 			
 			if (!checker) {
-				InsertTeamInfo(team);
+				insertTeamInfo(team);
 				TeamUser teamUser = new TeamUser();
 				teamUser.setUserLoginID(leaderLoginID);
 				teamUser.setTeamID(team.getTeamID());
 				teamUser.setUserID(leaderUserID);
 				teamUser.setUserName(leaderName);
-				InsertTeamUserInfo(teamUser);
+				insertTeamUserInfo(teamUser);
 				checker = true;
 			}
 			
-			String memberName = SelectLeaderName(userID);
-			String memberLoginID = SelectLeaderLoginID(userID);
+			String memberName = selectLeaderName(userID);
+			String memberLoginID = selectLeaderLoginId(userID);
 			
 			TeamUser teamUser = new TeamUser();
 			teamUser.setTeamID(team.getTeamID());
 			teamUser.setUserID(userID);
 			teamUser.setUserLoginID(memberLoginID);
 			teamUser.setUserName(memberName);
-			InsertTeamUserInfo(teamUser);
+			insertTeamUserInfo(teamUser);
 		}
 		
 		return null;
 	}
 
 	@Override
-	public void setCheckTeamAttributes(String loginID, int teamID, org.springframework.ui.Model model) {
+	public void setCheckTeamAttributes(String loginID, int teamID, Model model) {
 		// 팀 아이디를 넘겨 받음
-		String teamLeaderID = SelectTeamLeaderLoginID(Integer.toString(teamID));
+		String teamLeaderID = selectTeamLeaderLoginId(Integer.toString(teamID));
 		model.addAttribute("UserLoginID", loginID);
 		model.addAttribute("TeamLeaderID", teamLeaderID);
 		
-		int classID = SelectClassIDForCheckTeam(teamID);
+		int classID = selectClassIdForCheckTeam(teamID);
 		// 과목명, 교수
-		List<Class> lectureList = SelectClassInfoForCheckTeam(classID);
+		List<Class> lectureList = selectClassInfoForCheckTeam(classID);
 		// 팀이름
-		String teamName = SelectTeamName(teamID);
+		String teamName = selectTeamName(teamID);
 		model.addAttribute("LectureName", lectureList.get(0).getClassName());
 		model.addAttribute("LectureProfessor", lectureList.get(0).getClassProfessorName());
 		model.addAttribute("TeamName", teamName);
 		
-		List<TeamUser> memberList = SelectTeamMemberInfo(teamID);
+		List<TeamUser> memberList = selectTeamMemberInfo(teamID);
 		model.addAttribute("teamList", memberList);
 		model.addAttribute("TeamID", teamID);
 	}
 
 	@Override
 	public boolean isTeamMember(String loginID, int teamID) {
-		List<TeamUser> memberList = SelectTeamMemberInfo(teamID);
+		List<TeamUser> memberList = selectTeamMemberInfo(teamID);
 		
 		// 팀에 소속되지 않으면 못 들어가게 막기
 		// 소속됐는데 팀장일 경우
@@ -551,17 +547,17 @@ public class TeamServiceImpl implements TeamService {
 
 	@Override
 	public List<MergeTeam> getAllTeamList() {
-		List<Team> teamList = SelectTeamList();
+		List<Team> teamList = selectTeamList();
 		
 		if (teamList.isEmpty()) {
-			return new java.util.ArrayList<>();
+			return new ArrayList<>();
 		}
 		
-		List<MergeTeam> allInfo = new java.util.ArrayList<>();
-		List<Class> classInfo = new java.util.ArrayList<>();
+		List<MergeTeam> allInfo = new ArrayList<>();
+		List<Class> classInfo = new ArrayList<>();
 		
 		for (int i = 0; i < teamList.size(); i++) {
-			Class dtoClass = SelectClassList(teamList.get(i).getClassID());
+			Class dtoClass = selectClassList(teamList.get(i).getClassID());
 			classInfo.add(dtoClass);
 			
 			MergeTeam mergeTeam = new MergeTeam();
@@ -580,7 +576,7 @@ public class TeamServiceImpl implements TeamService {
 	}
 
 	@Override
-	public void setTeamListAttributes(org.springframework.ui.Model model) {
+	public void setTeamListAttributes(Model model) {
 		List<MergeTeam> teamList = getAllTeamList();
 		
 		if (!teamList.isEmpty()) {
@@ -589,13 +585,13 @@ public class TeamServiceImpl implements TeamService {
 	}
 
 	@Override
-	public void setModifyTeamAttributes(int teamID, org.springframework.ui.Model model) {
-		List<TeamUser> memberList = SelectTeamMemberInfo(teamID);
-		int classID = SelectClassIDForCheckTeam(teamID);
+	public void setModifyTeamAttributes(int teamID, Model model) {
+		List<TeamUser> memberList = selectTeamMemberInfo(teamID);
+		int classID = selectClassIdForCheckTeam(teamID);
 		// 과목명, 교수
-		List<Class> lectureList = SelectClassInfoForCheckTeam(classID);
+		List<Class> lectureList = selectClassInfoForCheckTeam(classID);
 		// 팀이름
-		String teamName = SelectTeamName(teamID);
+		String teamName = selectTeamName(teamID);
 		
 		model.addAttribute("LectureName", lectureList.get(0).getClassName());
 		model.addAttribute("LectureProfessor", lectureList.get(0).getClassProfessorName());
@@ -606,15 +602,15 @@ public class TeamServiceImpl implements TeamService {
 
 	@Override
 	public void updateTeamMembers(int teamID, String[] studentIDs, String[] studentNames) {
-		DeleteTeamMemberInfo(teamID);
+		deleteTeamMemberInfo(teamID);
 		
 		for (int i = 0; i < studentIDs.length; i++) {
 			User user = new User();
 			user.setUserLoginID(studentIDs[i]);
 			user.setUserName(studentNames[i]);
-			int userID = SelectUserIDForTeamUser(user);
-			String memberName = SelectLeaderName(userID);
-			String memberLoginID = SelectLeaderLoginID(userID);
+			int userID = selectUserIdForTeamUser(user);
+			String memberName = selectLeaderName(userID);
+			String memberLoginID = selectLeaderLoginId(userID);
 			
 			TeamUser teamUser = new TeamUser();
 			teamUser.setTeamID(teamID);
@@ -622,22 +618,22 @@ public class TeamServiceImpl implements TeamService {
 			teamUser.setUserLoginID(memberLoginID);
 			teamUser.setUserName(memberName);
 			
-			InsertTeamUserInfo(teamUser);
+			insertTeamUserInfo(teamUser);
 		}
 	}
 
 	@Override
-	public void setSearchMyTeamAttributes(String loginID, org.springframework.ui.Model model) {
-		List<String> teamList = new java.util.ArrayList<>();
+	public void setSearchMyTeamAttributes(String loginID, Model model) {
+		List<String> teamList = new ArrayList<>();
 		// teamUser
-		List<Integer> teamIDList = SelectTeamNameWithLoginUser(loginID);
-		java.util.ArrayList<String> teamNameList = new java.util.ArrayList<>();
-		java.util.ArrayList<Integer> classList = new java.util.ArrayList<>();
+		List<Integer> teamIDList = selectTeamNameWithLoginUser(loginID);
+		ArrayList<String> teamNameList = new ArrayList<>();
+		ArrayList<Integer> classList = new ArrayList<>();
 		
 		for (int i = 0; i < teamIDList.size(); i++) {
-			String teamName = SelectTeamNameWithTeamID(teamIDList.get(i));
+			String teamName = selectTeamNameWithTeamId(teamIDList.get(i));
 			// team
-			Integer classID = SelectClassIDFromTeam(teamIDList.get(i));
+			Integer classID = selectClassIdFromTeam(teamIDList.get(i));
 			if (classID != null) {
 				classList.add(classID);
 			}
@@ -646,10 +642,10 @@ public class TeamServiceImpl implements TeamService {
 		
 		for (int i = 0; i < classList.size(); i++) {
 			// class 정보 전체
-			List<Class> classInfo = SelectClassInfo(classList.get(i));
+			List<Class> classInfo = selectClassInfo(classList.get(i));
 			String className = classInfo.get(0).getClassName();
 			String classProfessorName = classInfo.get(0).getClassProfessorName();
-			List<String> tempList = new java.util.ArrayList<>();
+			List<String> tempList = new ArrayList<>();
 			tempList.add(teamNameList.get(i));
 			tempList.add(className);
 			tempList.add(classProfessorName);
@@ -661,14 +657,14 @@ public class TeamServiceImpl implements TeamService {
 	}
 
 	@Override
-	public void setReviewWriteAttributes(String selectedTeam, String userName, org.springframework.ui.Model model) {
+	public void setReviewWriteAttributes(String selectedTeam, String userName, Model model) {
 		String[] teamName = selectedTeam.split("\\s");
-		String teamID = SelectTeamIDForReview(teamName[0]);
-		List<TeamUser> memberList = SelectTeamMember(teamID);
-		List<String> teamMemberList = new java.util.ArrayList<>();
+		String teamID = selectTeamIdForReview(teamName[0]);
+		List<TeamUser> memberList = selectTeamMember(teamID);
+		List<String> teamMemberList = new ArrayList<>();
 		
 		for (int i = 0; i < memberList.size(); i++) {
-			List<String> teamMember = new java.util.ArrayList<>();
+			List<String> teamMember = new ArrayList<>();
 			if (!memberList.get(i).getUserName().equals(userName)) {
 				teamMember.add(memberList.get(i).getUserName());
 				teamMember.add(memberList.get(i).getUserLoginID());
@@ -686,17 +682,17 @@ public class TeamServiceImpl implements TeamService {
 	@Override
 	public String writeReview(String loginID, String selectedTeam, String teamMember, 
 	                         String positive, String contribute, String respect, String flexible) {
-		String writerUserID = SelectWriterUserID(loginID);
+		String writerUserID = selectWriterUserId(loginID);
 		String[] teamName = selectedTeam.split("\\s");
 		String[] teamMemberInfo = teamMember.split("\\s");
 		String userLoginID = teamMemberInfo[1];
 		
-		java.util.Date now = new java.util.Date();
-		java.text.SimpleDateFormat dateFormat = new java.text.SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+		Date now = new Date();
+		SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 		
 		UserReview userReview = new UserReview();
 		userReview.setReviewDate(dateFormat.format(now));
-		userReview.setUserID(SelectTeamUserID(userLoginID));
+		userReview.setUserID(selectTeamUserId(userLoginID));
 		userReview.setPositive(positive);
 		userReview.setContribute(contribute);
 		userReview.setRespect(respect);
@@ -706,10 +702,10 @@ public class TeamServiceImpl implements TeamService {
 		userReview.setWriterUserID(writerUserID);
 		userReview.setTeamName(teamName[0]);
 		
-		int count = SelectColumnCount(userReview);
+		int count = selectColumnCount(userReview);
 		
 		if (count == 0) {
-			InsertUserReview(userReview);
+			insertUserReview(userReview);
 			return "Complete";
 		}
 		

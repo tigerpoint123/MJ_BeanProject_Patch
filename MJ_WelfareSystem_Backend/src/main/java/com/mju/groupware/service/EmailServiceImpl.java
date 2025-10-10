@@ -1,26 +1,23 @@
 package com.mju.groupware.service;
 
-import java.util.List;
-import java.util.Random;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-
 import com.mju.groupware.dao.UserDao;
 import com.mju.groupware.dto.User;
 import com.mju.groupware.dto.UserEmail;
 import com.mju.groupware.email.Email;
 import com.mju.groupware.email.EmailImpl;
+import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Service;
+
+import java.util.List;
+import java.util.Random;
 
 @Service
+@RequiredArgsConstructor
 public class EmailServiceImpl implements EmailService {
 
-	@Autowired
-	private UserDao emailDao;
-	@Autowired
-	private EmailImpl emailImpl;
-	@Autowired
-	private Email email;
+	private final UserDao emailDao;
+	private final EmailImpl emailImpl;
+	private final Email email;
 
 	private String Email;
 	private int Num;
@@ -51,7 +48,7 @@ public class EmailServiceImpl implements EmailService {
 	public boolean SelectForEmailDuplicateCheck(User user) {
 		// 이메일 중복
 		boolean EmailChecker;
-		EmailChecker = emailDao.SelectForEmailDuplicateCheck(user);
+		EmailChecker = emailDao.selectForEmailDuplicateCheck(user);
 		return EmailChecker;
 	}
 
@@ -77,7 +74,7 @@ public class EmailServiceImpl implements EmailService {
 		user.setUserEmail(userEmail);
 		
 		// 이메일 중복검사 (등록된 이메일인지 확인)
-		boolean emailCheck = emailDao.SelectForEmailDuplicateCheck(user);
+		boolean emailCheck = emailDao.selectForEmailDuplicateCheck(user);
 		
 		if (!emailCheck) {
 			return "등록되지 않은 이메일입니다.";

@@ -1,6 +1,6 @@
 package com.mju.groupware.controller;
 
-import com.mju.groupware.constant.ConstantScheduleController;
+import global.properties.ScheduleProperties;
 import com.mju.groupware.dto.Calender;
 import com.mju.groupware.service.ProfessorService;
 import com.mju.groupware.service.ScheduleService;
@@ -14,8 +14,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.context.annotation.ComponentScan;
-import org.springframework.context.annotation.FilterType;
 import org.springframework.context.annotation.Import;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.TestPropertySource;
@@ -29,13 +27,20 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@WebMvcTest(controllers = ScheduleController.class,
-        excludeFilters = @ComponentScan.Filter(type = FilterType.ASSIGNABLE_TYPE, classes = GlobalUserModelAdvice.class))
+@WebMvcTest(controllers = ScheduleController.class)
 @AutoConfigureMockMvc(addFilters = false)
 @TestPropertySource(properties = {
-        "spring.main.allow-bean-definition-overriding=true"
+        "spring.main.allow-bean-definition-overriding=true",
+        "app.schedule.roles.student=STUDENT",
+        "app.schedule.roles.professor=PROFESSOR",
+        "app.schedule.roles.administrator=ADMINISTRATOR",
+        "app.schedule.urls.schedule=/schedule/schedule",
+        "app.schedule.params.user-id=UserId",
+        "app.schedule.params.schedule-id=scheduleID",
+        "app.schedule.params.start=start",
+        "app.schedule.params.end=end"
 })
-@Import(TestMvcSharedConfig.class)
+@Import({TestMvcSharedConfig.class, ScheduleProperties.class})
 class ScheduleControllerWebMvcTest {
 
     @Autowired
@@ -46,22 +51,15 @@ class ScheduleControllerWebMvcTest {
     @MockBean private StudentService studentService;
     @MockBean private ProfessorService professorService;
     @MockBean private UserInfoMethod userInfoMethod;
-    @MockBean private ConstantScheduleController constant;
+    @Autowired private ScheduleProperties scheduleProps;
 
     @BeforeEach
     void setupCommon() {
         given(userService.selectUserProfileInfo("testUser"))
                 .willReturn(new ArrayList<>(Arrays.asList("Name", "UID123", "STUDENT")));
         given(scheduleService.selectUserIdForCalender("testUser")).willReturn(1);
-        given(constant.getUserID()).willReturn("UserID");
-        given(constant.getSRole()).willReturn("STUDENT");
-        given(constant.getPRole()).willReturn("PROFESSOR");
-        given(constant.getARole()).willReturn("ADMINISTRATOR");
-        given(constant.getSchedule()).willReturn("schedule/mySchedule");
-        given(constant.getUserID()).willReturn("UserID");
-        given(constant.getScheduleID()).willReturn("ScheduleID");
-        given(constant.getStart()).willReturn("start");
-        given(constant.getEnd()).willReturn("end");
+        
+        // ScheduleProperties는 @TestPropertySource를 통해 자동으로 설정됨
     }
 
     @Test

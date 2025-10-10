@@ -1,10 +1,8 @@
 package com.mju.groupware.controller;
 
-import com.mju.groupware.constant.ConstantAdminBoardController;
+import global.properties.BoardProperties;
 import com.mju.groupware.service.*;
 import com.mju.groupware.util.UserInfoMethod;
-import global.config.AdminXmlConfig;
-import global.config.BoardXmlConfig;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -12,8 +10,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.context.annotation.ComponentScan;
-import org.springframework.context.annotation.FilterType;
 import org.springframework.context.annotation.Import;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.web.servlet.MockMvc;
@@ -29,21 +25,30 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@WebMvcTest(
-        controllers = BoardController.class,
-        excludeFilters = {
-                @ComponentScan.Filter(type = FilterType.ASSIGNABLE_TYPE, classes = {
-                        AdminXmlConfig.class,
-                        BoardXmlConfig.class
-                }),
-                @ComponentScan.Filter(type = FilterType.ASSIGNABLE_TYPE, classes = GlobalUserModelAdvice.class)
-        }
-)
+@WebMvcTest(controllers = BoardController.class)
 @AutoConfigureMockMvc(addFilters = false)
 @TestPropertySource(properties = {
-        "spring.main.allow-bean-definition-overriding=true"
+        "spring.main.allow-bean-definition-overriding=true",
+        "app.board.roles.student=STUDENT",
+        "app.board.roles.professor=PROFESSOR",
+        "app.board.roles.administrator=ADMINISTRATOR",
+        "app.board.urls.inquiry.list=/board/inquiryList",
+        "app.board.urls.inquiry.content=/board/inquiryContent",
+        "app.board.urls.inquiry.write=/board/inquiryWrite",
+        "app.board.urls.notice.list=/board/noticeList",
+        "app.board.urls.notice.write=/board/noticeWrite",
+        "app.board.urls.notice.modify=/board/noticeModify",
+        "app.board.urls.notice.content=/board/noticeContent",
+        "app.board.urls.community.list=/board/communityList",
+        "app.board.urls.community.write=/board/communityWrite",
+        "app.board.urls.community.modify=/board/communityModify",
+        "app.board.urls.community.content=/board/communityContent",
+        "app.board.redirects.inquiry-list=redirect:/inquiryList",
+        "app.board.redirects.notice-list=redirect:/noticeList",
+        "app.board.redirects.community-list=redirect:/communityList",
+        "app.board.file-path=D:\\\\groupware\\\\"
 })
-@Import(TestMvcSharedConfig.class)
+@Import({TestMvcSharedConfig.class, BoardProperties.class})
 class BoardControllerWebMvcTest {
     @Autowired
     private MockMvc mockMvc;
@@ -54,7 +59,7 @@ class BoardControllerWebMvcTest {
     @MockBean private StudentService studentService;
     @MockBean private ProfessorService professorService;
     @MockBean private UserInfoMethod userInfoMethod;
-    @MockBean private ConstantAdminBoardController constant;
+    @Autowired private BoardProperties boardProps;
 
     private Principal testPrincipal;
     
@@ -68,56 +73,12 @@ class BoardControllerWebMvcTest {
                 .willReturn(new ArrayList<>(Arrays.asList("name", "someId", "UNKNOWN_ROLE")));
         
         // 공통 사용자 서비스 Mock 설정
-        given(userService.SelectUserIDFromBoardController("testUser")).willReturn(1);
-        given(userService.SelectUserName("testUser")).willReturn("name");
-        given(userService.SelectEmailForInquiry("testUser")).willReturn("email");
-        given(userService.SelectPhoneNumForInquiry("testUser")).willReturn("010");
+        given(userService.selectUserIDFromBoardController("testUser")).willReturn(1);
+        given(userService.selectUserName("testUser")).willReturn("name");
+        given(userService.selectEmailForInquiry("testUser")).willReturn("email");
+        given(userService.selectPhoneNumForInquiry("testUser")).willReturn("010");
         
-        // 공통 상수 Mock 설정
-        given(constant.getSTUDENT()).willReturn("STUDENT");
-        given(constant.getPROFESSOR()).willReturn("PROFESSOR");
-        given(constant.getADMINISTRATOR()).willReturn("ADMINISTRATOR");
-        
-        // 리다이렉트 상수 Mock 설정
-        given(constant.getRRInquiryList()).willReturn("redirect:/inquiryList");
-        given(constant.getRRNoticeList()).willReturn("redirect:/noticeList");
-        given(constant.getRRCommunityList()).willReturn("redirect:/communityList");
-        given(constant.getRInquiryList()).willReturn("redirect:/inquiryList");
-        given(constant.getRNoticeList()).willReturn("redirect:/noticeList");
-        given(constant.getRCommunityList()).willReturn("redirect:/communityList");
-        
-        // 뷰 상수 Mock 설정
-        given(constant.getRInquiryList()).willReturn("/board/inquiryList");
-        given(constant.getRNoticeList()).willReturn("/board/noticeList");
-        given(constant.getRCommunityList()).willReturn("/board/communityList");
-        given(constant.getRInquiryContent()).willReturn("/board/inquiryContent");
-        given(constant.getRInquiryWrite()).willReturn("/board/inquiryWrite");
-        given(constant.getRNoticeWrite()).willReturn("/board/noticeWrite");
-        given(constant.getRNoticeModify()).willReturn("/board/noticeModify");
-        given(constant.getRNoticeContent()).willReturn("/board/noticeContent");
-        given(constant.getRCommunityWrite()).willReturn("/board/communityWrite");
-        given(constant.getRCommunityModify()).willReturn("/board/communityModify");
-        given(constant.getRCommunityContent()).willReturn("/board/communityContent");
-        
-        // 모델 속성 상수 Mock 설정
-        given(constant.getInquiryTitle()).willReturn("InquiryTitle");
-        given(constant.getInquiryWriter()).willReturn("InquiryWriter");
-        given(constant.getIBoardDate()).willReturn("IBoardDate");
-        given(constant.getInquiryContent()).willReturn("InquiryContent");
-        given(constant.getInquiryEmail()).willReturn("InquiryEmail");
-        given(constant.getInquiryPhoneNum()).willReturn("InquiryPhoneNum");
-        given(constant.getInquiryAnswer()).willReturn("InquiryAnswer");
-        given(constant.getBoardID()).willReturn("BoardID");
-        given(constant.getBoardDate()).willReturn("BoardDate");
-        given(constant.getBoardType()).willReturn("BoardType");
-        given(constant.getUserID()).willReturn("UserID");
-        given(constant.getUserIDFromWriter()).willReturn("UserIDFromWriter");
-        given(constant.getNoticeTitle()).willReturn("NoticeTitle");
-        given(constant.getNoticeWriter()).willReturn("NoticeWriter");
-        given(constant.getNoticeContent()).willReturn("NoticeContent");
-        given(constant.getCommunityTitle()).willReturn("CommunityTitle");
-        given(constant.getCommunityWriter()).willReturn("CommunityWriter");
-        given(constant.getCommunityContent()).willReturn("CommunityContent");
+        // BoardProperties는 @TestPropertySource를 통해 자동으로 설정됨
     }
 
     @Test
@@ -150,13 +111,10 @@ class BoardControllerWebMvcTest {
     @Test
     @DisplayName("GET /inquiryWrite returns 200")
     void inquiryWriteReturnsOk() throws Exception {
-        given(constant.getInquiryWriter()).willReturn("InquiryWriter");
-        given(constant.getInquiryEmail()).willReturn("InquiryEmail");
-        given(constant.getInquiryPhoneNum()).willReturn("InquiryPhoneNum");
         given(inquiryService.SelectInquiryList()).willReturn(Collections.emptyList());
-        given(userService.SelectUserName("testUser")).willReturn("name");
-        given(userService.SelectEmailForInquiry("testUser")).willReturn("email@example.com");
-        given(userService.SelectPhoneNumForInquiry("testUser")).willReturn("010-0000-0000");
+        given(userService.selectUserName("testUser")).willReturn("name");
+        given(userService.selectEmailForInquiry("testUser")).willReturn("email@example.com");
+        given(userService.selectPhoneNumForInquiry("testUser")).willReturn("010-0000-0000");
 
         mockMvc.perform(get("/inquiryWrite").principal(testPrincipal))
                 .andExpect(status().isOk());
@@ -165,10 +123,8 @@ class BoardControllerWebMvcTest {
     @Test
     @DisplayName("GET /noticeWrite returns 200")
     void noticeWriteReturnsOk() throws Exception {
-        given(constant.getNoticeWriter()).willReturn("NoticeWriter");
-        given(constant.getBoardDate()).willReturn("BoardDate");
         given(boardService.SelectNoticeBoardList()).willReturn(Collections.emptyList());
-        given(userService.SelectUserName("testUser")).willReturn("name");
+        given(userService.selectUserName("testUser")).willReturn("name");
 
         mockMvc.perform(get("/noticeWrite").principal(testPrincipal))
                 .andExpect(status().isOk());
@@ -187,15 +143,6 @@ class BoardControllerWebMvcTest {
         given(inquiryService.SelectOneInquiryContent("1")).willReturn(inquiry);
         given(inquiryService.SelectLoginUserIDForInquiry("testUser")).willReturn("uid");
 
-        given(constant.getInquiryTitle()).willReturn("InquiryTitle");
-        given(constant.getInquiryWriter()).willReturn("InquiryWriter");
-        given(constant.getIBoardDate()).willReturn("IBoardDate");
-        given(constant.getInquiryContent()).willReturn("InquiryContent");
-        given(constant.getBoardID()).willReturn("BoardID");
-        given(constant.getInquiryAnswer()).willReturn("InquiryAnswer");
-        given(constant.getUserID()).willReturn("UserID");
-        given(constant.getUserIDFromWriter()).willReturn("UserIDFromWriter");
-
         mockMvc.perform(get("/inquiryContent").param("no", "1").principal(testPrincipal))
                 .andExpect(status().isOk());
     }
@@ -212,11 +159,6 @@ class BoardControllerWebMvcTest {
         board.setBoardType("공지사항");
         given(com.mju.groupware.controller.BoardControllerWebMvcTest.this.boardService.SelectOneNoticeContent("1")).willReturn(board);
         given(com.mju.groupware.controller.BoardControllerWebMvcTest.this.boardService.SelectNoticeFileList(1)).willReturn(Collections.emptyList());
-        given(constant.getNoticeTitle()).willReturn("NoticeTitle");
-        given(constant.getNoticeWriter()).willReturn("NoticeWriter");
-        given(constant.getNoticeContent()).willReturn("NoticeContent");
-        given(constant.getBoardID()).willReturn("BoardID");
-        given(constant.getBoardType()).willReturn("BoardType");
 
         mockMvc.perform(get("/noticeModify").param("boardID", "1").principal(testPrincipal))
                 .andExpect(status().isOk());
@@ -251,10 +193,6 @@ class BoardControllerWebMvcTest {
         board.setBoardID(1);
         given(com.mju.groupware.controller.BoardControllerWebMvcTest.this.boardService.SelectOneCommunityContent("1")).willReturn(board);
         given(com.mju.groupware.controller.BoardControllerWebMvcTest.this.boardService.SelectCommunityFileList(1)).willReturn(Collections.emptyList());
-        given(constant.getCommunityTitle()).willReturn("CommunityTitle");
-        given(constant.getCommunityWriter()).willReturn("CommunityWriter");
-        given(constant.getCommunityContent()).willReturn("CommunityContent");
-        given(constant.getBoardID()).willReturn("BoardID");
 
         mockMvc.perform(get("/communityModify").param("no", "1").principal(testPrincipal))
                 .andExpect(status().isOk());
@@ -271,13 +209,6 @@ class BoardControllerWebMvcTest {
         board.setBoardID(1);
         given(this.boardService.SelectOneCommunityContent("1")).willReturn(board);
         given(this.boardService.SelectLoginUserID("testUser")).willReturn("uid");
-        given(constant.getCommunityTitle()).willReturn("CommunityTitle");
-        given(constant.getCommunityWriter()).willReturn("CommunityWriter");
-        given(constant.getBoardDate()).willReturn("BoardDate");
-        given(constant.getCommunityContent()).willReturn("CommunityContent");
-        given(constant.getBoardID()).willReturn("BoardID");
-        given(constant.getUserID()).willReturn("UserID");
-        given(constant.getUserIDFromWriter()).willReturn("UserIDFromWriter");
 
         mockMvc.perform(get("/communityContent").param("no", "1").principal(testPrincipal))
                 .andExpect(status().isOk());

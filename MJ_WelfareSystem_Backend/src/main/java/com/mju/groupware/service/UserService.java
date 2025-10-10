@@ -10,97 +10,45 @@ import java.util.List;
 
 public interface UserService {
 
-    // 회원가입
-    void InsertForSignUp(User user);
+    String selectForShowPassword(User user);
 
-    // 중복확인
-    boolean SelctForIDConfirm(User user);
+    boolean selectForPwdCheckBeforeModify(String pw, String pw2);
 
-    // 비번 찾기
-    boolean SelectPwdForConfirmToFindPwd(User user);
-
-    // userID(다른 테이블들의 foreign key) 찾기
-    int SelectUserID(Student student);
-
-    int SelectUserID(Professor professor);
-
-    String SelectForShowPassword(User user);
-
-    void UpdateLoginDate(User user);
-
-    String SelectCurrentPwd(String id);
-
-    void UpdatePwd(User user);
-
-    boolean SelectForPwdCheckBeforeModify(String pw, String pw2);
-
-    ArrayList<String> SelectMyPageUserInfo(String userId);
+    ArrayList<String> selectMyPageUserInfo(String userId);
 
     ArrayList<String> selectUserProfileInfo(String loginID);
 
     void updateUserPhoneNumber(User user);
 
-    void UpdateUserMajor(User user);
+    ArrayList<String> selectUserInformation(String userId);
 
-    void UpdateUserColleges(User user);
+    void updateDoWithdrawalRecoveryByAdmin(String ajaxMsg);
 
-    ArrayList<String> SelectUserInformation(String userId);
+    ArrayList<String> selectUserProfileInfoByID(String mysqlID);
 
-    void UpdateTemporaryPwd(User user);
+    void updateUserName(User user);
 
-    void UpdateDoWithdrawalRecoveryByAdmin(String ajaxMsg);
+    void updateOpenPhoneNum(User user);
 
-    void UpdateDormantOneToZero(String id);
+    void updateOpenGrade(User user);
 
-    void UpdateAdminRole(String string, String optionValue);
+    String selectOpenInfo(String userID);
 
-    void UpdateUserRole(String string, String optionValue);
+    int selectUserIDFromBoardController(String userLoginID);
 
-    ArrayList<String> SelectUserProfileInfoByID(String mysqlID);
+    String selectUserName(String userLoginID);
 
-    void UpdateUserName(User user);
+    String selectWriter(String userLoginID);
 
-    void UpdateOpenPhoneNum(User user);
+    String selectTWriterID(String tWriter);
 
-    void UpdateOpenGrade(User user);
+    String selectEmailForInquiry(String userLoginID);
 
-    User SelectUserInfo(String userLoginID);
+    String selectPhoneNumForInquiry(String userLoginID);
 
-    String SelectOpenInfo(String userID);
+    String selectIDForReview(String userLoginID);
 
-    int SelectUserIDFromBoardController(String userLoginID);
-
-    String SelectUserRole(String userLoginID);
-
-    String SelectUserName(String userLoginID);
-
-    void UpdateWithdrawal(User user);
-
-    void UpdateRecoveryWithdrawal(User user);
-
-    void UpdateWithdrawalByDormant(String string);
-
-    boolean SelectDormant(String loginID);
-
-    void UpdateRecoveryDormant(String loginID);
-
-    String SelectWriter(String userLoginID);
-
-    String SelectUserIDForDocument(String userLoginID);
-
-    String SelectTWriterID(String tWriter);
-
-    String SelectUserIDForMyBoard(String loginID);
-
-    String SelectEmailForInquiry(String userLoginID);
-
-    String SelectPhoneNumForInquiry(String userLoginID);
-
-    String SelectUserIDForDate(String loginID);
-
-    String SelectIDForReview(String userLoginID);
-
-    User SelectModifyUserInfo(String loginID);
+    User selectModifyUserInfo(String loginID);
 
     void processLoginDateUpdate(String loginID, String dateFormat);
 

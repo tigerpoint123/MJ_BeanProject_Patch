@@ -1,6 +1,6 @@
 package com.mju.groupware.controller;
 
-import com.mju.groupware.constant.ConstantAdminStudentController;
+import global.properties.StudentProperties;
 import com.mju.groupware.dto.Student;
 import com.mju.groupware.dto.User;
 import com.mju.groupware.service.StudentService;
@@ -13,8 +13,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.context.annotation.ComponentScan;
-import org.springframework.context.annotation.FilterType;
 import org.springframework.context.annotation.Import;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.web.servlet.MockMvc;
@@ -28,13 +26,24 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@WebMvcTest(controllers = StudentController.class,
-        excludeFilters = @ComponentScan.Filter(type = FilterType.ASSIGNABLE_TYPE, classes = GlobalUserModelAdvice.class))
+@WebMvcTest(controllers = StudentController.class)
 @AutoConfigureMockMvc(addFilters = false)
 @TestPropertySource(properties = {
-        "spring.main.allow-bean-definition-overriding=true"
+        "spring.main.allow-bean-definition-overriding=true",
+        "app.student.params.user-name=UserName",
+        "app.student.params.user-login-id=UserLoginID",
+        "app.student.params.user-phone-num=UserPhoneNum",
+        "app.student.params.user-phone=UserPhone",
+        "app.student.params.user-email=UserEmail",
+        "app.student.params.user-major=UserMajor",
+        "app.student.params.user-grade=UserGrade",
+        "app.student.params.grade=Grade",
+        "app.student.params.email=Email",
+        "app.student.urls.signup=/signup/signupStudent",
+        "app.student.urls.mypage=/mypage/myPageStudent",
+        "app.student.urls.modify=/mypage/modifyStudent"
 })
-@Import(TestMvcSharedConfig.class)
+@Import({TestMvcSharedConfig.class, StudentProperties.class})
 class StudentControllerWebMvcTest {
     @Autowired
     private MockMvc mockMvc;
@@ -42,23 +51,14 @@ class StudentControllerWebMvcTest {
     @MockBean private UserService userService;
     @MockBean private StudentService studentService;
     @MockBean private ProfessorService professorService;
-    @MockBean private ConstantAdminStudentController constant;
+    @Autowired private StudentProperties studentProps;
 
     @BeforeEach
     void setupCommon() {
         given(userService.selectUserProfileInfo("testUser"))
                 .willReturn(new ArrayList<>(Arrays.asList("Name", "UID123", "STUDENT")));
-        given(constant.getRSignupStudent()).willReturn("student/signupStudent");
-        given(constant.getGrade()).willReturn("Grade");
-        given(constant.getUserLoginID()).willReturn("UserLoginID");
-        given(constant.getUserName()).willReturn("UserName");
-        given(constant.getUserPhoneNum()).willReturn("UserPhoneNum");
-        given(constant.getUserEmail()).willReturn("UserEmail");
-        given(constant.getRMyPageStudent()).willReturn("student/myPageStudent");
-        given(constant.getEmail()).willReturn("Email");
-        given(constant.getRModifyStudent()).willReturn("student/modifyStudent");
-        given(constant.getUserPhone()).willReturn("UserPhone");
-        given(constant.getUserGrade()).willReturn("UserGrade");
+        
+        // StudentProperties는 @TestPropertySource를 통해 자동으로 설정됨
     }
 
     @Test
@@ -86,8 +86,8 @@ class StudentControllerWebMvcTest {
                 "M", // 8 gender
                 "..."
         ));
-        given(userService.SelectMyPageUserInfo("testUser")).willReturn(myPage);
-        given(userService.SelectOpenInfo("testUser")).willReturn("OPEN");
+        given(userService.selectMyPageUserInfo("testUser")).willReturn(myPage);
+        given(userService.selectOpenInfo("testUser")).willReturn("OPEN");
 
         mockMvc.perform(get("/myPageStudent").principal(principal))
                 .andExpect(status().isOk());
@@ -102,7 +102,7 @@ class StudentControllerWebMvcTest {
         user.setUserLoginID("testUser");
         user.setUserName("Name");
         user.setUserEmail("email@example.com");
-        given(userService.SelectModifyUserInfo("testUser")).willReturn(user);
+        given(userService.selectModifyUserInfo("testUser")).willReturn(user);
 
         Student student = new Student();
         student.setStudentGender("M");
@@ -119,7 +119,7 @@ class StudentControllerWebMvcTest {
     @DisplayName("POST /modifyStudent.do returns 200")
     void modifyStudentPostReturnsOk() throws Exception {
         Principal principal = () -> "testUser";
-        given(userService.SelectUserInformation("testUser"))
+        given(userService.selectUserInformation("testUser"))
                 .willReturn(new ArrayList<>(Arrays.asList("1", "testUser")));
 
         mockMvc.perform(post("/modifyStudent.do")

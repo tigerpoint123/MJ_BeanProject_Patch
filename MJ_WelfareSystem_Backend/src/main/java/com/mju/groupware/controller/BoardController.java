@@ -1,6 +1,6 @@
 package com.mju.groupware.controller;
 
-import com.mju.groupware.constant.ConstantAdminBoardController;
+import global.properties.BoardProperties;
 import com.mju.groupware.dto.Board;
 import com.mju.groupware.dto.Inquiry;
 import com.mju.groupware.dto.User;
@@ -26,7 +26,7 @@ import java.util.Map;
 @Controller
 @RequiredArgsConstructor
 public class BoardController { // TODO : 중복 코드 제거.
-    private final ConstantAdminBoardController constantAdminBoardController;
+    private final BoardProperties boardProps;
     private final BoardService boardService;
     private final InquiryService inquiryService;
     private final UserInfoMethod userInfoMethod;
@@ -36,42 +36,54 @@ public class BoardController { // TODO : 중복 코드 제거.
     public String inquiryList(User user, Principal principal, Model model) {
         if (principal != null) {
             userInfoMethod.getUserInformation(
-                    principal, user, model, this.constantAdminBoardController.getSTUDENT(), this.constantAdminBoardController.getPROFESSOR(), this.constantAdminBoardController.getADMINISTRATOR()
+                    principal, user, model, 
+                    boardProps.getRoles().getStudent(), 
+                    boardProps.getRoles().getProfessor(), 
+                    boardProps.getRoles().getAdministrator()
             );
         }
         List<Inquiry> InquiryList = inquiryService.SelectInquiryList();
         model.addAttribute("inquiryList", InquiryList);
 
-        return this.constantAdminBoardController.getRInquiryList();
+        return boardProps.getUrls().getInquiry().getList();
     }
 
     // 문의 글 내용
     @GetMapping("/inquiryContent")
     public String inquiryContent(User user, Principal principal, HttpServletRequest request, Model model) {
         if (principal != null) {
-            userInfoMethod.getUserInformation(principal, user, model, this.constantAdminBoardController.getSTUDENT(), this.constantAdminBoardController.getPROFESSOR(), this.constantAdminBoardController.getADMINISTRATOR());
+            userInfoMethod.getUserInformation(principal, user, model, 
+                boardProps.getRoles().getStudent(), 
+                boardProps.getRoles().getProfessor(), 
+                boardProps.getRoles().getAdministrator());
         }
         inquiryService.getInquiryContent(principal, request, model);
 
-        return this.constantAdminBoardController.getRInquiryContent();
+        return boardProps.getUrls().getInquiry().getContent();
     }
 
     // 문의 글 작성
     @GetMapping("/inquiryWrite")
     public String inquiryWrite(Locale locale, User user, Principal principal, Model model) {
         if (principal != null) {
-            userInfoMethod.getUserInformation(principal, user, model, this.constantAdminBoardController.getSTUDENT(), this.constantAdminBoardController.getPROFESSOR(), this.constantAdminBoardController.getADMINISTRATOR());
+            userInfoMethod.getUserInformation(principal, user, model, 
+                boardProps.getRoles().getStudent(), 
+                boardProps.getRoles().getProfessor(), 
+                boardProps.getRoles().getAdministrator());
         }
         inquiryService.getInquiryWrite(principal, model);
 
-        return this.constantAdminBoardController.getRInquiryWrite();
+        return boardProps.getUrls().getInquiry().getWrite();
     }
 
     @PostMapping("/InquiryWrite")
     public String DoInquiryeWrite(Principal principal, HttpServletRequest request, User user,
                                   Model model, HttpServletResponse response) {
         if (principal != null) {
-            userInfoMethod.getUserInformation(principal, user, model, this.constantAdminBoardController.getSTUDENT(), this.constantAdminBoardController.getPROFESSOR(), this.constantAdminBoardController.getADMINISTRATOR());
+            userInfoMethod.getUserInformation(principal, user, model, 
+                boardProps.getRoles().getStudent(), 
+                boardProps.getRoles().getProfessor(), 
+                boardProps.getRoles().getAdministrator());
         }
         return inquiryService.postInquiryWrite(principal, request, response);
     }
@@ -80,15 +92,18 @@ public class BoardController { // TODO : 중복 코드 제거.
     public String deleteInquiry(HttpServletRequest request) {
         inquiryService.postInquiryDelete(request);
 
-        return this.constantAdminBoardController.getRRInquiryList();
+        return boardProps.getRedirects().getInquiryList();
     }
 
     @PostMapping("/Answer.do")
     public String DoInquiryAnswer(Principal principal, HttpServletRequest request, User user, Model model) {
-        userInfoMethod.getUserInformation(principal, user, model, this.constantAdminBoardController.getSTUDENT(), this.constantAdminBoardController.getPROFESSOR(), this.constantAdminBoardController.getADMINISTRATOR());
+        userInfoMethod.getUserInformation(principal, user, model, 
+            boardProps.getRoles().getStudent(), 
+            boardProps.getRoles().getProfessor(), 
+            boardProps.getRoles().getAdministrator());
         inquiryService.postInquiryAnswer(request);
 
-        return this.constantAdminBoardController.getRRInquiryList();
+        return boardProps.getRedirects().getInquiryList();
     }
 
     @PostMapping("/AnswerDelete.do")
@@ -96,36 +111,45 @@ public class BoardController { // TODO : 중복 코드 제거.
         int IBoardID = Integer.parseInt(request.getParameter("boardID"));
         inquiryService.postDeleteInquiryAnswer(IBoardID);
 
-        return this.constantAdminBoardController.getRRInquiryList();
+        return boardProps.getRedirects().getInquiryList();
     }
 
     // 공지사항 리스트
     @GetMapping("/noticeList")
     public String noticeList(User user, HttpServletRequest request, Model model, Principal principal) {
         if (principal != null) {
-            userInfoMethod.getUserInformation(principal, user, model, this.constantAdminBoardController.getSTUDENT(), this.constantAdminBoardController.getPROFESSOR(), this.constantAdminBoardController.getADMINISTRATOR());
+            userInfoMethod.getUserInformation(principal, user, model, 
+                boardProps.getRoles().getStudent(), 
+                boardProps.getRoles().getProfessor(), 
+                boardProps.getRoles().getAdministrator());
         }
         List<Board> NoticeList = boardService.SelectNoticeBoardList();
         model.addAttribute("noticeList", NoticeList);
 
-        return this.constantAdminBoardController.getRNoticeList();
+        return boardProps.getUrls().getNotice().getList();
     }
 
     // 공지사항 글 작성
     @GetMapping("/noticeWrite")
     public String noticeWrite(User user, HttpServletRequest request, Model model, Principal principal) {
         // 유저 정보
-        userInfoMethod.getUserInformation(principal, user, model, this.constantAdminBoardController.getSTUDENT(), this.constantAdminBoardController.getPROFESSOR(), this.constantAdminBoardController.getADMINISTRATOR());
+        userInfoMethod.getUserInformation(principal, user, model, 
+            boardProps.getRoles().getStudent(), 
+            boardProps.getRoles().getProfessor(), 
+            boardProps.getRoles().getAdministrator());
         boardService.getNoticeWrite(principal, request, model);
 
-        return this.constantAdminBoardController.getRNoticeWrite();
+        return boardProps.getUrls().getNotice().getWrite();
     }
 
     @PostMapping("/noticeWrite")
     public String DoNoticeWrite(Principal principal, HttpServletRequest request, User user, Model model, HttpServletResponse response)
             throws Exception {
         // 유저 정보
-        userInfoMethod.getUserInformation(principal, user, model, this.constantAdminBoardController.getSTUDENT(), this.constantAdminBoardController.getPROFESSOR(), this.constantAdminBoardController.getADMINISTRATOR());
+        userInfoMethod.getUserInformation(principal, user, model, 
+            boardProps.getRoles().getStudent(), 
+            boardProps.getRoles().getProfessor(), 
+            boardProps.getRoles().getAdministrator());
         return boardService.postNoticeWrite(principal, request, response);
     }
 
@@ -133,10 +157,13 @@ public class BoardController { // TODO : 중복 코드 제거.
     @GetMapping("/noticeModify")
     public String noticeModify(User user, Model model, Principal principal, HttpServletRequest request) {
         // 유저 정보
-        userInfoMethod.getUserInformation(principal, user, model, this.constantAdminBoardController.getSTUDENT(), this.constantAdminBoardController.getPROFESSOR(), this.constantAdminBoardController.getADMINISTRATOR());
+        userInfoMethod.getUserInformation(principal, user, model, 
+            boardProps.getRoles().getStudent(), 
+            boardProps.getRoles().getProfessor(), 
+            boardProps.getRoles().getAdministrator());
         boardService.getNoticeModify(model, request);
 
-        return this.constantAdminBoardController.getRNoticeModify();
+        return boardProps.getUrls().getNotice().getModify();
     }
 
     @PostMapping("/NoticeModify")
@@ -146,7 +173,7 @@ public class BoardController { // TODO : 중복 코드 제거.
                                  @RequestParam(value = "BoardID") String BoardID) {
         boardService.postNoticeModify(request, principal, FileList, FileNameList);
 
-        return this.constantAdminBoardController.getRRNoticeList();
+        return boardProps.getRedirects().getNoticeList();
     }
 
     // 공지사항 리스트에서 제목 선택시 내용 출력
@@ -157,14 +184,14 @@ public class BoardController { // TODO : 중복 코드 제거.
         }
         boardService.getNoticeContent(principal, model, request);
 
-        return this.constantAdminBoardController.getRNoticeContent();
+        return boardProps.getUrls().getNotice().getContent();
     }
 
     @PostMapping("/NoticeDelete.do")
     public String deleteNotice(HttpServletRequest request) {
         boardService.postDeleteNotice(request);
 
-        return this.constantAdminBoardController.getRRNoticeList();
+        return boardProps.getRedirects().getNoticeList();
     }
 
     // 커뮤니티 리스트
@@ -176,7 +203,7 @@ public class BoardController { // TODO : 중복 코드 제거.
         List<Board> CommunityList = boardService.getCommunityList();
         model.addAttribute("communityList", CommunityList);
 
-        return this.constantAdminBoardController.getRCommunityList();
+        return boardProps.getUrls().getCommunity().getList();
     }
 
     // 커뮤니티 글 작성
@@ -185,7 +212,7 @@ public class BoardController { // TODO : 중복 코드 제거.
         GetUserInformation(principal, user, model);
         boardService.getCommunityWrite(principal, model);
 
-        return this.constantAdminBoardController.getRCommunityWrite();
+        return boardProps.getUrls().getCommunity().getWrite();
     }
 
     @PostMapping("/communityWrite")
@@ -201,7 +228,7 @@ public class BoardController { // TODO : 중복 코드 제거.
                                   HttpServletRequest request) {
         GetUserInformation(principal, user, model);
         boardService.getCommunityModify(model, request);
-        return this.constantAdminBoardController.getRCommunityModify();
+        return boardProps.getUrls().getCommunity().getModify();
     }
 
     @PostMapping("/CommunityModify.do")
@@ -210,7 +237,7 @@ public class BoardController { // TODO : 중복 코드 제거.
                                     @RequestParam(value = "FileDeleteNameList[]") String[] FileNameList,
                                     @RequestParam(value = "BoardID") String BoardID) {
         boardService.postCommunityModify(request, FileList, FileNameList, principal);
-        return this.constantAdminBoardController.getRRCommunityList();
+        return boardProps.getRedirects().getCommunityList();
     }
 
     @GetMapping("/FileDown")
@@ -224,7 +251,7 @@ public class BoardController { // TODO : 중복 코드 제거.
         GetUserInformation(principal, user, model);
         boardService.getCommunityContent(principal, request, model);
 
-        return this.constantAdminBoardController.getRCommunityContent();
+        return boardProps.getUrls().getCommunity().getContent();
     }
 
     @PostMapping("/CommunityDelete.do")
@@ -232,10 +259,13 @@ public class BoardController { // TODO : 중복 코드 제거.
         int BoardID = Integer.parseInt(request.getParameter("boardID"));
         boardService.UpdateBoardDelete(BoardID);
 
-        return this.constantAdminBoardController.getRRCommunityList();
+        return boardProps.getRedirects().getCommunityList();
     }
 
     private void GetUserInformation(Principal principal, User user, Model model) {
-        userInfoMethod.getUserInformation(principal, user, model, this.constantAdminBoardController.getSTUDENT(), this.constantAdminBoardController.getPROFESSOR(), this.constantAdminBoardController.getADMINISTRATOR());
+        userInfoMethod.getUserInformation(principal, user, model, 
+            boardProps.getRoles().getStudent(), 
+            boardProps.getRoles().getProfessor(), 
+            boardProps.getRoles().getAdministrator());
     }
 }

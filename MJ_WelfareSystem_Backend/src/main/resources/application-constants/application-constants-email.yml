@@ -1,0 +1,70 @@
+app:
+  email:
+    smtp:
+      host: smtp.gmail.com
+      host-email: mjugroupwareservice@gmail.com
+      host-pwd: mju1q2w3e4r
+      subject: MJU Welfare System인증메일 입니다.
+      content-before-num: "MJU Welfare System의 회원가입 인증번호는 "
+      content-after-num: " 입니다."
+      mail-smtp-auth: mail.smtps.auth
+      smtps: smtps
+    
+    pop3:
+      host-url: outlook.office365.com
+      pop3-store: pop3s
+      inbox: INBOX
+    
+    content-types:
+      multipart: multipart
+      text-plain: text/plain
+      text-html: text/html
+    
+    school-mail-address: @mju.ac.kr
+    
+    weekdays:
+      en:
+        mon: Mon
+        tue: Tue
+        wed: Wed
+        thu: Thu
+        fri: Fri
+        sat: Sat
+        sun: Sun
+      ko:
+        mon: 월
+        tue: 화
+        wed: 수
+        thu: 목
+        fri: 금
+        sat: 토
+        sun: 일
+    
+    months:
+      en:
+        jan: Jan
+        feb: Feb
+        mar: Mar
+        apr: Apr
+        may: May
+        jun: Jun
+        jul: Jul
+        aug: Aug
+        sep: Sep
+        oct: Oct
+        nov: Nov
+        dec: Dec
+      numeric:
+        jan: 1/
+        feb: 2/
+        mar: 3/
+        apr: 4/
+        may: 5/
+        jun: 6/
+        jul: 7/
+        aug: 8/
+        sep: 9/
+        oct: 10/
+        nov: 11/
+        dec: 12/
+

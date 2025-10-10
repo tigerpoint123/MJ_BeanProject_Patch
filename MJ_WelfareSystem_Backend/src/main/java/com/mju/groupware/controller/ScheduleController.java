@@ -1,6 +1,6 @@
 package com.mju.groupware.controller;
 
-import com.mju.groupware.constant.ConstantScheduleController;
+import global.properties.ScheduleProperties;
 import com.mju.groupware.dto.Calender;
 import com.mju.groupware.dto.User;
 import com.mju.groupware.service.ScheduleService;
@@ -19,7 +19,7 @@ import java.util.Locale;
 @Controller
 @RequiredArgsConstructor
 public class ScheduleController {
-    private final ConstantScheduleController constant;
+    private final ScheduleProperties scheduleProps;
     private final UserInfoMethod userInfoMethod;
     private final ScheduleService scheduleService;
 
@@ -28,9 +28,12 @@ public class ScheduleController {
     public String schedule(Locale locale, Model model, Principal principal, User user) {
         // 유저 정보
         int userId = selectUserIdForCalender(principal);
-        model.addAttribute(this.constant.getUserID(), userId);
-        userInfoMethod.getUserInformation(principal, user, model, this.constant.getSRole(), this.constant.getPRole(), this.constant.getARole());
-        return this.constant.getSchedule();
+        model.addAttribute(scheduleProps.getParams().getUserId(), userId);
+        userInfoMethod.getUserInformation(principal, user, model, 
+            scheduleProps.getRoles().getStudent(), 
+            scheduleProps.getRoles().getProfessor(), 
+            scheduleProps.getRoles().getAdministrator());
+        return scheduleProps.getUrls().getSchedule();
     }
 
     // 일정 받기
@@ -78,10 +81,10 @@ public class ScheduleController {
     public int modifyTimeInMonth(Principal principal, @RequestBody Calender calender) {
         int userId = selectUserIdForCalender(principal);
         HashMap<String, String> map = new HashMap<>();
-        map.put(this.constant.getUserID(), Integer.toString(userId));
-        map.put(this.constant.getScheduleID(), calender.getId());
-        map.put(this.constant.getStart(), calender.getStart());
-        map.put(this.constant.getEnd(), calender.getEnd());
+        map.put(scheduleProps.getParams().getUserId(), Integer.toString(userId));
+        map.put(scheduleProps.getParams().getScheduleId(), calender.getId());
+        map.put(scheduleProps.getParams().getStart(), calender.getStart());
+        map.put(scheduleProps.getParams().getEnd(), calender.getEnd());
 
         return scheduleService.updateTimeInMonth(map);
     }

@@ -1,0 +1,77 @@
+app:
+  user:
+    roles:
+      student: STUDENT
+      professor: PROFESSOR
+      administrator: ADMINISTRATOR
+    
+    urls:
+      withdrawal: /mypage/withdrawal
+      signup:
+        student: /signup/signupStudent
+        professor: /signup/signupProfessor
+        select: /signup/signupSelect
+      signin:
+        login: /signin/login
+        find-password: /signin/findPassword
+        show-password: /signin/showPassword
+      mypage:
+        post-list: /mypage/myPostList
+        inquiry-list: /mypage/myInquiryList
+        check-password: /mypage/checkPassword
+        check-password2: /mypage/checkPassword2
+        check-password3: /mypage/checkPassword3
+        modify-password: /mypage/modifyPassword
+        check-my-team: /mypage/checkMyTeam
+      email:
+        authentication: /signup/emailAuthentication
+        list: /email/emailList
+        content: /email/emailContent
+        login: /email/emailLogin
+      home: /homeView/home
+    
+    redirects:
+      withdrawal: redirect:withdrawal
+      modify-student: redirect:modifyStudent
+      modify-professor: redirect:modifyProfessor
+      modify-password: redirect:modifyPassword
+      signup-student: /signin/login
+      email-list: redirect:/email/emailList
+      email-login: redirect:/email/emailLogin
+      mypage-student: redirect:myPageStudent
+      mypage-professor: redirect:myPageProfessor
+      home: redirect:home
+    
+    formats:
+      date: yyyy-MM-dd
+      datetime: yyyy-MM-dd HH:mm:ss
+    
+    email:
+      domain: @mju.ac.kr
+    
+    params:
+      withdrawal:
+        parameter1: AgreeWithdrawal
+        parameter2: yyyy-MM-dd
+      auth-num: Number
+      student-name: StudentName
+      professor-name: ProfessorName
+      user-name: UserName
+      user-login-pwd: UserLoginPwd
+      user-phone-num: UserPhoneNum
+      student-num: StudentNum
+      professor-num: ProfessorNum
+      email-login-pwd: EmailLoginPwd
+      email-check: EmailCheck
+      email-valid: EmailValid
+      btn-agree: BtnAgree
+      email: Email
+      user-new-pwd: UserNewPwd
+      user-new-pwd-check: UserNewPwdCheck
+    
+    attributes:
+      notice-list: noticeList
+      community-list: communityList
+      my-board-list: MyBoardList
+      my-inquiry-list: MyInquiryList
+

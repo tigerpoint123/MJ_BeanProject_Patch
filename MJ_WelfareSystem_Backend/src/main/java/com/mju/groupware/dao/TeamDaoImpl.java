@@ -2,13 +2,12 @@ package com.mju.groupware.dao;
 
 import java.util.List;
 
+import global.properties.TeamDaoProperties;
+import lombok.RequiredArgsConstructor;
 import org.mybatis.spring.SqlSessionTemplate;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.support.GenericXmlApplicationContext;
 import org.springframework.stereotype.Repository;
 import org.springframework.stereotype.Service;
 
-import com.mju.groupware.constant.ConstantTeamDao;
 import com.mju.groupware.dto.Class;
 import com.mju.groupware.dto.Team;
 import com.mju.groupware.dto.TeamBoard;
@@ -18,196 +17,171 @@ import com.mju.groupware.dto.UserReview;
 
 @Service
 @Repository
+@RequiredArgsConstructor
 public class TeamDaoImpl implements TeamDao {
 
-	private ConstantTeamDao Constant;
-
-	@SuppressWarnings("resource")
-	public TeamDaoImpl() {
-		GenericXmlApplicationContext CTX = new GenericXmlApplicationContext();
-		CTX.load("classpath:/xmlForProperties/TeamDao.xml");
-		CTX.refresh();
-		this.Constant = (ConstantTeamDao) CTX.getBean("TeamID");
-	}
-
-	@Autowired
-	private SqlSessionTemplate sqlSession;
+	private final TeamDaoProperties teamDaoProps;
+	private final SqlSessionTemplate sqlSession;
 
 	@Override
-	public void InsertTeamInfo(Team team) {
-		sqlSession.insert(this.Constant.getInsertTeamInfo(), team);
+	public void insertTeamInfo(Team team) {
+		sqlSession.insert(teamDaoProps.getMethods().getInsertTeamInfo(), team);
 	}
 
 	@Override
-	public int SelectClassID(Class classInfo) {
-		int Output = sqlSession.selectOne(this.Constant.getSelectClassID(), classInfo);
-		return Output;
+	public int selectClassId(Class classInfo) {
+		Integer output = sqlSession.selectOne(teamDaoProps.getMethods().getSelectClassId(), classInfo);
+		return output != null ? output : 0;
 	}
 
 	@Override
-	public int SelectUserIDForTeamUser(User user) {
-		Integer Output = sqlSession.selectOne(this.Constant.getSelectUserIDForTeamUser(), user);
-		if (Output == null) {
-			return 0;
-		} else {
-			return Output;
-
-		}
+	public int selectUserIdForTeamUser(User user) {
+		Integer output = sqlSession.selectOne(teamDaoProps.getMethods().getSelectUserIdForTeamUser(), user);
+		return output != null ? output : 0;
 	}
 
 	@Override
-	public void InsertTeamUserInfo(TeamUser teamUser) {
-		sqlSession.insert(this.Constant.getInsertTeamUserInfo(), teamUser);
+	public void insertTeamUserInfo(TeamUser teamUser) {
+		sqlSession.insert(teamDaoProps.getMethods().getInsertTeamUserInfo(), teamUser);
 	}
 
 	@Override
-	public List<Class> SelectLectureInfo(String lectureName) {
-		List<Class> LectureInfo = sqlSession.selectList(this.Constant.getSelectLectureInformation(), lectureName);
-		return LectureInfo;
+	public List<Class> selectLectureInfo(String lectureName) {
+		return sqlSession.selectList(teamDaoProps.getMethods().getSelectLectureInformation(), lectureName);
 	}
 
 	@Override
-	public int SelectTeamLeaderUserID(String name) {
-		return sqlSession.selectOne(this.Constant.getSelectTeamLeaderUserID(), name);
+	public int selectTeamLeaderUserId(String name) {
+		return sqlSession.selectOne(teamDaoProps.getMethods().getSelectTeamLeaderUserId(), name);
 	}
 
 	@Override
-	public List<Team> SelectTeamList() {
-		List<Team> SelectTeamList = sqlSession.selectList(this.Constant.getSelectTeamList());
-		return SelectTeamList;
+	public List<Team> selectTeamList() {
+		return sqlSession.selectList(teamDaoProps.getMethods().getSelectTeamList());
 	}
 
 	@Override
-	public Class SelectClassList(int classID) {
-		Class SelectClassList = sqlSession.selectOne(this.Constant.getSelectClassList(), classID);
-		return SelectClassList;
+	public Class selectClassList(int classID) {
+		return sqlSession.selectOne(teamDaoProps.getMethods().getSelectClassList(), classID);
 	}
 
 	@Override
-	public int SelectClassIDForCheckTeam(int teamID) {
-		return sqlSession.selectOne(this.Constant.getSelectClassIDForCheckTeam(), teamID);
+	public int selectClassIdForCheckTeam(int teamID) {
+		return sqlSession.selectOne(teamDaoProps.getMethods().getSelectClassIdForCheckTeam(), teamID);
 	}
 
 	@Override
-	public List<Class> SelectClassInfoForCheckTeam(int classID) {
-		return sqlSession.selectList(this.Constant.getSelectClassInfoForCheckTeam(), classID);
+	public List<Class> selectClassInfoForCheckTeam(int classID) {
+		return sqlSession.selectList(teamDaoProps.getMethods().getSelectClassInfoForCheckTeam(), classID);
 	}
 
 	@Override
-	public String SelectTeamName(int teamID) {
-		return sqlSession.selectOne(this.Constant.getSelectTeamName(), teamID);
+	public String selectTeamName(int teamID) {
+		return sqlSession.selectOne(teamDaoProps.getMethods().getSelectTeamName(), teamID);
 	}
 
 	@Override
-	public List<TeamUser> SelectTeamMemberInfo(int teamID) {
-		return sqlSession.selectList(this.Constant.getSelectTeamMemberInfo(), teamID);
+	public List<TeamUser> selectTeamMemberInfo(int teamID) {
+		return sqlSession.selectList(teamDaoProps.getMethods().getSelectTeamMemberInfo(), teamID);
 	}
 
 	@Override
-	public String SelectLeaderName(int userID) {
-		return sqlSession.selectOne(this.Constant.getSelectLeaderName(), userID);
+	public String selectLeaderName(int userID) {
+		return sqlSession.selectOne(teamDaoProps.getMethods().getSelectLeaderName(), userID);
 	}
 
 	@Override
-	public String SelectLeaderLoginID(int userID) {
-		return sqlSession.selectOne(this.Constant.getSelectLeaderLoginID(), userID);
+	public String selectLeaderLoginId(int userID) {
+		return sqlSession.selectOne(teamDaoProps.getMethods().getSelectLeaderLoginId(), userID);
 	}
 
 	@Override
-	public List<TeamUser> SelectMyTeamList(String loginID) {
-		List<TeamUser> SelectMyTeamList = sqlSession.selectList(this.Constant.getSelectMyTeamList(), loginID);
-		return SelectMyTeamList;
+	public List<TeamUser> selectMyTeamList(String loginID) {
+		return sqlSession.selectList(teamDaoProps.getMethods().getSelectMyTeamList(), loginID);
 	}
 
 	@Override
-	public void DeleteTeamMemberInfo(int teamID) {
-		sqlSession.delete(this.Constant.getDeleteTeamMemberInfo(), teamID);
+	public void deleteTeamMemberInfo(int teamID) {
+		sqlSession.delete(teamDaoProps.getMethods().getDeleteTeamMemberInfo(), teamID);
 	}
 
 	@Override
-	public List<Team> SelectMyTeamInfo(int teamID) {
-		List<Team> TeamInfo = sqlSession.selectList(this.Constant.getSelectMyTeamInfo(), teamID);
-		return TeamInfo;
+	public List<Team> selectMyTeamInfo(int teamID) {
+		return sqlSession.selectList(teamDaoProps.getMethods().getSelectMyTeamInfo(), teamID);
 	}
 
 	@Override
-	public List<Class> SelectClassInfo(int classID) {
-		List<Class> SelectClassInfo = sqlSession.selectList(this.Constant.getSelectClassInfo(), classID);
-		return SelectClassInfo;
+	public List<Class> selectClassInfo(int classID) {
+		return sqlSession.selectList(teamDaoProps.getMethods().getSelectClassInfo(), classID);
 	}
 
 	@Override
-	public List<TeamBoard> SelectTeamBoardListInfo(String TeamID) {
-		List<TeamBoard> SelectTeamBoardInfo = sqlSession.selectList(this.Constant.getSelectTeamBoardListInfo(), TeamID);
-		return SelectTeamBoardInfo;
+	public List<TeamBoard> selectTeamBoardListInfo(String teamID) {
+		return sqlSession.selectList(teamDaoProps.getMethods().getSelectTeamBoardListInfo(), teamID);
 	}
 
 	@Override
-	public String SelectTeamIDForDocument(String userID) {
-		String Output = sqlSession.selectOne(this.Constant.getSelectTeamIDForDocument(), userID);
-		return Output;
+	public String selectTeamIdForDocument(String userID) {
+		return sqlSession.selectOne(teamDaoProps.getMethods().getSelectTeamIdForDocument(), userID);
 	}
 
 	@Override
-	public String SelectTeamIDForDelete(String tUserID) {
-		return sqlSession.selectOne(this.Constant.getSelectTeamIDForDelete(), tUserID);
+	public String selectTeamIdForDelete(String tUserID) {
+		return sqlSession.selectOne(teamDaoProps.getMethods().getSelectTeamIdForDelete(), tUserID);
 	}
 
 	@Override
-	public List<Integer> SelectTeamNameWithLoginUser(String name) {
-		return sqlSession.selectList(this.Constant.getSelectTeamNameWithLoginUser(), name);
-
+	public List<Integer> selectTeamNameWithLoginUser(String name) {
+		return sqlSession.selectList(teamDaoProps.getMethods().getSelectTeamNameWithLoginUser(), name);
 	}
 
 	@Override
-	public String SelectTeamIDForReview(String teamName) {
-		return sqlSession.selectOne(this.Constant.getSelectTeamIDForReview(), teamName);
+	public String selectTeamIdForReview(String teamName) {
+		return sqlSession.selectOne(teamDaoProps.getMethods().getSelectTeamIdForReview(), teamName);
 	}
 
 	@Override
-	public List<TeamUser> SelectTeamMember(String teamID) {
-		return sqlSession.selectList(this.Constant.getSelectTeamMember(), teamID);
+	public List<TeamUser> selectTeamMember(String teamID) {
+		return sqlSession.selectList(teamDaoProps.getMethods().getSelectTeamMember(), teamID);
 	}
 
 	@Override
-	public String SelectTeamUserID(String userLoginID) {
-		return sqlSession.selectOne(this.Constant.getSelectTeamUserID(), userLoginID);
+	public String selectTeamUserId(String userLoginID) {
+		return sqlSession.selectOne(teamDaoProps.getMethods().getSelectTeamUserId(), userLoginID);
 	}
 
 	@Override
-	public void InsertUserReview(UserReview userReview) {
-		sqlSession.insert(this.Constant.getInsertUserReview(), userReview);
+	public void insertUserReview(UserReview userReview) {
+		sqlSession.insert(teamDaoProps.getMethods().getInsertUserReview(), userReview);
 	}
 
 	@Override
-	public String SelectTeamLeaderLoginID(String teamID) {
+	public String selectTeamLeaderLoginId(String teamID) {
 		return sqlSession.selectOne("SelectTeamLeaderLoginID", teamID);
 	}
 
 	@Override
-	public void DeleteTeam(String teamID) {
+	public void deleteTeam(String teamID) {
 		sqlSession.delete("DeleteTeam", teamID);
 	}
 
 	@Override
-	public String SelectWriterUserID(String name) {
+	public String selectWriterUserId(String name) {
 		return sqlSession.selectOne("SelectWriterUserID", name);
 	}
 
 	@Override
-	public int SelectColumnCount(UserReview userReview) {
+	public int selectColumnCount(UserReview userReview) {
 		return sqlSession.selectOne("SelectColumnCount", userReview);
 	}
 
 	@Override
-	public String SelectTeamNameWithTeamID(int teamID) {
-		// TODO Auto-generated method stub
+	public String selectTeamNameWithTeamId(int teamID) {
 		return sqlSession.selectOne("SelectTeamNameWithTeamID", teamID);
 	}
 
 	@Override
-	public Integer SelectClassIDFromTeam(Integer teamID) {
-		// TODO Auto-generated method stub
+	public Integer selectClassIdFromTeam(Integer teamID) {
 		return sqlSession.selectOne("SelectClassIDFromTeam", teamID);
 	}
 

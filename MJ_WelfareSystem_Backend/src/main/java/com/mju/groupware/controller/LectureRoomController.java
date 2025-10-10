@@ -1,6 +1,6 @@
 package com.mju.groupware.controller;
 
-import com.mju.groupware.constant.ConstantLectureRoomController;
+import com.mju.groupware.properties.LectureRoomProperties;
 import com.mju.groupware.dto.User;
 import com.mju.groupware.dto.UserReservation;
 import com.mju.groupware.service.LectureRoomService;
@@ -26,7 +26,7 @@ import java.util.List;
 public class LectureRoomController {
     private final LectureRoomService lectureRoomService;
     private final UserInfoMethod userInfoMethod;
-    private final ConstantLectureRoomController constantLecture;
+    private final LectureRoomProperties lectureRoomProps;
 
     // 강의실 리스트 /lectureRoomList
     @GetMapping("/lectureRoom/lectureRoomList")
@@ -69,13 +69,13 @@ public class LectureRoomController {
         // 검증 1: 인원수 초과
         if (lectureRoomService.isExceedingCapacity(lectureRoomNo, reservationNumOfPeople)) {
             rttr.addFlashAttribute("Checker", "ExceptionNum");
-            return this.constantLecture.getRRLectureRoomList();
+            return lectureRoomProps.getRedirects().getList();
         }
 
         // 검증 2: 중복 예약
         if (lectureRoomService.hasDuplicateReservation(userLoginID)) {
             rttr.addFlashAttribute("Checker", "DuplicateReservationExist");
-            return this.constantLecture.getRRLectureRoomList();
+            return lectureRoomProps.getRedirects().getList();
         }
 
         // 검증 3: 시간대 충돌
@@ -93,7 +93,7 @@ public class LectureRoomController {
             if (startTimeList != null) {
                 model.addAttribute("StartTime", startTimeList);
             }
-            return this.constantLecture.getRReservation();
+            return lectureRoomProps.getRedirects().getReservation();
         }
 
         // 모든 검증 통과 → 예약 생성
@@ -102,7 +102,7 @@ public class LectureRoomController {
         lectureRoomService.createReservation(userLoginID, selectedTime, lectureRoomNo,
                 reservationNumOfPeople, date.format(now));
         rttr.addFlashAttribute("Checker", "reservationConfirm");
-        return this.constantLecture.getRRLectureRoomList();
+        return lectureRoomProps.getRedirects().getList();
     }
 
     // 강의실 예약 확인 화면
@@ -117,7 +117,7 @@ public class LectureRoomController {
             return lectureRoomService.getReservationConfirm(lectureRoomNo, model, userID);
         } else {
             rttr.addFlashAttribute("Checker", "Noting");
-            return this.constantLecture.getRRLectureRoomList();
+            return lectureRoomProps.getRedirects().getList();
         }
     }
 
@@ -133,13 +133,13 @@ public class LectureRoomController {
 
         if (isSuccess) {
             rttr.addFlashAttribute("Checker", "true");
-            return this.constantLecture.getRRLectureRoomList();
+            return lectureRoomProps.getRedirects().getList();
         } else {
             PrintWriter out = response.getWriter();
             response.setContentType("text/html; charset=UTF-8");
             out.println("<script>alert('관리자에게 문의바랍니다.');</script>");
             out.flush();
-            return this.constantLecture.getRReservationConfirm();
+            return lectureRoomProps.getUrls().getReservationConfirm();
         }
     }
 
@@ -147,7 +147,7 @@ public class LectureRoomController {
     @GetMapping("/lectureRoom/reservationModify")
     public String lectureRoomReservationModify(Model model, Principal principal, User user) {
         userInfoMethod.getUserInformation(principal, user, model, "STUDENT", "PROFESSOR", "ADMINISTRATOR");
-        return this.constantLecture.getRReservationModify();
+        return lectureRoomProps.getUrls().getReservationModify();
     }
 
     // 마이페이지 - 강의실 예약 확인
@@ -162,7 +162,7 @@ public class LectureRoomController {
             return lectureRoomService.getMyReservation(model, lectureRoomNo, userID);
         } else {
             rttr.addFlashAttribute("Checker", "Noting");
-            return this.constantLecture.getRRMyPageStudent();
+            return lectureRoomProps.getRedirects().getMypageStudent();
         }
     }
 }

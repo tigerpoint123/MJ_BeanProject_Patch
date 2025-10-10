@@ -113,7 +113,7 @@ public class SearchServiceImpl implements SearchService {
 
 	@Override
 	public List<UserReview> getUserReviewListByEmail(String userEmail) {
-		String userID = userService.SelectIDForReview(userEmail);
+		String userID = userService.selectIDForReview(userEmail);
 		if (userID == null || userID.isEmpty()) {
 			return null;
 		}

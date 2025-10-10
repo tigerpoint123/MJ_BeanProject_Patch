@@ -22,6 +22,7 @@ import java.util.Arrays;
 import java.util.Collections;
 
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.BDDMockito.given;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -32,17 +33,30 @@ import com.mju.groupware.service.UserService;
 import com.mju.groupware.service.StudentService;
 import com.mju.groupware.service.ProfessorService;
 import com.mju.groupware.util.UserInfoMethod;
-import com.mju.groupware.constant.ConstantLectureRoomController;
+import com.mju.groupware.properties.LectureRoomProperties;
 import com.mju.groupware.dto.LectureRoom;
 import com.mju.groupware.dto.UserReservation;
 
-@WebMvcTest(controllers = LectureRoomController.class,
-        excludeFilters = @ComponentScan.Filter(type = FilterType.ASSIGNABLE_TYPE, classes = GlobalUserModelAdvice.class))
+@WebMvcTest(controllers = LectureRoomController.class)
 @AutoConfigureMockMvc(addFilters = false)
 @TestPropertySource(properties = {
-        "spring.main.allow-bean-definition-overriding=true"
+        "spring.main.allow-bean-definition-overriding=true",
+        "app.lecture-room.time-slots.nine=09:00:00",
+        "app.lecture-room.time-slots.eleven=11:00:00",
+        "app.lecture-room.time-slots.thirteen=13:00:00",
+        "app.lecture-room.time-slots.fifteen=15:00:00",
+        "app.lecture-room.time-slots.seventeen=17:00:00",
+        "app.lecture-room.time-slots.nineteen=19:00:00",
+        "app.lecture-room.urls.list=/lectureRoom/lectureRoomList",
+        "app.lecture-room.urls.reservation=/lectureRoom/reservation",
+        "app.lecture-room.urls.reservation-confirm=/lectureRoom/reservationConfirm",
+        "app.lecture-room.urls.reservation-modify=/lectureRoom/reservationModify",
+        "app.lecture-room.urls.confirm-my-reservation=/mypage/confirmMyReservation",
+        "app.lecture-room.redirects.reservation=redirect:/lectureRoom/reservation",
+        "app.lecture-room.redirects.list=redirect:/lectureRoom/lectureRoomList",
+        "app.lecture-room.redirects.mypage-student=redirect:myPageStudent"
 })
-@Import(TestMvcSharedConfig.class)
+@Import({TestMvcSharedConfig.class, LectureRoomProperties.class})
 class LectureRoomControllerWebMvcTest {
 
     @Autowired
@@ -53,7 +67,7 @@ class LectureRoomControllerWebMvcTest {
     @MockBean private StudentService studentService;
     @MockBean private ProfessorService professorService;
     @MockBean private UserInfoMethod userInfoMethod;
-    @MockBean private ConstantLectureRoomController constantLecture;
+    @Autowired private LectureRoomProperties lectureRoomProps;
 
     private Principal testPrincipal;
 
@@ -66,21 +80,7 @@ class LectureRoomControllerWebMvcTest {
         given(userService.selectUserProfileInfo("testUser"))
                 .willReturn(new ArrayList<>(Arrays.asList("name", "someId", "UNKNOWN_ROLE")));
 
-        // Constant Mock - View 이름들
-        given(constantLecture.getRLectureRoomList()).willReturn("lecture/lectureRoomList");
-        given(constantLecture.getRReservation()).willReturn("lecture/reservation");
-        given(constantLecture.getRRLectureRoomList()).willReturn("redirect:/lectureRoom/lectureRoomList");
-        given(constantLecture.getRReservationConfirm()).willReturn("lecture/reservationConfirm");
-        given(constantLecture.getRReservationModify()).willReturn("lecture/reservationModify");
-        given(constantLecture.getRConfirmMyReservation()).willReturn("lecture/confirmMyReservation");
-
-        // Constant Mock - 시간 상수들
-        given(constantLecture.getNine()).willReturn("9");
-        given(constantLecture.getEleven()).willReturn("11");
-        given(constantLecture.getThirteen()).willReturn("13");
-        given(constantLecture.getFifteen()).willReturn("15");
-        given(constantLecture.getSeventeen()).willReturn("17");
-        given(constantLecture.getNineteen()).willReturn("19");
+        // LectureRoomProperties는 @TestPropertySource를 통해 자동으로 설정됨
     }
 
     @Test
@@ -126,7 +126,7 @@ class LectureRoomControllerWebMvcTest {
     void reservationConfirmReturnsOk() throws Exception {
         given(lectureRoomService.selectUserIdForReservationConfirm("testUser")).willReturn("123");
         given(lectureRoomService.selectLectureRoomNo("123")).willReturn(101);
-        given(lectureRoomService.getReservationConfirm(101, any(), "123"))
+        given(lectureRoomService.getReservationConfirm(eq(101), any(), eq("123")))
                 .willReturn("lecture/reservationConfirm");
 
         mockMvc.perform(get("/lectureRoom/reservationConfirm").principal(testPrincipal))
@@ -154,7 +154,7 @@ class LectureRoomControllerWebMvcTest {
     void confirmMyReservationReturnsOk() throws Exception {
         given(lectureRoomService.selectUserIdForReservationConfirm("testUser")).willReturn("123");
         given(lectureRoomService.selectLectureRoomNo("123")).willReturn(101);
-        given(lectureRoomService.getMyReservation(any(), 101, "123"))
+        given(lectureRoomService.getMyReservation(any(), eq(101), eq("123")))
                 .willReturn("lecture/confirmMyReservation");
 
         mockMvc.perform(get("/confirmMyReservation").principal(testPrincipal))

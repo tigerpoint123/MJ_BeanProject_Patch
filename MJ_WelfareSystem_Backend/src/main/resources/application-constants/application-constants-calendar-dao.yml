@@ -1,0 +1,21 @@
+app:
+  dao:
+    calendar:
+      params:
+        user-id: UserId
+        schedule-id: scheduleID
+        title: title
+        start: start
+        end: end
+        background-color: backGroundColor
+        description: description
+      
+      methods:
+        insert-schedule: InsertSchedule
+        select-schedule: SelectSchedule
+        select-user-id: SelectUserID
+        update-schedule: UpdateSchedule
+        delete-schedule: DeleteSchedule
+        update-time-in-month: UpdateTimeInMonth
+        update-time-in-week: UpdateTimeInWeek
+

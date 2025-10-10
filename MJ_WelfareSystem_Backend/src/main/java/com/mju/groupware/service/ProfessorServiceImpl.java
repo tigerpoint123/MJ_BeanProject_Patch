@@ -1,6 +1,6 @@
 package com.mju.groupware.service;
 
-import com.mju.groupware.constant.ConstantAdminProfessorController;
+import global.properties.ProfessorProperties;
 import com.mju.groupware.dao.ProfessorDao;
 import com.mju.groupware.dto.Professor;
 import com.mju.groupware.dto.User;
@@ -16,7 +16,7 @@ public class ProfessorServiceImpl implements ProfessorService {
 
 	private final ProfessorDao professorDao;
 	private final UserService userService;
-	private final ConstantAdminProfessorController constant;
+	private final ProfessorProperties professorProps;
 
 	@Override
 	public void insertInformation(Professor professor) {
@@ -72,7 +72,7 @@ public class ProfessorServiceImpl implements ProfessorService {
 
 	@Override
 	public String modifyProfessorPage(String loginID, Model model) {
-		User selectUserProfileInfo = userService.SelectModifyUserInfo(loginID);
+		User selectUserProfileInfo = userService.selectModifyUserInfo(loginID);
 		Professor professor = selectModifyProfessorInfo(selectUserProfileInfo.getUserID());
 
 		String userEmail = selectUserProfileInfo.getUserEmail();
@@ -81,14 +81,14 @@ public class ProfessorServiceImpl implements ProfessorService {
 
 		model.addAttribute("UserLoginID", selectUserProfileInfo.getUserLoginID());
 		model.addAttribute("UserName", selectUserProfileInfo.getUserName());
-		model.addAttribute(this.constant.getEmail(), userEmail);
-		model.addAttribute(this.constant.getUserPhoneNum(), professor.getUserPhoneNum());
+		model.addAttribute(professorProps.getParams().getEmail(), userEmail);
+		model.addAttribute(professorProps.getParams().getUserPhoneNum(), professor.getUserPhoneNum());
 		model.addAttribute("ProfessorColleges", professor.getProfessorColleges());
 		model.addAttribute("ProfessorMajor", professor.getProfessorMajor());
 		// 연락처 공개
 		model.addAttribute("OpenPhoneNum", selectUserProfileInfo.getOpenPhoneNum());
 
-		return this.constant.getRModifyProfessor();
+		return professorProps.getUrls().getModify();
 	}
 
 	@Override
@@ -100,10 +100,10 @@ public class ProfessorServiceImpl implements ProfessorService {
 		ArrayList<String> professorInfo = professorDao.selectProfessorProfileInfo(selectUserProfileInfo.get(1));
 		
 		// 3. 마이페이지 상세 정보 조회
-		ArrayList<String> selectUserInfo = userService.SelectMyPageUserInfo(loginID);
+		ArrayList<String> selectUserInfo = userService.selectMyPageUserInfo(loginID);
 		
 		// 4. 공개 정보 조회
-		String selectOpenInfo = userService.SelectOpenInfo(loginID);
+		String selectOpenInfo = userService.selectOpenInfo(loginID);
 		
 		// 5. 이메일 처리 (@ 앞부분만 추출)
 		String email = extractEmailUsername(selectUserInfo.get(3));
@@ -119,10 +119,10 @@ public class ProfessorServiceImpl implements ProfessorService {
 		model.addAttribute("ProfessorRoom", professorInfo.get(2));
 		
 		// 마이페이지 상세 정보
-		model.addAttribute(constant.getUserLoginID(), selectUserInfo.get(0));
-		model.addAttribute(constant.getUserName(), selectUserInfo.get(1));
-		model.addAttribute(constant.getUserPhoneNum(), selectUserInfo.get(2));
-		model.addAttribute(constant.getUserEmail(), email);
+		model.addAttribute(professorProps.getParams().getUserLoginId(), selectUserInfo.get(0));
+		model.addAttribute(professorProps.getParams().getUserName(), selectUserInfo.get(1));
+		model.addAttribute(professorProps.getParams().getUserPhoneNum(), selectUserInfo.get(2));
+		model.addAttribute(professorProps.getParams().getUserEmail(), email);
 		model.addAttribute("ProfessorColleges", selectUserInfo.get(9));
 		model.addAttribute("ProfessorMajor", selectUserInfo.get(10));
 		model.addAttribute("ProfessorRoom", selectUserInfo.get(11));
@@ -150,7 +150,7 @@ public class ProfessorServiceImpl implements ProfessorService {
 	public void updateProfessorInfo(String loginID, String phoneNum, String professorRoom,
 									String professorRoomNum, boolean isPhoneNumOpen) {
 		// 1. 사용자 정보 조회
-		ArrayList<String> userInfo = userService.SelectUserInformation(loginID);
+		ArrayList<String> userInfo = userService.selectUserInformation(loginID);
 		String userIdStr = userInfo.get(0);  // 유저 ID
 		String userLoginID = userInfo.get(1);  // 로그인 ID
 		
@@ -187,6 +187,6 @@ public class ProfessorServiceImpl implements ProfessorService {
 		// 5. 정보공개여부 업데이트
 		String openPhoneNum = isPhoneNumOpen ? "전화번호" : "비공개";
 		user.setOpenPhoneNum(openPhoneNum);
-		userService.UpdateOpenPhoneNum(user);
+		userService.updateOpenPhoneNum(user);
 	}
 }

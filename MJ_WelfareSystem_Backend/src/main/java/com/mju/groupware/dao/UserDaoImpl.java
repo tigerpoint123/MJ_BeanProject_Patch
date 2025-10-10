@@ -1,14 +1,13 @@
 package com.mju.groupware.dao;
 
-import com.mju.groupware.constant.ConstantAdminUserDao;
+import global.properties.UserDaoProperties;
 import com.mju.groupware.dto.Professor;
 import com.mju.groupware.dto.Student;
 import com.mju.groupware.dto.User;
 import com.mju.groupware.dto.UserInfoOpen;
 import global.security.UsersDetails;
+import lombok.RequiredArgsConstructor;
 import org.mybatis.spring.SqlSessionTemplate;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.support.GenericXmlApplicationContext;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Repository;
 import org.springframework.stereotype.Service;
@@ -18,53 +17,27 @@ import java.util.List;
 
 @Service
 @Repository
+@RequiredArgsConstructor
 public class UserDaoImpl implements UserDao {
-	private ConstantAdminUserDao Constant;
-
-	@SuppressWarnings("resource")
-	public UserDaoImpl() {
-		GenericXmlApplicationContext CTX = new GenericXmlApplicationContext();
-		CTX.load("classpath:/xmlForProperties/UserDao.xml");
-		CTX.refresh();
-		this.Constant = (ConstantAdminUserDao) CTX.getBean("UserDaoID");
-	}
-
-	@Autowired
-	private SqlSessionTemplate sqlSession;
-	// 이름
-	private String UserName;
-	// 아이디
-	private int UserID;
-	// 로그인 아이디
-	private String UserLoginID;
-	// 전화번호
-	private String UserPhoneNum;
-	// user role
-	private String UserRole;
-	// 이메일
-	private String UserEmail;
-
-	private boolean EmailCheck;
-
-	private String OpenPhoneNum;
-	private String OpenGrade;
+	private final UserDaoProperties userDaoProps;
+	private final SqlSessionTemplate sqlSession;
 
 	@Override
-	public void InsertForSignUp(User user) {
-		this.sqlSession.insert(this.Constant.getInsertUser(), user);
+	public void insertForSignUp(User user) {
+		this.sqlSession.insert(userDaoProps.getMethods().getInsertUser(), user);
 	}
 
 	@Override
 	public UsersDetails selectByLoginID(String userLoginID) {
-		UsersDetails Users = this.sqlSession.selectOne(this.Constant.getSelectByLoginID(), userLoginID);
-		return Users;
+		UsersDetails users = this.sqlSession.selectOne(userDaoProps.getMethods().getSelectByLoginId(), userLoginID);
+		return users;
 	}
 
 	@Override
-	public boolean SelctForIDConfirm(User user) {
-		User Output = this.sqlSession.selectOne(this.Constant.getSelctForIDConfirm(), user);
+	public boolean selectForIDConfirm(User user) {
+		User output = this.sqlSession.selectOne(userDaoProps.getMethods().getSelectForIdConfirm(), user);
 
-		if (Output == null) {
+		if (output == null) {
 			return false;
 		} else {
 			return true;
@@ -72,9 +45,9 @@ public class UserDaoImpl implements UserDao {
 	}
 
 	@Override
-	public boolean SelectPwdForConfirmToFindPwd(User user) {
-		User Output = this.sqlSession.selectOne(this.Constant.getSelectPwdForConfirmToFindPwd(), user);
-		if (Output == null) {
+	public boolean selectPwdForConfirmToFindPwd(User user) {
+		User output = this.sqlSession.selectOne(userDaoProps.getMethods().getSelectPwdForConfirmToFindPwd(), user);
+		if (output == null) {
 			return false;
 		} else {
 			return true;
@@ -83,19 +56,19 @@ public class UserDaoImpl implements UserDao {
 	}
 
 	@Override
-	public int SelectUserID(Student student) {
-		return this.sqlSession.selectOne(this.Constant.getSelectUserID(), student);
+	public int selectUserID(Student student) {
+		return this.sqlSession.selectOne(userDaoProps.getMethods().getSelectUserId(), student);
 	}
 
 	@Override
-	public int SelectUserID(Professor professor) {
-		return this.sqlSession.selectOne("SelectUserID", professor);
+	public int selectUserID(Professor professor) {
+		return this.sqlSession.selectOne(userDaoProps.getMethods().getSelectUserId(), professor);
 	}
 
 	@Override
-	public boolean SelectForShowPassword(User user) {
-		User Output = this.sqlSession.selectOne(this.Constant.getSelectForShowPassword(), user);
-		if (Output == null) {
+	public boolean selectForShowPassword(User user) {
+		User output = this.sqlSession.selectOne(userDaoProps.getMethods().getSelectForShowPassword(), user);
+		if (output == null) {
 			return false;
 		} else {
 			return true;
@@ -103,43 +76,36 @@ public class UserDaoImpl implements UserDao {
 	}
 
 	@Override
-	public boolean SelectForEmailDuplicateCheck(User user) {
-		User Output = sqlSession.selectOne(this.Constant.getSelectForEmailDuplicateCheck(), user.getUserEmail());
-
-		if (Output == null) {
-			EmailCheck = false;
-		} else {
-			EmailCheck = true;
-		}
-
-		return EmailCheck;
+	public boolean selectForEmailDuplicateCheck(User user) {
+		User output = sqlSession.selectOne(userDaoProps.getMethods().getSelectForEmailDuplicateCheck(), user.getUserEmail());
+		return output != null;
 	}
 
 	@Override
-	public void UpdateLoginDate(User user) {
-		this.sqlSession.selectOne(this.Constant.getUpdateLoginDate(), user);
+	public void updateLoginDate(User user) {
+		this.sqlSession.selectOne(userDaoProps.getMethods().getUpdateLoginDate(), user);
 	}
 
 	@Override
-	public String SelectCurrentPwd(String id) {
-		return this.sqlSession.selectOne(this.Constant.getSelectCurrentPwd(), id);
+	public String selectCurrentPwd(String id) {
+		return this.sqlSession.selectOne(userDaoProps.getMethods().getSelectCurrentPwd(), id);
 	}
 
 	@Override
-	public void UpdatePwd(User user) {
-		this.sqlSession.update(this.Constant.getUpdatePwd(), user);
+	public void updatePwd(User user) {
+		this.sqlSession.update(userDaoProps.getMethods().getUpdatePwd(), user);
 	}
 
 	@Override
-	public boolean SelectForPwdCheckBeforeModify(String id, String pwd) {
+	public boolean selectForPwdCheckBeforeModify(String id, String pwd) {
 
 		// 추후 entity로 이동해야한다.
-		BCryptPasswordEncoder Encoder = new BCryptPasswordEncoder();
-		String Output = this.sqlSession.selectOne(this.Constant.getSelectForPwdCheckBeforeModify(), id);
-		if (Output == null) {
+		BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
+		String output = this.sqlSession.selectOne(userDaoProps.getMethods().getSelectForPwdCheckBeforeModify(), id);
+		if (output == null) {
 			return false;
 		} else {
-			if (Encoder.matches(pwd, Output)) {
+			if (encoder.matches(pwd, output)) {
 				return true;
 			} else {
 				return false;
@@ -150,264 +116,246 @@ public class UserDaoImpl implements UserDao {
 	@Override
 	public ArrayList<String> selectUserProfileInfo(String id) {
 		// 정보를 저장하기 위한 ArrayList
-		ArrayList<String> info = new ArrayList<String>();
+		ArrayList<String> info = new ArrayList<>();
 		// 학생정보를 가져오는 query문 실행
-		List<User> output = this.sqlSession.selectList(this.Constant.getSelectUserInfo(), id);
+		List<User> output = this.sqlSession.selectList(userDaoProps.getMethods().getSelectUserInfo(), id);
 
-		if (output == null) {
-
-		} else {
-			for (User item : output) {
-				UserID = item.getUserID();
-				UserName = item.getUserName();
-				UserRole = item.getUserRole();
-			}
+		if (output != null && !output.isEmpty()) {
+			User user = output.get(0);
+			String userName = user.getUserName();
+			int userId = user.getUserID();
+			String userRole = user.getUserRole();
+			
 			// 이름 0
-			info.add(UserName);
+			info.add(userName);
 			// 아이디 1
-			info.add(Integer.toString(UserID));
+			info.add(Integer.toString(userId));
 			// role 2
-			info.add(UserRole);
+			info.add(userRole);
 		}
 		return info;
 	}
 
 	@Override
 	public void updateUserPhoneNumber(User user) {
-		sqlSession.update(this.Constant.getUpdateUserPhoneNum(), user);
+		sqlSession.update(userDaoProps.getMethods().getUpdateUserPhoneNum(), user);
 	}
 
 	@Override
 	public void updateUserMajor(User user) {
-		sqlSession.update(this.Constant.getUpdateUserMajor(), user);
+		sqlSession.update(userDaoProps.getMethods().getUpdateUserMajor(), user);
 	}
 
 	@Override
 	public void updateUserColleges(User user) {
-		sqlSession.update(this.Constant.getUpdateUserColleges(), user);
+		sqlSession.update(userDaoProps.getMethods().getUpdateUserColleges(), user);
 	}
 
 	@Override
-	public ArrayList<String> SelectUserInformation(String userId) {
-		ArrayList<String> UserInfo = new ArrayList<String>();
-		List<User> Output = sqlSession.selectList(this.Constant.getSelectUserInformation(), userId);
-		if (Output == null) {
-
-		} else {
-			for (User Item : Output) {
-				UserID = Item.getUserID();
-				UserLoginID = Item.getUserLoginID().toString();
-			}
+	public ArrayList<String> selectUserInformation(String userId) {
+		ArrayList<String> userInfo = new ArrayList<>();
+		List<User> output = sqlSession.selectList(userDaoProps.getMethods().getSelectUserInformation(), userId);
+		
+		if (output != null && !output.isEmpty()) {
+			User user = output.get(0);
+			int userIdValue = user.getUserID();
+			String userLoginIdValue = user.getUserLoginID();
+			
 			// 아이디
-			UserInfo.add(Integer.toString(UserID));
+			userInfo.add(Integer.toString(userIdValue));
 			// 로그인 아이디(학번)
-			UserInfo.add(UserLoginID);
+			userInfo.add(userLoginIdValue);
 		}
-		return UserInfo;
+		return userInfo;
 	}
 
 	@Override
-	public void UpdateTemporaryPwd(User user) {
-		sqlSession.update(this.Constant.getUpdateTemporaryPwd(), user);
+	public void updateTemporaryPwd(User user) {
+		sqlSession.update(userDaoProps.getMethods().getUpdateTemporaryPwd(), user);
 	}
 
 	@Override
-	public void UpdateDoWithdrawalRecoveryByAdmin(String ajaxMsg) {
-		sqlSession.update(this.Constant.getUpdateDoWithdrawalRecoveryByAdmin(), ajaxMsg);
+	public void updateDoWithdrawalRecoveryByAdmin(String ajaxMsg) {
+		sqlSession.update(userDaoProps.getMethods().getUpdateDoWithdrawalRecoveryByAdmin(), ajaxMsg);
 	}
 
 	@Override
-	public void UpdateDormantOneToZero(String id) {
-		sqlSession.update(this.Constant.getUpdateDormantOneToZero(), id);
+	public void updateDormantOneToZero(String id) {
+		sqlSession.update(userDaoProps.getMethods().getUpdateDormantOneToZero(), id);
 	}
 
 	@Override
-	public void UpdateUserRole(String id, String role) {
+	public void updateUserRole(String id, String role) {
 		User user = new User();
 		user.setUserLoginID(id);
 		user.setUserRole(role);
-		user.setAuthority(this.Constant.getROLE_USER());
-		sqlSession.update(this.Constant.getUpdateUserRole(), user);
+		user.setAuthority(userDaoProps.getRoles().getRoleUser());
+		sqlSession.update(userDaoProps.getMethods().getUpdateUserRole(), user);
 	}
 
 	@Override
-	public void UpdateAdminRole(String id, String role) {
+	public void updateAdminRole(String id, String role) {
 		User user = new User();
 		user.setUserLoginID(id);
 		user.setUserRole(role);
-		user.setAuthority(this.Constant.getROLE_ADMIN());
-		sqlSession.update(this.Constant.getUpdateAdminRole(), user);
+		user.setAuthority(userDaoProps.getRoles().getRoleAdmin());
+		sqlSession.update(userDaoProps.getMethods().getUpdateAdminRole(), user);
 	}
 
 	@Override
-	public ArrayList<String> SelectMyPageUserInfo(String userId) {
-		ArrayList<String> Info = new ArrayList<String>();
-		List<User> Output = this.sqlSession.selectList(this.Constant.getSelectMyPageInfo(), userId);
-		if (Output == null) {
-
-		} else {
-			for (User Item : Output) {
-				UserID = Item.getUserID();
-				UserLoginID = Item.getUserLoginID();
-				UserName = Item.getUserName();
-				UserPhoneNum = Item.getUserPhoneNum();
-				UserEmail = Item.getUserEmail();
-			}
-			Info.add(Integer.toString(UserID));
-			Info.add(UserLoginID);
-			Info.add(UserName);
-			Info.add(UserPhoneNum);
-			Info.add(UserEmail);
+	public ArrayList<String> selectMyPageUserInfo(String userId) {
+		ArrayList<String> info = new ArrayList<>();
+		List<User> output = this.sqlSession.selectList(userDaoProps.getMethods().getSelectMyPageInfo(), userId);
+		
+		if (output != null && !output.isEmpty()) {
+			User user = output.get(0);
+			int userIdValue = user.getUserID();
+			String userLoginIdValue = user.getUserLoginID();
+			String userNameValue = user.getUserName();
+			String userPhoneNumValue = user.getUserPhoneNum();
+			String userEmailValue = user.getUserEmail();
+			
+			info.add(Integer.toString(userIdValue));
+			info.add(userLoginIdValue);
+			info.add(userNameValue);
+			info.add(userPhoneNumValue);
+			info.add(userEmailValue);
 		}
-		return Info;
+		return info;
 	}
 
 	@Override
-	public ArrayList<String> SelectMyPageUserInfoByID(String mysqlID) {
-		ArrayList<String> Info = new ArrayList<>();
-		List<User> Output = this.sqlSession.selectList(this.Constant.getSelectMyPageInfoByID(), mysqlID);
-		if (Output != null) {
-			for (User Item : Output) {
-				UserLoginID = Item.getUserLoginID();
-				UserName = Item.getUserName();
-				UserPhoneNum = Item.getUserPhoneNum();
-				UserEmail = Item.getUserEmail();
-				OpenPhoneNum = Item.getOpenPhoneNum();
-				OpenGrade = Item.getOpenGrade();
-			}
-			Info.add(UserLoginID);
-			Info.add(UserName);
-			Info.add(UserPhoneNum);
-			Info.add(UserEmail);
-			Info.add(OpenPhoneNum);
-			Info.add(OpenGrade);
+	public ArrayList<String> selectMyPageUserInfoByID(String mysqlID) {
+		ArrayList<String> info = new ArrayList<>();
+		List<User> output = this.sqlSession.selectList(userDaoProps.getMethods().getSelectMyPageInfoById(), mysqlID);
+		
+		if (output != null && !output.isEmpty()) {
+			User user = output.get(0);
+			String userLoginIdValue = user.getUserLoginID();
+			String userNameValue = user.getUserName();
+			String userPhoneNumValue = user.getUserPhoneNum();
+			String userEmailValue = user.getUserEmail();
+			String openPhoneNumValue = user.getOpenPhoneNum();
+			String openGradeValue = user.getOpenGrade();
+			
+			info.add(userLoginIdValue);
+			info.add(userNameValue);
+			info.add(userPhoneNumValue);
+			info.add(userEmailValue);
+			info.add(openPhoneNumValue);
+			info.add(openGradeValue);
 		}
-		return Info;
+		return info;
 	}
 
 	@Override
-	public void UpdateUserName(User user) {
-		this.sqlSession.update(this.Constant.getUpdateUserName(), user);
+	public void updateUserName(User user) {
+		this.sqlSession.update(userDaoProps.getMethods().getUpdateUserName(), user);
 	}
 
 	@Override
-	public void UpdatePhoneNum(User user) {
-		this.sqlSession.update(this.Constant.getUpdateOpenPhoneNum(), user);
+	public void updatePhoneNum(User user) {
+		this.sqlSession.update(userDaoProps.getMethods().getUpdateOpenPhoneNum(), user);
 	}
 
 	@Override
-	public void UpdateOpenGrade(User user) {
-		sqlSession.update(this.Constant.getUpdateOpenGrade(), user);
+	public void updateOpenGrade(User user) {
+		sqlSession.update(userDaoProps.getMethods().getUpdateOpenGrade(), user);
 	}
 
 	@Override
-	public User SelectUserInfo(String userLoginID) {
-		User Output = sqlSession.selectOne(this.Constant.getSelectUserInfoForWithdrawal(), userLoginID);
-		return Output;
+	public User selectUserInfo(String userLoginID) {
+        return sqlSession.selectOne(userDaoProps.getMethods().getSelectUserInfoForWithdrawal(), userLoginID);
 	}
 
 	@Override
-	public List<UserInfoOpen> SelectOpenInfo(String userID) {
-		List<UserInfoOpen> UserInfoOpen = this.sqlSession.selectList(this.Constant.getSelectOpenInfo(), userID);
-		return UserInfoOpen;
+	public List<UserInfoOpen> selectOpenInfo(String userID) {
+        return this.sqlSession.selectList(userDaoProps.getMethods().getSelectOpenInfo(), userID);
 	}
 
 	@Override
-	public int SelectUserIDFromBoardController(String userLoginID) {
-		int UserID = this.sqlSession.selectOne(this.Constant.getSelectUserIDFromBoardController(), userLoginID);
-		return UserID;
+	public int selectUserIDFromBoardController(String userLoginID) {
+        return this.sqlSession.selectOne(userDaoProps.getMethods().getSelectUserIdFromBoardController(), userLoginID);
 	}
 
 	@Override
-	public String SelectUserRole(String userLoginID) {
-		String UserRole = this.sqlSession.selectOne("SelectUserRole", userLoginID);
-		return UserRole;
+	public String selectUserRole(String userLoginID) {
+        return this.sqlSession.selectOne(userDaoProps.getMethods().getSelectUserRole(), userLoginID);
 	}
 
 	@Override
-	public String SelectUserName(String userLoginID) {
-		String UserName = this.sqlSession.selectOne("SelectUserName", userLoginID);
-		return UserName;
+	public String selectUserName(String userLoginID) {
+        return this.sqlSession.selectOne("SelectUserName", userLoginID);
 	}
 
 	@Override
-	public void UpdateWithdrawalUser(User user) {
+	public void updateWithdrawalUser(User user) {
 		sqlSession.update("UpdateWithdrawal", user);
 	}
 
 	@Override
-	public void UpdateRecoveryWithdrawal(User user) {
+	public void updateRecoveryWithdrawal(User user) {
 		sqlSession.update("UpdateRecoveryWithdrawal", user);
 	}
 
 	@Override
-	public void UpdateWithdrawalByDormant(String ajxMsg) {
+	public void updateWithdrawalByDormant(String ajxMsg) {
 		sqlSession.update("UpdateWithdrawalByDormant", ajxMsg);
 	}
 
 	@Override
-	public boolean SelectDormant(String loginID) {
-		boolean DormantCheck = sqlSession.selectOne("SelectDormant", loginID);
-		if (DormantCheck) {
-			return true;
-		} else {
-			return false;
-		}
+	public boolean selectDormant(String loginID) {
+		Boolean dormantCheck = sqlSession.selectOne("SelectDormant", loginID);
+		return Boolean.TRUE.equals(dormantCheck);
 	}
 
 	@Override
-	public void UpdateRecoveryDormant(String loginID) {
+	public void updateRecoveryDormant(String loginID) {
 		sqlSession.update("UpdateRecoveryDormant", loginID);
 	}
 
 	@Override
-	public String SelectWriter(String userLoginID) {
-		String Output = sqlSession.selectOne("SelectWriter", userLoginID);
-		return Output;
+	public String selectWriter(String userLoginID) {
+        return sqlSession.selectOne("SelectWriter", userLoginID);
 	}
 
 	@Override
-	public String SelectUserIDForDocument(String userLoginID) {
-		String Output = sqlSession.selectOne("SelectUserIDForDocument", userLoginID);
-		return Output;
+	public String selectUserIDForDocument(String userLoginID) {
+        return sqlSession.selectOne("SelectUserIDForDocument", userLoginID);
 	}
 
 	@Override
-	public String SelectTWriterID(String userLoginID) {
+	public String selectTWriterID(String userLoginID) {
 		return sqlSession.selectOne("SelectTWriterID", userLoginID);
 	}
 
 	@Override
-	public String SelectUserIDForMyBoard(String loginID) {
-		String Output = sqlSession.selectOne("SelectUserIDForMyBoard", loginID);
-		return Output;
+	public String selectUserIDForMyBoard(String loginID) {
+        return sqlSession.selectOne("SelectUserIDForMyBoard", loginID);
 	}
 
 	@Override
-	public String SelectEmailForInquiry(String userLoginID) {
-		String EmailForInquiry = this.sqlSession.selectOne("SelectUserEmail", userLoginID);
-		return EmailForInquiry;
+	public String selectEmailForInquiry(String userLoginID) {
+        return this.sqlSession.selectOne("SelectUserEmail", userLoginID);
 	}
 
 	@Override
-	public String SelectPhoneNumForInquiry(String userLoginID) {
-		String PhoneNumForInquiry = this.sqlSession.selectOne("SelectUserPhoneNum", userLoginID);
-		return PhoneNumForInquiry;
+	public String selectPhoneNumForInquiry(String userLoginID) {
+        return this.sqlSession.selectOne("SelectUserPhoneNum", userLoginID);
 	}
 
 	@Override
-	public String SelectUserIDForDate(String loginID) {
+	public String selectUserIDForDate(String loginID) {
 		return sqlSession.selectOne("SelectUserIDForDate", loginID);
 	}
 
 	@Override
-	public String SelectIDForReview(String userLoginID) {
+	public String selectIDForReview(String userLoginID) {
 		return sqlSession.selectOne("SelectIDForReview", userLoginID);
 	}
 
 	@Override
-	public User SelectModifyUserInfo(String loginID) {
-		User SelectModifyUserInfo = sqlSession.selectOne("SelectModifyUserInfo", loginID);
-		return SelectModifyUserInfo;
+	public User selectModifyUserInfo(String loginID) {
+        return sqlSession.selectOne("SelectModifyUserInfo", loginID);
 	}
 }

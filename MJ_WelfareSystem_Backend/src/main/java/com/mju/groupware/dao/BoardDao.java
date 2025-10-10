@@ -1,75 +1,73 @@
 package com.mju.groupware.dao;
 
-import java.util.List;
-import java.util.Map;
-
 import com.mju.groupware.dto.Board;
 import com.mju.groupware.dto.TeamBoard;
 
+import java.util.List;
+import java.util.Map;
+
 public interface BoardDao {
 
-	void InsertBoardInfo(Board board);
+	void insertBoardInfo(Board board);
 
-	void InsertFile(Map<String, Object> map);
-
-	List<Board> SelectCommunityBoardList();
+	List<Board> selectCommunityBoardList();
 	
-	List<Board> SelectNoticeBoardList();
+	List<Board> selectNoticeBoardList();
 
-	void UpdateHitCount(String boardID);
+	void updateHitCount(String boardID);
 
 	void insertFile(Map<String, Object> map);
 	
-	void InsertTeamFileInfo(Map<String, Object> map);
+	void insertTeamFileInfo(Map<String, Object> map);
 
 	int SelectBoardID(Board board);
 
-	Board SelectOneCommunityContent(String boardID);
+	Board selectOneCommunityContent(String boardID);
 	
 	Board SelectOneNoticeContent(String boardID);
 
-	String SelectLoginUserID(String loginID);
+	String selectLoginUserID(String loginID);
 
-	void UpdateModifiedContent(Board board);
+	void updateModifiedContent(Board board);
 
-	void DeleteCommunity(int boardID);
+	void deleteCommunity(int boardID);
 	
-	void DeleteNotice(int boardID);
+	void deleteNotice(int boardID);
 
-	Map<String, Object> SelectCommunityFileInfo(Map<String, Object> map);
+	Map<String, Object> selectCommunityFileInfo(Map<String, Object> map);
 
-	List<Map<String, Object>> SelectCommunityFileList(int bNo);
+	List<Map<String, Object>> selectCommunityFileList(int bNo);
 	
-	Map<String, Object> SelectNoticeFileInfo(Map<String, Object> map);
+	Map<String, Object> selectNoticeFileInfo(Map<String, Object> map);
 
-	List<Map<String, Object>> SelectNoticeFileList(int bNo);
+	List<Map<String, Object>> selectNoticeFileList(int bNo);
 
-	void UpdateFile(Map<String, Object> tempMap);
+	void updateFile(Map<String, Object> tempMap);
 
-	void UpdateBoardDelete(int boardID);
+	void updateBoardDelete(int boardID);
 
-	void InsertTeamDocument(TeamBoard teamBoard);
+	void insertTeamDocument(TeamBoard teamBoard);
 
 	int SelectTBoardID(TeamBoard teamBoard);
 
-	List<TeamBoard> SelectTeamBoardList();
+	List<TeamBoard> selectTeamBoardList();
 
-	TeamBoard SelectTeamBoardContent(String tBoardID);
+	TeamBoard selectTeamBoardContent(String tBoardID);
 
-	List<Map<String, Object>> SelectTeamBoardFileList(int bNo);
+	List<Map<String, Object>> selectTeamBoardFileList(int bNo);
 
-	void UpdateTBoardDelete(int tBoardID);
+	void updateTBoardDelete(int tBoardID);
 
-	String SelectWriterID(TeamBoard teamBoard);
+	String selectWriterID(TeamBoard teamBoard);
 
-	void UpdateTeamBoardModifiedContent(TeamBoard teamBoard);
+	void updateTeamBoardModifiedContent(TeamBoard teamBoard);
 
-	void InsertTeamFile(Map<String, Object> tempMap);
+	void insertTeamFile(Map<String, Object> tempMap);
 
-	void UpdateTeamFile(Map<String, Object> tempMap);
+	void updateTeamFile(Map<String, Object> tempMap);
 
-	Map<String, Object> SelectTeamBoardFileInfo(Map<String, Object> map);
+	Map<String, Object> selectTeamBoardFileInfo(Map<String, Object> map);
 
-	List<Board> SelectMyBoardList(String login);
+	List<Board> selectMyBoardList(String login);
 
 }

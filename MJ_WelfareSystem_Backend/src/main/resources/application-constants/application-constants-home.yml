@@ -1,0 +1,10 @@
+app:
+  home:
+    urls:
+      home: /homeView/home
+      select: /signup/signupSelect
+      consent: /signup/infoConsent
+      login: /signin/login
+      admin-login: /signin/mjuAdminLogin
+      denied: /homeView/accessDenied
+

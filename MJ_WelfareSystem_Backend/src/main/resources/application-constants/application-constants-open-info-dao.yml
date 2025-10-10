@@ -1,0 +1,6 @@
+app:
+  dao:
+    open-info:
+      methods:
+        select-open-info-all: SelectForOpenInfoAll
+

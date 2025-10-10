@@ -1,6 +1,6 @@
 package com.mju.groupware.service;
 
-import com.mju.groupware.constant.ConstantAdminBoardController;
+import global.properties.BoardProperties;
 import com.mju.groupware.dao.BoardDao;
 import com.mju.groupware.dao.UserDao;
 import com.mju.groupware.dto.Board;
@@ -27,32 +27,30 @@ import java.util.Map;
 @Service
 @RequiredArgsConstructor
 public class BoardServiceImpl implements BoardService { //TODO : 예외처리 추가. 로깅 추가. Transactional 추가. 입력 검증 부재. 보얀 취약점 확인
-//	@Resource(name = "fileUtils")
 	private final BFileUtils BfileUtils;
-//	@Resource(name = "TfileUtils")
 	private final TeamFileUtils TeamFileUtils;
 	private final BoardDao boardDao;
-    private final ConstantAdminBoardController constantAdminBoardController;
+    private final BoardProperties boardProps;
 	private final UserDao userDao;
 
 	@Override
 	public List<Board> getCommunityList() {
-		return boardDao.SelectCommunityBoardList();
+		return boardDao.selectCommunityBoardList();
 	}
 
 	@Override
 	public List<Board> SelectNoticeBoardList() {
-		return boardDao.SelectNoticeBoardList();
+		return boardDao.selectNoticeBoardList();
 	}
 
 	@Override
 	public void UpdateHitCount(String boardID) {
-		boardDao.UpdateHitCount(boardID);
+		boardDao.updateHitCount(boardID);
 	}
 
 	@Override
 	public void InsertBoard(Board board, HttpServletRequest request) {
-		boardDao.InsertBoardInfo(board);
+		boardDao.insertBoardInfo(board);
 		MultipartHttpServletRequest multipartHttpServletRequest = (MultipartHttpServletRequest) request;
 		try {
 
@@ -70,7 +68,7 @@ public class BoardServiceImpl implements BoardService { //TODO : 예외처리 �
 
 	@Override
 	public void InsertTeamDocument(TeamBoard teamBoard, HttpServletRequest request) {
-		boardDao.InsertTeamDocument(teamBoard);
+		boardDao.insertTeamDocument(teamBoard);
 		MultipartHttpServletRequest multipartHttpServletRequest = (MultipartHttpServletRequest) request;
 		try {
 
@@ -78,7 +76,7 @@ public class BoardServiceImpl implements BoardService { //TODO : 예외처리 �
 			teamBoard.setTBno(TeamBoardID);
 			List<Map<String, Object>> List = TeamFileUtils.InsertTeamFileInfo(teamBoard, multipartHttpServletRequest);
 			for (int i = 0, Size = List.size(); i < Size; i++) {
-				boardDao.InsertTeamFileInfo(List.get(i));
+				boardDao.insertTeamFileInfo(List.get(i));
 			}
 
 		} catch (Exception e) {
@@ -88,33 +86,33 @@ public class BoardServiceImpl implements BoardService { //TODO : 예외처리 �
 
 	@Override
 	public Board SelectOneCommunityContent(String boardID) {
-		return boardDao.SelectOneCommunityContent(boardID);
+		return boardDao.selectOneCommunityContent(boardID);
 	}
 
 	@Override
 	public Board SelectOneNoticeContent(String boardID) {
-		return boardDao.SelectOneCommunityContent(boardID);
+		return boardDao.selectOneCommunityContent(boardID);
 	}
 
 	@Override
 	public String SelectLoginUserID(String loginID) {
-		return boardDao.SelectLoginUserID(loginID);
+		return boardDao.selectLoginUserID(loginID);
 	}
 
 	@Override
 	public void DeleteCommunity(int boardID) {
-		boardDao.DeleteCommunity(boardID);
+		boardDao.deleteCommunity(boardID);
 	}
 
 	@Override
 	public void DeleteNotice(int boardID) {
-		boardDao.DeleteNotice(boardID);
+		boardDao.deleteNotice(boardID);
 	}
 
 	@Override
 	public void UpdateModifiedContent(Board board, String[] FileList, String[] fileNameList,
 			HttpServletRequest request) {
-		boardDao.UpdateModifiedContent(board);
+		boardDao.updateModifiedContent(board);
 		MultipartHttpServletRequest multipartHttpServletRequest = (MultipartHttpServletRequest) request;
 
 		List<Map<String, Object>> List;
@@ -126,22 +124,21 @@ public class BoardServiceImpl implements BoardService { //TODO : 예외처리 �
 				TempMap = List.get(i);
 				// 여기일단조심
 				if (TempMap.get("IsNew").equals("1")) {
-					boardDao.InsertFile(TempMap);
+					boardDao.insertFile(TempMap);
 				} else {
-					boardDao.UpdateFile(TempMap);
+					boardDao.updateFile(TempMap);
 				}
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-
 	}
 
 	@Override
 	public void UpdateTeamBoardModifiedContent(TeamBoard teamBoard, String[] fileList, String[] fileNameList,
 			HttpServletRequest request) {
 
-		boardDao.UpdateTeamBoardModifiedContent(teamBoard);
+		boardDao.updateTeamBoardModifiedContent(teamBoard);
 
 		MultipartHttpServletRequest multipartHttpServletRequest = (MultipartHttpServletRequest) request;
 
@@ -155,9 +152,9 @@ public class BoardServiceImpl implements BoardService { //TODO : 예외처리 �
 				TempMap = List.get(i);
 				// 여기일단조심
 				if (TempMap.get("IsNew").equals("1")) {
-					boardDao.InsertTeamFile(TempMap);
+					boardDao.insertTeamFile(TempMap);
 				} else {
-					boardDao.UpdateTeamFile(TempMap);
+					boardDao.updateTeamFile(TempMap);
 				}
 			}
 		} catch (Exception e) {
@@ -168,66 +165,66 @@ public class BoardServiceImpl implements BoardService { //TODO : 예외처리 �
 
 	@Override
 	public List<Map<String, Object>> SelectCommunityFileList(int BNo) {
-		List<Map<String, Object>> SelectCommunityFileList = boardDao.SelectCommunityFileList(BNo);
+		List<Map<String, Object>> SelectCommunityFileList = boardDao.selectCommunityFileList(BNo);
 		return SelectCommunityFileList;
 	}
 
 	@Override
 	public List<Map<String, Object>> SelectTeamBoardFileList(int BNo) {
-		List<Map<String, Object>> SelectTeamBoardFileList = boardDao.SelectTeamBoardFileList(BNo);
+		List<Map<String, Object>> SelectTeamBoardFileList = boardDao.selectTeamBoardFileList(BNo);
 		return SelectTeamBoardFileList;
 	}
 
 	@Override
 	public Map<String, Object> SelectCommunityFileInfo(Map<String, Object> map) {
-		Map<String, Object> SelectCommunityFileInfo = boardDao.SelectCommunityFileInfo(map);
+		Map<String, Object> SelectCommunityFileInfo = boardDao.selectCommunityFileInfo(map);
 		return SelectCommunityFileInfo;
 	}
 
 	@Override
 	public List<Map<String, Object>> SelectNoticeFileList(int BNo) {
-		return boardDao.SelectNoticeFileList(BNo);
+		return boardDao.selectNoticeFileList(BNo);
 	}
 
 	@Override
 	public Map<String, Object> SelectNoticeFileInfo(Map<String, Object> map) {
-		Map<String, Object> SelectNoticeFileInfo = boardDao.SelectNoticeFileInfo(map);
+		Map<String, Object> SelectNoticeFileInfo = boardDao.selectNoticeFileInfo(map);
 		return SelectNoticeFileInfo;
 	}
 
 	@Override
 	public void UpdateBoardDelete(int boardID) {
-		boardDao.UpdateBoardDelete(boardID);
+		boardDao.updateBoardDelete(boardID);
 	}
 
 	@Override
 	public List<TeamBoard> SelectTeamBoardList() {
-		return boardDao.SelectTeamBoardList();
+		return boardDao.selectTeamBoardList();
 	}
 
 	@Override
 	public TeamBoard SelectTeamBoardContent(String tBoardID) {
-		return boardDao.SelectTeamBoardContent(tBoardID);
+		return boardDao.selectTeamBoardContent(tBoardID);
 	}
 
 	@Override
 	public void UpdateTBoardDelete(int tBoardID) {
-		boardDao.UpdateTBoardDelete(tBoardID);
+		boardDao.updateTBoardDelete(tBoardID);
 	}
 
 	@Override
 	public String SelectWriterID(TeamBoard teamBoard) {
-		return boardDao.SelectWriterID(teamBoard);
+		return boardDao.selectWriterID(teamBoard);
 	}
 
 	@Override
 	public Map<String, Object> SelectTeamBoardFileInfo(Map<String, Object> map) {
-        return boardDao.SelectTeamBoardFileInfo(map);
+        return boardDao.selectTeamBoardFileInfo(map);
 	}
 
 	@Override
 	public List<Board> SelectMyBoardList(String login) {
-		return boardDao.SelectMyBoardList(login);
+		return boardDao.selectMyBoardList(login);
 	}
 
 	@Override
@@ -246,14 +243,14 @@ public class BoardServiceImpl implements BoardService { //TODO : 예외처리 �
 	public void getNoticeWrite(Principal principal, HttpServletRequest request, Model model) {
 		// 작성자 이름 자동 세팅 (disabled)
 		String UserLoginID = principal.getName();
-		String UserName = userDao.SelectUserName(UserLoginID);
+		String UserName = userDao.selectUserName(UserLoginID);
 		Date Now = new Date();
 		SimpleDateFormat Date = new SimpleDateFormat("yyyy-MM-dd");
 
-		model.addAttribute(this.constantAdminBoardController.getNoticeWriter(), UserName);
-		model.addAttribute(this.constantAdminBoardController.getBoardDate(), Date.format(Now));
+		model.addAttribute(boardProps.getParams().getNotice().getWriter(), UserName);
+		model.addAttribute(boardProps.getParams().getBoard().getDate(), Date.format(Now));
 
-		List<Board> NoticeList = boardDao.SelectNoticeBoardList();
+		List<Board> NoticeList = boardDao.selectNoticeBoardList();
 		model.addAttribute("noticeList", NoticeList);
 	}
 	
@@ -262,16 +259,16 @@ public class BoardServiceImpl implements BoardService { //TODO : 예외처리 �
 		Board board = new Board();
 
 		String BoardID = request.getParameter("boardID");
-		board = boardDao.SelectOneCommunityContent(BoardID);
-		model.addAttribute(this.constantAdminBoardController.getNoticeTitle(), board.getBoardSubject());
-		model.addAttribute(this.constantAdminBoardController.getNoticeWriter(), board.getBoardWriter());
+		board = boardDao.selectOneCommunityContent(BoardID);
+		model.addAttribute(boardProps.getParams().getNotice().getTitle(), board.getBoardSubject());
+		model.addAttribute(boardProps.getParams().getNotice().getWriter(), board.getBoardWriter());
 		model.addAttribute("Date", board.getBoardDate());
-		model.addAttribute(this.constantAdminBoardController.getNoticeContent(), board.getBoardContent());
-		model.addAttribute(this.constantAdminBoardController.getBoardID(), board.getBoardID());
-		model.addAttribute(this.constantAdminBoardController.getBoardType(), board.getBoardType());
+		model.addAttribute(boardProps.getParams().getNotice().getContent(), board.getBoardContent());
+		model.addAttribute(boardProps.getParams().getBoard().getId(), board.getBoardID());
+		model.addAttribute(boardProps.getParams().getBoard().getType(), board.getBoardType());
 
 		// 수정된 file을 보여주는곳
-		List<Map<String, Object>> NoticeFileList = boardDao.SelectNoticeFileList(Integer.parseInt(BoardID));
+		List<Map<String, Object>> NoticeFileList = boardDao.selectNoticeFileList(Integer.parseInt(BoardID));
 		model.addAttribute("NoticeFile", NoticeFileList);
 	}
 	
@@ -281,10 +278,10 @@ public class BoardServiceImpl implements BoardService { //TODO : 예외처리 �
 
 		// 누르면 조회수 증가하는 로직
 		String BoardID = request.getParameter("no");
-		boardDao.UpdateHitCount(BoardID);
+		boardDao.updateHitCount(BoardID);
 
 		/*-----------------------------------*/
-		Board board = boardDao.SelectOneCommunityContent(BoardID); // 선택한 게시글을 쓴 userID가 들어감.
+		Board board = boardDao.selectOneCommunityContent(BoardID); // 선택한 게시글을 쓴 userID가 들어감.
 		model.addAttribute("NoticeTitle", board.getBoardSubject());
 		model.addAttribute("NoticeWriter", board.getBoardWriter());
 		model.addAttribute("BoardDate", board.getBoardDate());
@@ -292,41 +289,41 @@ public class BoardServiceImpl implements BoardService { //TODO : 예외처리 �
 		model.addAttribute("BoardID", BoardID);
 		model.addAttribute("BoardType", board.getBoardType());
 
-		String UserID = boardDao.SelectLoginUserID(LoginID);// 로그인한 사람의 userID를 가져오기 위함
+		String UserID = boardDao.selectLoginUserID(LoginID);// 로그인한 사람의 userID를 가져오기 위함
 		model.addAttribute("UserID", UserID);
 		model.addAttribute("UserIDFromWriter", board.getUserID());
 
-		List<Map<String, Object>> NoticeFileList = boardDao.SelectNoticeFileList(Integer.parseInt(BoardID));
+		List<Map<String, Object>> NoticeFileList = boardDao.selectNoticeFileList(Integer.parseInt(BoardID));
 		model.addAttribute("NoticeFile", NoticeFileList);
 	}
 
 	@Override
 	public void getCommunityWrite(Principal principal, Model model) {
-		List<Board> CommunityList = boardDao.SelectCommunityBoardList();
+		List<Board> CommunityList = boardDao.selectCommunityBoardList();
 
 		// 작성자 이름 자동 세팅 (disabled)
 		String UserLoginID = principal.getName();
-		String UserName = userDao.SelectUserName(UserLoginID);
+		String UserName = userDao.selectUserName(UserLoginID);
 		Date Now = new Date();
 		SimpleDateFormat Date = new SimpleDateFormat("yyyy-MM-dd");
 
-		model.addAttribute(this.constantAdminBoardController.getCommunityWriter(), UserName);
-		model.addAttribute(this.constantAdminBoardController.getBoardDate(), Date.format(Now));
+		model.addAttribute(boardProps.getParams().getCommunity().getWriter(), UserName);
+		model.addAttribute(boardProps.getParams().getBoard().getDate(), Date.format(Now));
 		model.addAttribute("communityList", CommunityList);
 	}
 	
 	@Override
 	public void getCommunityModify(Model model, HttpServletRequest request) {
 		String BoardID = request.getParameter("no");
-		Board board = boardDao.SelectOneCommunityContent(BoardID);
-		model.addAttribute(this.constantAdminBoardController.getCommunityTitle(), board.getBoardSubject());
-		model.addAttribute(this.constantAdminBoardController.getCommunityWriter(), board.getBoardWriter());
+		Board board = boardDao.selectOneCommunityContent(BoardID);
+		model.addAttribute(boardProps.getParams().getCommunity().getTitle(), board.getBoardSubject());
+		model.addAttribute(boardProps.getParams().getCommunity().getWriter(), board.getBoardWriter());
 		model.addAttribute("Date", board.getBoardDate());
-		model.addAttribute(this.constantAdminBoardController.getCommunityContent(), board.getBoardContent());
-		model.addAttribute(this.constantAdminBoardController.getBoardID(), board.getBoardID());
+		model.addAttribute(boardProps.getParams().getCommunity().getContent(), board.getBoardContent());
+		model.addAttribute(boardProps.getParams().getBoard().getId(), board.getBoardID());
 
 		// 수정된 file을 보여주는곳
-		List<Map<String, Object>> CommunityFile = boardDao.SelectCommunityFileList(Integer.parseInt(BoardID));
+		List<Map<String, Object>> CommunityFile = boardDao.selectCommunityFileList(Integer.parseInt(BoardID));
 		model.addAttribute("CommunityFile", CommunityFile);
 	}
 	
@@ -334,31 +331,31 @@ public class BoardServiceImpl implements BoardService { //TODO : 예외처리 �
 	public void getCommunityContent(Principal principal, HttpServletRequest request, Model model) {
 		String BoardID = request.getParameter("no");
 		String LoginID = principal.getName();// 로그인 한 아이디
-		boardDao.UpdateHitCount(BoardID);
+		boardDao.updateHitCount(BoardID);
 		/*-----------------------------------*/
-		Board board = boardDao.SelectOneCommunityContent(BoardID); // 선택한 게시글을 쓴 userID가 들어감.
-		model.addAttribute(this.constantAdminBoardController.getCommunityTitle(), board.getBoardSubject());
-		model.addAttribute(this.constantAdminBoardController.getCommunityWriter(), board.getBoardWriter());
-		model.addAttribute(this.constantAdminBoardController.getBoardDate(), board.getBoardDate());
-		model.addAttribute(this.constantAdminBoardController.getCommunityContent(), board.getBoardContent());
-		model.addAttribute(this.constantAdminBoardController.getBoardID(), BoardID);
+		Board board = boardDao.selectOneCommunityContent(BoardID); // 선택한 게시글을 쓴 userID가 들어감.
+		model.addAttribute(boardProps.getParams().getCommunity().getTitle(), board.getBoardSubject());
+		model.addAttribute(boardProps.getParams().getCommunity().getWriter(), board.getBoardWriter());
+		model.addAttribute(boardProps.getParams().getBoard().getDate(), board.getBoardDate());
+		model.addAttribute(boardProps.getParams().getCommunity().getContent(), board.getBoardContent());
+		model.addAttribute(boardProps.getParams().getBoard().getId(), BoardID);
 
-		String UserID = boardDao.SelectLoginUserID(LoginID);// 로그인한 사람의 userID를 가져오기 위함
-		model.addAttribute(this.constantAdminBoardController.getUserID(), UserID);
-		model.addAttribute(this.constantAdminBoardController.getUserIDFromWriter(), board.getUserID());
+		String UserID = boardDao.selectLoginUserID(LoginID);// 로그인한 사람의 userID를 가져오기 위함
+		model.addAttribute(boardProps.getParams().getUser().getId(), UserID);
+		model.addAttribute(boardProps.getParams().getUser().getIdFromWriter(), board.getUserID());
 
-		List<Map<String, Object>> CommunityFile = boardDao.SelectCommunityFileList(Integer.parseInt(BoardID));
+		List<Map<String, Object>> CommunityFile = boardDao.selectCommunityFileList(Integer.parseInt(BoardID));
 		model.addAttribute("CommunityFile", CommunityFile);
 	}
 	
 	@Override
 	public void getFileDown(HttpServletResponse response, Map<String, Object> map) throws Exception {
-		Map<String, Object> ResultMap = boardDao.SelectCommunityFileInfo(map);
+		Map<String, Object> ResultMap = boardDao.selectCommunityFileInfo(map);
 		String StoredFileName = (String) ResultMap.get("BStoredFileName");
 		String OriginalFileName = (String) ResultMap.get("BOriginalFileName");
 
 		byte FileByte[] = org.apache.commons.io.FileUtils
-				.readFileToByteArray(new File(this.constantAdminBoardController.getFilePath() + StoredFileName));
+				.readFileToByteArray(new File(boardProps.getFilePath() + StoredFileName));
 		response.setContentType("application/octet-stream");
 		response.setContentLength(FileByte.length);
 		response.setHeader("Content-Disposition",
@@ -375,8 +372,8 @@ public class BoardServiceImpl implements BoardService { //TODO : 예외처리 �
 		String Content = request.getParameter("NoticeContent");
 		SimpleDateFormat Date = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 		String UserLoginID = principal.getName();
-		int UserID = userDao.SelectUserIDFromBoardController(UserLoginID);
-		String UserName = userDao.SelectUserName(UserLoginID);
+		int UserID = userDao.selectUserIDFromBoardController(UserLoginID);
+		String UserName = userDao.selectUserName(UserLoginID);
 
 		if (Title.isEmpty()) {
 			response.setContentType("text/html; charset=UTF-8");
@@ -384,14 +381,14 @@ public class BoardServiceImpl implements BoardService { //TODO : 예외처리 �
 			Out.println("<script>alert('제목을 입력해주세요. ');</script>");
 			Out.flush();
 
-			return this.constantAdminBoardController.getRNoticeWrite();
+			return boardProps.getUrls().getNotice().getWrite();
 		} else if (Content.isEmpty()) {
 			response.setContentType("text/html; charset=UTF-8");
 			PrintWriter Out = response.getWriter();
 			Out.println("<script>alert('내용을 입력해주세요. ');</script>");
 			Out.flush();
 
-			return this.constantAdminBoardController.getRNoticeWrite();
+			return boardProps.getUrls().getNotice().getWrite();
 		} else {
 			Board board = new Board();
 
@@ -403,7 +400,7 @@ public class BoardServiceImpl implements BoardService { //TODO : 예외처리 �
 			board.setBoardType("공지사항");
 
 			InsertBoard(board, request);
-			return this.constantAdminBoardController.getRRNoticeList();
+			return boardProps.getRedirects().getNoticeList();
 		}
 	}
 	
@@ -416,7 +413,7 @@ public class BoardServiceImpl implements BoardService { //TODO : 예외처리 �
 		SimpleDateFormat Date = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 		String UserLoginID = principal.getName();
 		int BoardID2 = Integer.parseInt(request.getParameter("BoardID"));
-		String UserName = userDao.SelectUserName(UserLoginID);
+		String UserName = userDao.selectUserName(UserLoginID);
 
 		board.setBno(BoardID2);
 		board.setBoardSubject(Title);
@@ -432,7 +429,7 @@ public class BoardServiceImpl implements BoardService { //TODO : 예외처리 �
 	@Override
 	public void postDeleteNotice(HttpServletRequest request) {
 		int BoardID = Integer.parseInt(request.getParameter("boardID"));
-		boardDao.UpdateBoardDelete(BoardID);
+		boardDao.updateBoardDelete(BoardID);
 	}
 	
 	@Override
@@ -442,8 +439,8 @@ public class BoardServiceImpl implements BoardService { //TODO : 예외처리 �
 		String Content = request.getParameter("CommunityContent");
 		SimpleDateFormat Date = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 		String UserLoginID = principal.getName();
-		int UserID = userDao.SelectUserIDFromBoardController(UserLoginID);
-		String UserName = userDao.SelectUserName(UserLoginID);
+		int UserID = userDao.selectUserIDFromBoardController(UserLoginID);
+		String UserName = userDao.selectUserName(UserLoginID);
 
 		if (Title.isEmpty()) {
 			response.setContentType("text/html; charset=UTF-8");
@@ -451,14 +448,14 @@ public class BoardServiceImpl implements BoardService { //TODO : 예외처리 �
 			Out.println("<script>alert('제목을 입력해주세요. ');</script>");
 			Out.flush();
 
-			return this.constantAdminBoardController.getRCommunityWrite();
+			return boardProps.getUrls().getCommunity().getWrite();
 		} else if (Content.isEmpty()) {
 			response.setContentType("text/html; charset=UTF-8");
 			PrintWriter Out = response.getWriter();
 			Out.println("<script>alert('내용을 입력해주세요. ');</script>");
 			Out.flush();
 
-			return this.constantAdminBoardController.getRCommunityWrite();
+			return boardProps.getUrls().getCommunity().getWrite();
 		} else {
 			Board board = new Board();
 
@@ -471,7 +468,7 @@ public class BoardServiceImpl implements BoardService { //TODO : 예외처리 �
 
 			InsertBoard(board, request);
 
-			return this.constantAdminBoardController.getRRCommunityList();
+			return boardProps.getRedirects().getCommunityList();
 		}
 	}
 	
@@ -485,7 +482,7 @@ public class BoardServiceImpl implements BoardService { //TODO : 예외처리 �
 		SimpleDateFormat Date = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 		int BoardID2 = Integer.parseInt(request.getParameter("BoardID"));
 		String UserLoginID = principal.getName();// 로그인 한 아이디
-		String UserName = userDao.SelectUserName(UserLoginID);
+		String UserName = userDao.selectUserName(UserLoginID);
 
 		board.setBno(BoardID2);
 		board.setBoardSubject(Title);

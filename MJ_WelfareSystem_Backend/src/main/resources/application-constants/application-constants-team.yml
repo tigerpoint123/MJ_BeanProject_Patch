@@ -1,0 +1,33 @@
+app:
+  team:
+    roles:
+      student: STUDENT
+      professor: PROFESSOR
+      administrator: ADMINISTRATOR
+    
+    urls:
+      my-team-list: /team/myTeamList
+      document:
+        list: /team/documentList
+        content: /team/documentContent
+        write: /team/documentWrite
+        modify: /team/documentModify
+      search:
+        lecture: /team/searchLecture
+        my-team: /team/searchMyTeam
+      create-team: /team/createTeam
+      team-list: /team/teamList
+      check-team: /team/checkTeam
+      modify-team: /team/modifyTeam
+      review-write: /team/reviewWrite
+    
+    redirects:
+      home: redirect:/home
+      document-list: redirect:/team/documentList?no=
+      search-lecture: redirect:/team/searchLecture
+      team-list: redirect:teamList
+      team-team-list: redirect:/team/teamList
+      search-my-team: redirect:/team/searchMyTeam
+    
+    file-path: C:\\mju\\
+

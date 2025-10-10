@@ -6,16 +6,11 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
-import org.springframework.boot.test.context.TestConfiguration;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.context.annotation.ComponentScan;
-import org.springframework.context.annotation.FilterType;
 import org.springframework.context.annotation.Import;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.web.servlet.ViewResolver;
-import org.springframework.web.servlet.view.InternalResourceViewResolver;
 
 import java.security.Principal;
 import java.util.ArrayList;
@@ -33,17 +28,25 @@ import com.mju.groupware.service.UserService;
 import com.mju.groupware.service.StudentService;
 import com.mju.groupware.service.ProfessorService;
 import com.mju.groupware.util.UserInfoMethod;
-import com.mju.groupware.constant.ConstantSearchController;
+import global.properties.SearchProperties;
 import com.mju.groupware.dto.SearchKeyWord;
 import com.mju.groupware.dto.UserReview;
 
-@WebMvcTest(controllers = SearchController.class,
-        excludeFilters = @ComponentScan.Filter(type = FilterType.ASSIGNABLE_TYPE, classes = GlobalUserModelAdvice.class))
+@WebMvcTest(controllers = SearchController.class)
 @AutoConfigureMockMvc(addFilters = false)
 @TestPropertySource(properties = {
-        "spring.main.allow-bean-definition-overriding=true"
+        "spring.main.allow-bean-definition-overriding=true",
+        "app.search.roles.student=STUDENT",
+        "app.search.roles.professor=PROFESSOR",
+        "app.search.roles.administrator=ADMINISTRATOR",
+        "app.search.params.user-name=UserName",
+        "app.search.params.user-email=UserEmail",
+        "app.search.params.phone-num=PhoneNum",
+        "app.search.urls.search-user=/search/searchUser",
+        "app.search.urls.review-list=/search/reviewList",
+        "app.search.redirects.search-user=redirect:/search/searchUser"
 })
-@Import(TestMvcSharedConfig.class)
+@Import({TestMvcSharedConfig.class, SearchProperties.class})
 class SearchControllerWebMvcTest {
 
     @Autowired
@@ -54,21 +57,14 @@ class SearchControllerWebMvcTest {
     @MockBean private StudentService studentService;
     @MockBean private ProfessorService professorService;
     @MockBean private UserInfoMethod userInfoMethod;
-    @MockBean private ConstantSearchController constant;
+    @Autowired private SearchProperties searchProps;
 
     @BeforeEach
     void setupCommon() {
         given(userService.selectUserProfileInfo("testUser"))
                 .willReturn(new ArrayList<>(Arrays.asList("Name", "UID123", "STUDENT")));
-        given(constant.getSRole()).willReturn("STUDENT");
-        given(constant.getPRole()).willReturn("PROFESSOR");
-        given(constant.getARole()).willReturn("ADMINISTRATOR");
-        given(constant.getRSearchUser()).willReturn("search/searchUser");
-        given(constant.getRRSearchUser()).willReturn("redirect:/search/searchUser");
-        given(constant.getRReviewList()).willReturn("search/reviewList");
-        given(constant.getUName()).willReturn("UName");
-        given(constant.getUserEmail()).willReturn("UserEmail");
-        given(constant.getPhoneNum()).willReturn("PhoneNum");
+        
+        // SearchProperties는 @TestPropertySource를 통해 자동으로 설정됨
     }
 
     @Test
@@ -97,7 +93,7 @@ class SearchControllerWebMvcTest {
     @DisplayName("GET /search/reviewList returns 200 or 3xx (reviews exist)")
     void reviewListReturnsOk() throws Exception {
         Principal principal = () -> "testUser";
-        given(userService.SelectIDForReview("email@example.com")).willReturn("1");
+        given(userService.selectIDForReview("email@example.com")).willReturn("1");
         List<UserReview> reviews = Collections.singletonList(new UserReview());
         given(searchService.SelectUserReview("1")).willReturn(reviews);
 

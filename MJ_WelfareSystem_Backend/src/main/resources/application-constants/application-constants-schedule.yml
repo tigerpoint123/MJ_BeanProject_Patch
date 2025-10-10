@@ -1,0 +1,16 @@
+app:
+  schedule:
+    roles:
+      student: STUDENT
+      professor: PROFESSOR
+      administrator: ADMINISTRATOR
+    
+    urls:
+      schedule: /schedule/schedule
+    
+    params:
+      user-id: UserId
+      schedule-id: scheduleID
+      start: start
+      end: end
+
